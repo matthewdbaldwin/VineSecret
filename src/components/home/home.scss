@@ -1,0 +1,28 @@
+.homediv1 {
+    width: 1000px;
+    position: inherit;
+    display: inline-block;
+    background-color: #B1B695;
+    background-image: url("../../assets/images/vineyard.png");
+    background-repeat: no-repeat;
+    h1 {
+        align-content: center;
+        text-align: center;
+    }
+    main {
+        text-align: left;
+        padding: 0px 15px 0px 20px;
+        color: #B1B695;
+        h2 {
+            font-family: Arial;
+        }
+    }
+
+}
+
+.newsletter {
+    width: 1000px;
+    position: inherit;
+    display: inline-block;
+    background-color: #B1B695;
+}
