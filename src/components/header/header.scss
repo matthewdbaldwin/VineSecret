@@ -1,34 +1,33 @@
 header {
     width: 100%;
-    font-size: 4vmin;
-    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
     background-color: #7D2E68;
     border-bottom: 24px solid #7D2E68;
-    position: inline;
     a {
         text-decoration: none;
         color: #ffffff;
     }
-    .main-nav { 
-        display: flex;
-        justify-content: flex-end;
-        flex-direction: row;
-        list-style-type: none;
-        li {
-            font-size: 1.2rem;
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 10px;
-            text-decoration: none;
-            
-        }
-    }
+
     .main-icon {
         display:flex;
+        justify-content: flex-start;
         margin: 0px;
-        background-repeat: space; 
+        background-repeat: no-repeat; 
         height: 192px;
         background-image: url("../../assets/images/VineSecretLogo.png");
         background-position: center;     
         background-size: contain; 
+    }
+    
+    .main-nav { 
+        display: flex;
+        list-style-type: none;
+        margin: 0 px;
+        li {
+            font-size: 1.2rem;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 10px;
+            text-decoration: none;   
+        }
     }
 }

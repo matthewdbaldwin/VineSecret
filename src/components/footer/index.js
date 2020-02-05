@@ -6,7 +6,7 @@ export default props => {
     return (
         <div className="row">
             <footer>
-                <div className="dots"></div> 
+                <div className="email">order@vinesecret.com</div> 
                 <div className="date"><p>Copyright &copy; {year} VineSecret All rights reserved.</p></div>
                 <div className="phone"><p><i className="fa fa-phone"></i>&nbsp;&nbsp;800-264-2099</p></div> 
             </footer>

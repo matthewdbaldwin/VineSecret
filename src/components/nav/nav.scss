@@ -1,15 +1,32 @@
-a {
-    color: #ffffff ;
-    text-decoration: none;
-    background-color: transparent;
-    :hover{
+nav { 
+    a {
+        color: #ffffff ;
         text-decoration: none;
-        color: #B1B695;
+        background-color: transparent;
+        :hover{
+            text-decoration: none;
+            color: #B1B695;
+        }
+    
+    };
+    
+    .main-nav { 
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: row;
+        list-style-type: none;
+        li {
+            font-size: 1.2rem;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 0px;
+            text-decoration: none;   
+        }
     }
-
-};
-
-.link {
-    margin-left: 15px;
-    margin-right: 15px;
+    
+    .link {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
 }
+

@@ -2,16 +2,15 @@ footer {
     font-family: arial;
     position: absolute;
     height: 80px;
-    width: 1000px;
+    width: max-content;
     background-color: #7D2E68;
     color: white;
-    .dots {
+    .email {
         width: 30%;
         height: 44px;
-        margin-top: 20px;
+        margin-top: 25px;
         bottom: 0px;
         background-position-x: center;
-
         right: 10px;
     };
     .date {

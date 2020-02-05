@@ -8,16 +8,16 @@ export default props => {
         <nav className="navbar float-right">
             <ul className="main-nav">
                 <li className="nav-item nav-link active">
-                    <Link className={`menuList link `} to="/">HOME</Link>
+                    <Link className={`menuList link`} to="/">HOME</Link>
                 </li>
                 <li className="nav-item nav-link">
-                    <Link className={`menuList link `} to="/products">PRODUCTS</Link>
+                    <Link className={`menuList link`} to="/products">PRODUCTS</Link>
                 </li>
                 <li className="nav-item nav-link">
-                    <Link className={`menuList link `} to="/contact">CONTACT</Link>
+                    <Link className={`menuList link`} to="/contact">CONTACT</Link>
                 </li>
                 <li className="nav-item nav-link">
-                    <Link className={`menuList link `} to="/about">ABOUT US</Link>
+                    <Link className={`menuList link`} to="/about">ABOUT US</Link>
                 </li>
             </ul>
         </nav>
