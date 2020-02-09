@@ -3,15 +3,16 @@ header {
     position: relative;
     background-color: #7D2E68;
     border-bottom: 24px solid #7D2E68;
+    display:flex;
+    justify-content: flex-start;
     a {
         text-decoration: none;
         color: #ffffff;
     }
 
     .main-icon {
-        display:flex;
-        justify-content: flex-start;
         margin: 0px;
+        padding: 0px;
         background-repeat: no-repeat; 
         height: 192px;
         background-image: url("../../assets/images/VineSecretLogo.png");
@@ -20,14 +21,16 @@ header {
     }
     
     .main-nav { 
-        display: flex;
-        list-style-type: none;
-        margin: 0 px;
+        padding-top: 10vh;
         li {
             font-size: 1.2rem;
             font-family: Arial, Helvetica, sans-serif;
             padding: 10px;
             text-decoration: none;   
         }
+    }
+    h2 {
+        color: #ffffff;
+        text-align: center;
     }
 }
