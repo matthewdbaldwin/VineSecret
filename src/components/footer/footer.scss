@@ -1,0 +1,39 @@
+footer {
+    font-family: arial;
+    height: 80px;
+    width: 100%;
+    background-color: #7D2E68;
+    color: white;
+    .email {
+        width: 30%;
+        height: 44px;
+        margin-top: 25px;
+        bottom: 0px;
+        background-position-x: center;
+        right: 10px;
+    };
+    .date {
+        height: 40px;
+        width: 40%;
+        vertical-align: bottom;
+        bottom: 0px;
+        margin-top: 40px;
+    };
+    .phone {
+        margin-top: 25px;
+        margin-right: 0px;
+        width: 25%;
+        height: 20px;
+        text-align: right;
+        p{
+            text-align: center;
+        }
+    };
+}
+
+footer > *{
+    width: 30%;
+    float: left;
+    text-align: center;
+    height: 100%;
+}
