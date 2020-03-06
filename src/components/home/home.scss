@@ -19,6 +19,7 @@
         align-content: center;
         border-radius: 15px;
         background-color: transparent;
+        
         .button {
             width: 40%;
             border-radius: 15px;
@@ -30,14 +31,13 @@
             color: #B1B695;
             -webkit-text-stroke: 1px #251351;
             -webkit-text-stroke-width: min($numbers: 30);
-            :hover {
-                border-color: #251351;
-            }
         }
-    }
-    
+        .button:hover {
+            border-color: #251351;
+            -webkit-text-stroke: 1px #7D2E68;
+        }
+    } 
 }
-
 
 .newsletter {
     width: 100%;
@@ -59,10 +59,10 @@
         color: #B1B695;
         -webkit-text-stroke: 1px #251351;
         -webkit-text-stroke-width: min($numbers: 30);
-        :hover {
-            border-color: #251351;
-        }
+        
     }
-
+    .button:hover {
+        border-color: #251351;
+        -webkit-text-stroke: 1px #7D2E68;
+    }
 }
-
