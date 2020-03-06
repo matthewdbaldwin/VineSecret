@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux';
+import { getAllProducts } from '../../actions/index.js';
 import ProductItem from "./product_item";
-
 import './products.scss';
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -20,9 +21,26 @@ class Products extends Component {
             
         return (
         <div className='container products'>
-            <h1 className="m-4">Shop our cupcakes</h1>
+            <h1 className="m-4">Shop our wines</h1>
             <div className="row mb-3">{productElements}</div>
         </div>
         );
     }
 }
+
+function mapStateToProps(state){
+  // console.log('Products Component mapStateToProps state:', state);
+  
+  return {
+      products: state.products.list,
+      
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  {
+    getAllProducts,
+    
+  },
+)(Products);

@@ -1,9 +1,9 @@
 import React from 'react';
-import Schedule from '../general/schedule/index.js'
+import Schedule from '../general/schedule/index.js';
 import './contact.scss';
 import ContactForm from './contact_form.js';
-import updots from '../../assets/images/up-dots.png'
-import downdots from '../../assets/images/down-dots.png'
+import grapes from '../../assets/images/grapes.jpg'
+
 
 export default props => {
     return (
@@ -23,7 +23,7 @@ export default props => {
                     <p>
                     Our expert vintners are waiting to share our wines with you. Our sommelier team is currently blending up a wonderful newsletter for you with our beloved wines. 
                     </p>
-                    <img src={updots} align="right"></img>    
+                    <img src={grapes} align="right"></img>    
                 </div>
                 <div className ="col formdiv">  
                    <ContactForm/>
@@ -33,9 +33,6 @@ export default props => {
                 <div className="col">
                     <h5>For phone orders,our work schedule is:</h5>
                     <Schedule/>
-                </div>
-                <div className="col contactdiv3">
-                    <img src={downdots} align="center"></img>
                 </div>
             </div>
         </div>

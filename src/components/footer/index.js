@@ -6,9 +6,13 @@ export default props => {
     return (
         <div className="row">
             <footer>
-                <div className="email">order@vinesecret.com</div> 
-                <div className="date"><p>Copyright &copy; {year} VineSecret All rights reserved.</p></div>
-                <div className="phone"><p><i className="fa fa-phone"></i>&nbsp;&nbsp;800-264-2099</p></div> 
+                <div className="col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-4 email">order@vinesecret.com</div> 
+                        <div className="col-sm-4 date">Copyright &copy; {year} VineSecret.</div>
+                        <div className="col-sm-4 phone"><i className="fa fa-phone"></i>&nbsp;&nbsp;800-264-2099</div> 
+                    </div>
+                </div>
             </footer>
         </div>
     );
