@@ -18,9 +18,7 @@ export default props => {
                 <li className="nav-item nav-link">
                     <Link className={`menuList link`} to="/about">ABOUT US</Link>
                 </li>
-                <li><a href="javascript:void(0);" class="icon" onclick="myFunction()">
-                    <i class="fa fa-bars"></i></a>
-                </li>
+                
             </ul>
         </nav>
     );
