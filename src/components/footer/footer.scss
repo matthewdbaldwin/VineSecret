@@ -5,29 +5,19 @@ footer {
     background-color: #7D2E68;
     color: white;
     .email {
-        width: 30%;
-        height: 44px;
-        margin-top: 25px;
-        bottom: 0px;
+        padding-top: 25px;
+        margin: 0 auto;
         background-position-x: center;
-        right: 10px;
     };
     .date {
-        height: 40px;
-        width: 40%;
-        vertical-align: bottom;
-        bottom: 0px;
-        margin-top: 40px;
+        padding-top: 25px;
+        margin: 0 auto;
+        
     };
     .phone {
-        margin-top: 25px;
-        margin-right: 0px;
-        width: 25%;
-        height: 20px;
-        text-align: right;
-        p{
-            text-align: center;
-        }
+        padding-top: 25px;
+        margin: 0 auto;
+        background-position-x: center;
     };
 }
 

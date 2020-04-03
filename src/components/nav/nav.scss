@@ -1,4 +1,5 @@
 nav { 
+    overflow:hidden;
     a {
         color: #ffffff ;
         text-decoration: none;
@@ -22,11 +23,26 @@ nav {
             padding: 0px;
             text-decoration: none;   
         }
+        a {
+            color: #ffffff ;
+            text-decoration: none;
+            background-color: transparent;
+        };
+        a:hover{
+            font-weight: 200;
+            color: #B1B695;
+            background-color: #251351;
+            border-radius: 3px;
+            border-collapse: 2px;
+            border-color: #251351;
+        }
     }
     
     .link {
         margin-left: 15px;
         margin-right: 15px;
+        
     }
+    
 }
 
