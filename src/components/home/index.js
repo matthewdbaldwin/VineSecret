@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './home.scss';
 
 export default props => {
@@ -6,15 +7,19 @@ export default props => {
         <div className="row">
             <div className="welcome col-12">
                 <main className="cta col-sm-12 ">
-                    <button className="button">
+                    <Link to="/products">
+                        <button className="button">
                         View our new<br></br>Spring Red Wines!
-                    </button>  
+                        </button> 
+                    </Link>  
                 </main>  
             </div>
             <div className="col-12 newsletter">
-                <button className='button'>
-                    Sign up for our<br></br>Newsletter!
-                </button>
+                <Link to="/contact">
+                    <button className='button'>
+                        Sign up for our<br></br>Newsletter!
+                    </button>
+                </Link>
             </div>
         </div>
     );

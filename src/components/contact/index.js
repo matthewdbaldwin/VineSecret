@@ -23,14 +23,14 @@ export default props => {
                     <p>
                     Our expert vintners are waiting to share our wines with you. Our sommelier team is currently blending up a wonderful newsletter for you with our beloved wines. 
                     </p>
-                    <img src={grapes} align="right"></img>    
+                    <img src={grapes} align="right" className="img-grapes"></img>    
                 </div>
                 <div className ="col formdiv">  
                    <ContactForm/>
                 </div>
             </div>
             <div className="row contactdiv2">
-                <div className="col">
+                <div className="col-6">
                     <h5>For phone orders,our work schedule is:</h5>
                     <Schedule/>
                 </div>
