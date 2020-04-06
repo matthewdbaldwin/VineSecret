@@ -30,7 +30,7 @@ export default props => {
                 </div>
             </div>
             <div className="row contactdiv2">
-                <div className="col">
+                <div className="col-6">
                     <h5>For phone orders,our work schedule is:</h5>
                     <Schedule/>
                 </div>
