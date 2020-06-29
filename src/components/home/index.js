@@ -14,6 +14,8 @@ export default props => {
                     </Link>  
                 </main>  
             </div>
+            <div className="middle col-12">
+            </div>
             <div className="col-12 newsletter">
                 <Link to="/contact">
                     <button className='button'>
