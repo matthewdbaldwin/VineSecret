@@ -15,7 +15,7 @@
     "url": "git+https://github.com/matthewdbaldwin/VineSecret.git"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.2",
     "immutable": "^4.0.0-rc.12",
     "immutable-js": "^0.3.1-6",
@@ -58,7 +58,7 @@
     "regenerator-runtime": "^0.13.7",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "uglifyjs-webpack-plugin": "^2.0.1",
+    "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
