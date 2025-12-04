@@ -1,10 +1,11 @@
-.inline{
+.inline {
     display: inline;
-  }
-  .widthday{
+}
+
+.widthday {
     display: inline-block;
     text-align: center;
     width: 152px;
     height: 35px;
-    background-color: #f6ede6
-  } 
+    background-color: #f6ede6;
+}

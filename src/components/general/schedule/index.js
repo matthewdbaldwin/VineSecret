@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+<<<<<<< HEAD
 import './schedule.scss';
+=======
+import './schedule.css';
+>>>>>>> 5852e0babe86a6c74df179d7757ec81a2b36ff64
 import schedule from './data/schedule.json';
 
 class Schedule extends Component {

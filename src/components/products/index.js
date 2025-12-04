@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { getAllProducts } from '../../actions/index.js';
 import ProductItem from "./product_item";
-import './products.scss';
+import './products.css';
 import "bootstrap/dist/css/bootstrap.css";
 
 class Products extends Component {
