@@ -1,0 +1,11 @@
+{
+  "schedule": [
+    {"pid": 1, "day": "Monday", "open": "9:00 AM", "close": "6:00 PM"},
+    {"pid": 2, "day": "Tuesday", "open": "9:00 AM", "close": "6:00 PM"},
+    {"pid": 3, "day": "Wednesday", "open": "9:00 AM", "close": "6:00 PM"},
+    {"pid": 4, "day": "Thursday", "open": "9:00 AM", "close": "6:00 PM"},
+    {"pid": 5, "day": "Friday", "open": "9:00 AM", "close": "8:00 PM"},
+    {"pid": 6, "day": "Saturday", "open": "10:00 AM", "close": "8:00 PM"},
+    {"pid": 7, "day": "Sunday", "open": "10:00 AM", "close": "4:00 PM"}
+  ]
+}

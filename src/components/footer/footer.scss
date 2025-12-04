@@ -1,9 +1,13 @@
 footer {
     font-family: arial;
-    height: 80px;
+    min-height: 80px;
     width: 100%;
     background-color: #7D2E68;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
     .email {
         padding-top: 25px;
         margin: 0 auto;
@@ -12,7 +16,7 @@ footer {
     .date {
         padding-top: 25px;
         margin: 0 auto;
-        
+
     };
     .phone {
         padding-top: 25px;
@@ -23,7 +27,28 @@ footer {
 
 footer > *{
     width: 30%;
-    float: left;
     text-align: center;
     height: 100%;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 6px;
+
+        .email,
+        .date,
+        .phone {
+            padding-top: 6px;
+            width: 100%;
+        }
+    }
+
+    footer > * {
+        width: 100%;
+        float: none;
+        flex: none;
+    }
 }

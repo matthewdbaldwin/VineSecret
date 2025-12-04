@@ -9,8 +9,10 @@
 >    - `git clone https://github.com/[Your Username]/react_starter.git`
 > 1. Change directory into the newly cloned repo
 >    - `cd react_starter`
-> 1. Install dependencies 
+> 1. Install dependencies
 >    - `npm install`
+>    - If you hit a `403 Forbidden` fetching packages through a proxy, rerun with proxies disabled:
+>      - `npm run install:noproxy`
 > 1. Start dev server
 >    - `npm start`
 > 1. Open a browser and navigate to `localhost:3000` You should see a page that displays "Welcome to React!"
