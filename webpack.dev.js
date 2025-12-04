@@ -1,18 +1,22 @@
-const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { resolve } = require('path');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 const PORT = process.env.PORT || 3000;
 
 module.exports = merge(common, {
-    entry: [
-        'core-js/stable',
-        'regenerator-runtime/runtime',
-        'webpack-dev-server/client?http://localhost:' + PORT,
-        './index.js'
-    ],
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     mode: 'development',
-    plugins: [
-        new webpack.NamedModulesPlugin()
-    ]
+    devServer: {
+        host: '0.0.0.0',
+        static: {
+            directory: resolve(__dirname, 'dist')
+        },
+        historyApiFallback: true,
+        hot: false,
+        port: PORT,
+        allowedHosts: 'all',
+        client: {
+            logging: 'info'
+        }
+    }
 });

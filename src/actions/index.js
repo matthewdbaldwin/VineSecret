@@ -86,7 +86,7 @@ export const getActiveCart = () => async dispatch => {
 
 export const getCartTotals = () => async dispatch => {
     try {
-       
+
         const cartToken = localStorage.getItem('sc-cart-token');
 
         const axiosConfig = {
@@ -94,9 +94,9 @@ export const getCartTotals = () => async dispatch => {
                 'x-cart-token': cartToken
             }
         }
- 
-       const resp = axios.get(`/api/cart/totals`, axiosConfig);
-       
+
+       const resp = await axios.get(`/api/cart/totals`, axiosConfig);
+
        dispatch({
           type: types.GET_CART_TOTALS,
           total: resp.data,

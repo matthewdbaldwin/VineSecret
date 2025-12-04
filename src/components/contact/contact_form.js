@@ -1,5 +1,5 @@
 import React from 'react';
-import './contact.scss';
+import './contact.css';
 import { Field, reduxForm } from 'redux-form';
 import CustomInput from './CustomInput'
 
@@ -119,8 +119,8 @@ function validate(formValues) {
 
 if (!message) {
     errors.message = '*Please enter a message';
-} else if (subject.length > 1000) {
-    errors.subject = '*Message is too long';
+} else if (message.length > 1000) {
+    errors.message = '*Message is too long';
 }
 
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addItemToCart, clearProductDetails, getProductDetails } from '../../actions/';
 import Money from '../general/money';
-import './products.scss';
+import './products.css';
 import "bootstrap/dist/css/bootstrap.css";
 
 class ProductDetails extends Component {

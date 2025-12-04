@@ -1,0 +1,12 @@
+.div1 {
+    background-color: #ffffff;
+}
+
+main {
+    background-color: #ffffff;
+}
+
+main .textbox {
+    margin: 0 auto;
+    color: #251351;
+}
