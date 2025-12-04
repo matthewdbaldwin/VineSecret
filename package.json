@@ -51,14 +51,6 @@
     "eslint": "^5.15.3",
     "eslint-plugin-react": "^7.21.0",
     "file-loader": "^2.0.0",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    "sass": "^1.77.0",
-    "postcss-loader": "^3.0.0",
-=======
->>>>>>> 5852e0babe86a6c74df179d7757ec81a2b36ff64
->>>>>>> main
     "react-hot-loader": "^4.13.0",
     "regenerator-runtime": "^0.13.7",
     "style-loader": "^0.23.1",
