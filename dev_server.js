@@ -6,20 +6,12 @@ const npm_config = require('./package.json');
 const PORT = process.env.PORT || 3000;
 
 const compiler = webpack(config);
-
 const server = new WebpackDevServer({
+    ...config.devServer,
     static: {
         directory: resolve(__dirname, 'dist')
     },
-    devMiddleware: {
-        publicPath: '/'
-    },
-    proxy: npm_config.proxy,
-    historyApiFallback: true,
-    hot: false,
-    client: {
-        logging: 'info'
-    }
+    proxy: npm_config.proxy
 }, compiler);
 
 server.start(PORT, '0.0.0.0').catch(err => {

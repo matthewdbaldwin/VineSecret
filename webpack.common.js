@@ -1,11 +1,20 @@
 const { resolve } = require('path');
 
 module.exports = {
+    entry: [
+        'core-js/stable',
+        'regenerator-runtime/runtime',
+        './index.js'
+    ],
     output: {
-        filename: 'bundle.[name].js',
+        filename: '[name].[contenthash].js',
         path: resolve(__dirname, 'dist'),
         publicPath: '/',
-        hashFunction: 'xxhash64'
+        hashFunction: 'xxhash64',
+        clean: true
+    },
+    resolve: {
+        extensions: ['.js', '.jsx']
     },
     optimization: {
         splitChunks: {
