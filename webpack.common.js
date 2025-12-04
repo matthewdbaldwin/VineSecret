@@ -1,11 +1,20 @@
 const { resolve } = require('path');
 
 module.exports = {
+    entry: [
+        'core-js/stable',
+        'regenerator-runtime/runtime',
+        './index.js'
+    ],
     output: {
-        filename: 'bundle.[name].js',
+        filename: '[name].[contenthash].js',
         path: resolve(__dirname, 'dist'),
         publicPath: '/',
-        hashFunction: 'xxhash64'
+        hashFunction: 'xxhash64',
+        clean: true
+    },
+    resolve: {
+        extensions: ['.js', '.jsx']
     },
     optimization: {
         splitChunks: {
@@ -37,15 +46,16 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
-                use: ['file-loader?hash=sha512&digest=hex&name=assets/images/[hash].[ext]']
+                type: 'asset/resource',
+                generator: {
+                    filename: 'assets/images/[hash][ext][query]'
+                }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        outputPath: 'assets/fonts/'
-                    }
+                type: 'asset/resource',
+                generator: {
+                    filename: 'assets/fonts/[hash][ext][query]'
                 }
             }
         ]
