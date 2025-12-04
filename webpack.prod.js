@@ -18,6 +18,15 @@ module.exports = merge(common, {
             }
         ]
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                parallel: true,
+                sourceMap: true
+            })
+        ]
+    },
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
