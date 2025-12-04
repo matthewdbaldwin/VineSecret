@@ -10,7 +10,7 @@ module.exports = merge(common, {
         'webpack-dev-server/client?http://localhost:' + PORT,
         './index.js'
     ],
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     mode: 'development',
     plugins: [
         new webpack.NamedModulesPlugin()
