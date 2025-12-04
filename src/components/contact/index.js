@@ -1,6 +1,6 @@
 import React from 'react';
 import Schedule from '../general/schedule/index.js';
-import './contact.scss';
+import './contact.css';
 import ContactForm from './contact_form.js';
 import grapes from '../../assets/images/grapes.jpg'
 

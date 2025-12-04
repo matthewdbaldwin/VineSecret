@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './home.scss';
+import './home.css';
 
 export default props => {
     return (
