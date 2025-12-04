@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
 
@@ -24,7 +24,8 @@ module.exports = merge(common, {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
-        new UglifyJsPlugin({
+        new TerserPlugin({
+            parallel: true,
             sourceMap: true
         })
     ]
