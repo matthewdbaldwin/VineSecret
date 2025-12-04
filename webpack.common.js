@@ -5,7 +5,7 @@ module.exports = {
         filename: 'bundle.[name].js',
         path: resolve(__dirname, 'dist'),
         publicPath: '/',
-        hashFunction: 'xxhash64'
+        hashFunction: 'sha256'
     },
     optimization: {
         splitChunks: {
