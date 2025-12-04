@@ -16,8 +16,9 @@ module.exports = merge(common, {
         new webpack.NamedModulesPlugin(),
         new webpack.SourceMapDevToolPlugin({
             filename: '[file].map',
-            moduleFilenameTemplate: 'webpack://[namespace]/[resource-path]',
-            fallbackModuleFilenameTemplate: 'webpack://[namespace]/[resource-path]'
+            moduleFilenameTemplate: 'webpack://[namespace]/[resource-path]?[hash]',
+            fallbackModuleFilenameTemplate: 'webpack://[namespace]/[resource-path]?[hash]',
+            hashFunction: 'sha256'
         })
     ]
 });
