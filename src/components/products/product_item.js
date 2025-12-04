@@ -1,6 +1,6 @@
 import React from 'react';
 import Money from '../general/money'
-import './products.scss';
+import './products.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
 const product_item = (props) => {

@@ -4,7 +4,8 @@ module.exports = {
     output: {
         filename: 'bundle.[name].js',
         path: resolve(__dirname, 'dist'),
-        publicPath: '/'
+        publicPath: '/',
+        hashFunction: 'xxhash64'
     },
     optimization: {
         splitChunks: {
@@ -28,11 +29,10 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                test: /\.s?(c|a)ss$/,
+                test: /\.css$/,
                 use: [
                     'style-loader',
-                    'css-loader',
-                    'sass-loader'
+                    'css-loader'
                 ]
             },
             {

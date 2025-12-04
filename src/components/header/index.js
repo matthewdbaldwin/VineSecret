@@ -1,5 +1,5 @@
 import React from 'react';
-import './header.scss';
+import './header.css';
 import Nav from '../nav';
 
 export default props => {

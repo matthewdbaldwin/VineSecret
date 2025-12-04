@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './nav.scss';
+import './nav.css';
 
 const Nav = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => setMenuOpen(!menuOpen);
     const closeMenu = () => setMenuOpen(false);
 
+<<<<<<< HEAD
+const Nav = () => {
+    const [menuOpen, setMenuOpen] = useState(false);
+    const toggleMenu = () => setMenuOpen(!menuOpen);
+    const closeMenu = () => setMenuOpen(false);
+
+=======
+>>>>>>> 5852e0babe86a6c74df179d7757ec81a2b36ff64
     return (
         <nav className="navbar justify-content-right">
             <button

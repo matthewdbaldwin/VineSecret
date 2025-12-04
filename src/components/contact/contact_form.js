@@ -1,5 +1,5 @@
 import React from 'react';
-import './contact.scss';
+import './contact.css';
 import { Field, reduxForm } from 'redux-form';
 import CustomInput from './CustomInput'
 

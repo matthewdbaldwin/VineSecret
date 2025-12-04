@@ -1,0 +1,137 @@
+.products {
+    padding: 1.5rem 0 3rem;
+}
+
+.products h1 {
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem 1rem 1.75rem;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+    text-align: center;
+    height: 100%;
+}
+
+.product-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: #c4c4c4;
+}
+
+.product-thumbnail {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.product-item h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.product-item .font-weight-bold {
+    color: #4a4a4a;
+    min-height: 40px;
+}
+
+.product-details img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.product-details .caption {
+    color: #4a4a4a;
+    font-weight: 600;
+}
+
+.product-quantity {
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-quantity {
+    background: #f3f3f3;
+    border: 1px solid #dcdcdc;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: 700;
+    color: #333;
+}
+
+.btn-quantity:hover {
+    background: #e2e2e2;
+}
+
+.quantity {
+    display: inline-block;
+    min-width: 32px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.cart {
+    background: #13322b;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+    margin-left: 0.75rem;
+}
+
+.cart:hover {
+    background: #0f2823;
+}
+
+@media (max-width: 991px) {
+    .product-item {
+        margin-bottom: 1rem;
+    }
+
+    .product-details {
+        margin-bottom: 1.5rem;
+    }
+
+    .product-quantity {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .products h1 {
+        font-size: 1.5rem;
+    }
+
+    .product-item {
+        padding: 1rem;
+    }
+
+    .cart {
+        width: 100%;
+        text-align: center;
+        margin: 1rem 0 0;
+    }
+}
