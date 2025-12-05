@@ -11,6 +11,7 @@ module.exports = merge(common, {
         contentBase: resolve(__dirname, 'dist'),
         historyApiFallback: true,
         hot: false,
+        publicPath: '/',
         port: PORT,
         disableHostCheck: true
     }
