@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: [
@@ -28,6 +29,12 @@ module.exports = {
         }
     },
     context: resolve(__dirname, 'src'),
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: resolve(__dirname, 'src', 'index.html'),
+            filename: 'index.html'
+        })
+    ],
     module: {
         rules: [
             {
