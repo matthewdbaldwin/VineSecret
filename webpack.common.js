@@ -44,17 +44,25 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'assets/images/[hash][ext][query]'
-                }
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'assets/images/[hash].[ext]'
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'assets/fonts/[hash][ext][query]'
-                }
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'assets/fonts/[hash].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     }
