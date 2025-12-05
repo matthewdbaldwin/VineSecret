@@ -8,15 +8,10 @@ module.exports = merge(common, {
     mode: 'development',
     devServer: {
         host: '0.0.0.0',
-        static: {
-            directory: resolve(__dirname, 'dist')
-        },
+        contentBase: resolve(__dirname, 'dist'),
         historyApiFallback: true,
         hot: false,
         port: PORT,
-        allowedHosts: 'all',
-        client: {
-            logging: 'info'
-        }
+        disableHostCheck: true
     }
 });
