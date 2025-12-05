@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const SimpleHtmlPlugin = require('./build/SimpleHtmlPlugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: [
@@ -30,7 +30,7 @@ module.exports = {
     },
     context: resolve(__dirname, 'src'),
     plugins: [
-        new SimpleHtmlPlugin({
+        new HtmlWebpackPlugin({
             template: resolve(__dirname, 'src', 'index.html'),
             filename: 'index.html'
         })
