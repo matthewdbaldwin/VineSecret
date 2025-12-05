@@ -10,15 +10,9 @@ module.exports = {
         filename: '[name].[contenthash].js',
         path: resolve(__dirname, 'dist'),
         publicPath: '/',
-<<<<<<< HEAD
-        hashFunction: 'sha256'
-=======
-        hashFunction: 'xxhash64',
-        clean: true
     },
     resolve: {
         extensions: ['.js', '.jsx']
->>>>>>> 02fff9e5e4f4887cf4492e23c51863e75689be74
     },
     optimization: {
         splitChunks: {
