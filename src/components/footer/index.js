@@ -1,19 +1,26 @@
 import React from 'react';
 import './footer.css';
 
-export default props => {
+const Footer = () => {
     const year = new Date().getFullYear();
     return (
-        <div className="row">
-            <footer>
-                <div className="col-sm-12">
-                    <div className="row">
-                        <div className="col-sm-4 email">order@vinesecret.com</div> 
-                        <div className="col-sm-4 date">Copyright &copy; {year} VineSecret.</div>
-                        <div className="col-sm-4 phone"><i className="fa fa-phone"></i>&nbsp;&nbsp;800-264-2099</div> 
-                    </div>
+        <footer className="site-footer">
+            <div className="footer-grid">
+                <div className="footer-block">
+                    <p className="label">Tasting room</p>
+                    <p>Orange County, CA</p>
                 </div>
-            </footer>
-        </div>
+                <div className="footer-block">
+                    <p className="label">Contact</p>
+                    <p>800-264-2099<br />order@vinesecret.com</p>
+                </div>
+                <div className="footer-block">
+                    <p className="label">Copyright</p>
+                    <p>&copy; {year} VineSecret</p>
+                </div>
+            </div>
+        </footer>
     );
-}
+};
+
+export default Footer;

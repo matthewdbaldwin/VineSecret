@@ -5,36 +5,33 @@ import ContactForm from './contact_form.js';
 import grapes from '../../assets/images/grapes.jpg'
 
 
-export default props => {
-    return (
-        
-        <div className="container">
-            <div className="row contactdiv1">
-                <div className ="col">      
-                    <h2 >
-                        Contact us today!
-                    </h2>
-                    <p>
-                    Talk wine to us! At VineSecret we love hearing from our customers. Send your questions, comments and flavor suggestions to:
-                    </p>
-                    <p>
+const Contact = () => (
+    <section className="contact">
+        <div className="contact-grid">
+            <div className="contact-copy">
+                <p className="eyebrow">Visit & connect</p>
+                <h2>Schedule a tasting or drop us a note.</h2>
+                <p>
+                    Talk wine with the people who make it. Whether you're planning a club pickup, a private tasting, or have a
+                    question about a bottle in your cellar, we would love to hear from you.
+                </p>
+                <div className="contact-details">
+                    <div>
+                        <span className="label">Email</span>
                         <a href="mailto:office@vinesecret.com">office@vinesecret.com</a>
-                    </p>
-                    <p>
-                    Our expert vintners are waiting to share our wines with you. Our sommelier team is currently blending up a wonderful newsletter for you with our beloved wines. 
-                    </p>
-                    <img src={grapes} align="right" className="img-grapes"></img>    
+                    </div>
+                    <div>
+                        <span className="label">Phone orders</span>
+                        <Schedule />
+                    </div>
                 </div>
-                <div className ="col formdiv">  
-                   <ContactForm/>
-                </div>
+                <img src={grapes} className="img-grapes" alt="Grapes ready for harvest" />
             </div>
-            <div className="row contactdiv2">
-                <div className="col-6">
-                    <h5>For phone orders,our work schedule is:</h5>
-                    <Schedule/>
-                </div>
+            <div className="formdiv">
+                <ContactForm />
             </div>
         </div>
-    );
-}
+    </section>
+);
+
+export default Contact;
