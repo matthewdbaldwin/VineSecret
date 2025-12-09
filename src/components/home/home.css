@@ -1,105 +1,204 @@
-.welcome {
-    display: inline-block;
-    width: 100%;
-    min-height: 70vh;
-    text-align: center;
-    align-content: center;
-    background-color: transparent;
-    background-image: url("../../assets/images/vineyard.jpg");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+.home {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding: 2.5rem 6vw 4rem;
+    background: linear-gradient(180deg, #0b0812 0%, #130d1c 14%, #f9f6f0 14%);
 }
 
-.welcome h1 {
-    align-content: center;
-    text-align: center;
+.hero-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 2fr 1fr;
 }
 
-.welcome .cta {
-    padding-top: 160px;
-    text-align: center;
-    align-content: center;
-    border-radius: 15px;
-    background-color: transparent;
+.hero-card,
+.story-card,
+.pillar,
+.collection,
+.mini-card,
+.visit {
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
 }
 
-.welcome .cta .button {
-    width: 40%;
-    border-radius: 15px;
-    background-color: #c97b84;
-    border-color: #7d2e68;
-    border-width: 6px;
-    font-size: 3em;
-    font-weight: bold;
-    color: #b1b695;
-    -webkit-text-stroke: 1px #251351;
-    -webkit-text-stroke-width: 1px;
+.hero-card {
+    padding: 2rem;
+    background: linear-gradient(135deg, #ffffff, #f7f1e7);
+    border: 1px solid #efe5d5;
 }
 
-.welcome .cta .button:hover {
-    border-color: #251351;
-    -webkit-text-stroke: 1px #7d2e68;
+.hero-card h2 {
+    font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+    margin: 0 0 0.8rem;
 }
 
-.middle {
-    background-color: #7d2e68;
-    height: 2vh;
+.hero-card .lede {
+    color: #3c3045;
+    font-size: 1.05rem;
+    line-height: 1.65;
 }
 
-.newsletter {
-    width: 100%;
-    height: 30vh;
-    padding-top: 30px;
-    position: inherit;
-    display: inline-block;
-    align-content: center;
-    text-align: center;
-    background-color: #b1b695;
+.cta-group {
+    display: flex;
+    gap: 0.75rem;
+    margin: 1.25rem 0 0.5rem;
 }
 
-.newsletter .button {
-    width: 40%;
-    border-radius: 15px;
-    background-color: #c97b84;
-    border-color: #7d2e68;
-    border-width: 2px;
-    font-size: 2em;
-    font-weight: bold;
-    color: #b1b695;
-    -webkit-text-stroke: 1px #251351;
-    -webkit-text-stroke-width: 1px;
+.hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
 
-.newsletter .button:hover {
-    border-color: #251351;
-    -webkit-text-stroke: 1px #7d2e68;
+.hero-metrics .metric {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #351a46;
+    display: block;
 }
 
-@media (max-width: 768px) {
-    .welcome {
-        min-height: 60vh;
-        background-size: cover;
+.hero-metrics .label {
+    display: block;
+    color: #6d6375;
+    font-weight: 600;
+}
+
+.story-card {
+    position: relative;
+    background: linear-gradient(160deg, #1c1028, #3a1f40);
+    color: #f6ede6;
+}
+
+.story-inner {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.story-card h3 {
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.text-link {
+    color: #f5d18d;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.text-link:hover {
+    color: #ffe6b8;
+    text-decoration: underline;
+}
+
+.pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.pillar {
+    padding: 1.25rem 1.35rem;
+    border: 1px solid #f0e5d8;
+}
+
+.pillar h4 {
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.collection {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    align-items: center;
+}
+
+.collection .copy h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.collection .copy p {
+    color: #41354c;
+    margin-bottom: 1rem;
+}
+
+.card-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.mini-card {
+    padding: 1rem;
+    text-align: left;
+    border: 1px solid #ede4d7;
+}
+
+.mini-card .metric {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #2f1a3c;
+}
+
+.visit {
+    padding: 1.5rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid #eee7de;
+}
+
+.visit h3 {
+    margin: 0 0 0.25rem;
+    font-weight: 800;
+}
+
+.visit p {
+    margin: 0;
+    color: #4a3b55;
+}
+
+@media (max-width: 960px) {
+    .home {
+        padding: 2rem 5vw 3rem;
     }
 
-    .welcome .cta {
-        padding-top: 120px;
+    .hero-grid,
+    .collection {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .home {
+        gap: 2rem;
     }
 
-    .welcome .cta .button {
-        width: 85%;
-        font-size: 1.6rem;
-        border-width: 4px;
+    .hero-card,
+    .story-card,
+    .collection,
+    .visit {
+        padding: 1.25rem;
     }
 
-    .newsletter {
-        height: auto;
-        padding: 36px 0;
+    .hero-metrics {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
-    .newsletter .button {
-        width: 85%;
-        font-size: 1.4rem;
-        border-width: 3px;
+    .cta-group {
+        flex-direction: column;
     }
 }
