@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dev_server.js",
-    "dev": "webpack serve --config webpack.dev.js",
+    "dev": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js --progress",
     "install:noproxy": "env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u npm_config_http_proxy -u npm_config_https_proxy npm install",
     "test": "node -e \"console.log('No automated tests are defined yet.');\""
