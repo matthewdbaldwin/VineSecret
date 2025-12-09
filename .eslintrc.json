@@ -5,14 +5,12 @@
         "es6": true,
         "node": true
     },
-    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2022,
         "ecmaFeatures": {
             "jsx": true
         },
-        "sourceType": "module",
-        "requireConfigFile": false
+        "sourceType": "module"
     },
     "plugins": ["react"],
     "rules": {
