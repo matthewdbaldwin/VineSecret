@@ -18,10 +18,16 @@ class Products extends Component {
         const productElements = products.map(product => {
           return <ProductItem key={product.id} {...product} goToDetails={() => this.goToDetails(product.id)} />;
         });
-            
+
         return (
-        <div className='container products'>
-            <h1 className="m-4">Shop our wines</h1>
+        <div className='products'>
+            <div className="products-hero">
+                <p className="eyebrow">Current release</p>
+                <h1>Wines that carry the story of each block.</h1>
+                <p>
+                    Limited lots, grown in Orange County's coastal influence and bottled with intention. Tap a bottle to view tasting notes and cellar recommendations.
+                </p>
+            </div>
             <div className="row mb-3">{productElements}</div>
         </div>
         );
