@@ -29,7 +29,8 @@
     "react-router-dom": "^5.3.4",
     "reactstrap": "^9.2.2",
     "redux": "^4.2.1",
-    "redux-form": "^8.3.10"
+    "redux-form": "^8.3.10",
+    "html-webpack-plugin": "^4.5.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
