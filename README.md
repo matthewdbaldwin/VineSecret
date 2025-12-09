@@ -13,13 +13,13 @@
 >    - `npm install`
 >    - If you hit a `403 Forbidden` fetching packages through a proxy, rerun with proxies disabled:
 >      - `npm run install:noproxy`
-> 1. Start dev server
+> 1. Start the Vite dev server
 >    - `npm start`
 > 1. Open a browser and navigate to `localhost:3000` You should see a page that displays "Welcome to React!"
 
 ### Build For Deployment
 
-> 1. Run webpack to build project
+> 1. Build the project for production
 >    - `npm run build`
-> 
-> **NOTE:** *After building you can not directly run your app locally. You must run your app from the root directory of a server.*
+>
+> **NOTE:** *After building, use `npm run preview` to serve the production bundle locally for smoke testing.*
