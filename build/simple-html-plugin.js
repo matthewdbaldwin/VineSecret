@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const { readFileSync } = require('fs');
+const { dirname, resolve } = require('path');
 
 class SimpleHtmlPlugin {
     constructor(options = {}) {
@@ -10,36 +10,49 @@ class SimpleHtmlPlugin {
     apply(compiler) {
         compiler.hooks.emit.tapAsync('SimpleHtmlPlugin', (compilation, callback) => {
             try {
-                const templatePath = this.template && path.resolve(compiler.context, this.template);
-                const templateContent = templatePath ? fs.readFileSync(templatePath, 'utf8') : '<!doctype html><html><head></head><body><div id="root"></div></body></html>';
+                const templatePath = resolve(compiler.options.context || dirname(this.template), this.template);
+                const templateContent = readFileSync(templatePath, 'utf8');
 
-                const publicPath = compilation.outputOptions.publicPath || '';
-                const scriptTags = [];
-
-                compilation.chunks.forEach((chunk) => {
-                    chunk.files.forEach((fileName) => {
-                        if (fileName.endsWith('.js')) {
-                            scriptTags.push(`<script src="${publicPath}${fileName}"></script>`);
-                        }
-                    });
-                });
-
-                const scriptsMarkup = scriptTags.join('');
-                const closingBodyIndex = templateContent.lastIndexOf('</body>');
-                const htmlWithScripts = closingBodyIndex !== -1
-                    ? `${templateContent.slice(0, closingBodyIndex)}${scriptsMarkup}${templateContent.slice(closingBodyIndex)}`
-                    : `${templateContent}${scriptsMarkup}`;
+                const { scripts, styles } = this.collectAssets(compilation);
+                const html = this.injectAssets(templateContent, scripts, styles);
 
                 compilation.assets[this.filename] = {
-                    source: () => htmlWithScripts,
-                    size: () => Buffer.byteLength(htmlWithScripts, 'utf8'),
+                    source: () => html,
+                    size: () => html.length,
                 };
-
-                callback();
             } catch (err) {
-                callback(err);
+                compilation.errors.push(err);
             }
+            callback();
         });
+    }
+
+    collectAssets(compilation) {
+        const scripts = [];
+        const styles = [];
+
+        compilation.entrypoints.forEach((entrypoint) => {
+            entrypoint.chunks.forEach((chunk) => {
+                chunk.files.forEach((file) => {
+                    if (file.endsWith('.js')) {
+                        scripts.push(file);
+                    }
+                    if (file.endsWith('.css')) {
+                        styles.push(file);
+                    }
+                });
+            });
+        });
+
+        return { scripts, styles };
+    }
+
+    injectAssets(template, scripts, styles) {
+        const styleTags = styles.map((href) => `<link rel="stylesheet" href="/${href}">`).join('\n');
+        const scriptTags = scripts.map((src) => `<script src="/${src}"></script>`).join('\n');
+
+        const withStyles = template.replace('</head>', `${styleTags}\n</head>`);
+        return withStyles.replace('</body>', `${scriptTags}\n</body>`);
     }
 }
 
