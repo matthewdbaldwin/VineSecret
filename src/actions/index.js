@@ -1,28 +1,38 @@
 import types from './types';
 import axios from 'axios';
+import { findProductById, products as fallbackProducts } from '../data/products';
 
 export const getAllProducts = () => async dispatch => {
     try {
        const response = await axios.get(`/api/products`);
+       const products = response.data?.products?.length ? response.data.products : fallbackProducts;
        dispatch({
           type: types.GET_ALL_PRODUCTS,
-          products: response.data.products,
+          products,
        });
-       
+
     } catch (err) {
-       console.log(err);
+       dispatch({
+          type: types.GET_ALL_PRODUCTS,
+          products: fallbackProducts,
+       });
     }
  };
 
 export const getProductDetails = productId => async dispatch => {
     try {
        const resp = await axios.get(`/api/products/${productId}`);
+       const product = resp.data && Object.keys(resp.data).length ? resp.data : findProductById(productId) || fallbackProducts[0];
        dispatch({
           type: types.GET_PRODUCT_DETAILS,
-          products: resp.data,
+          products: product,
        });
     } catch (err) {
-       console.log(err);
+       const product = findProductById(productId) || fallbackProducts[0];
+       dispatch({
+          type: types.GET_PRODUCT_DETAILS,
+          products: product,
+       });
     }
  };
 

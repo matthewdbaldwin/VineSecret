@@ -7,6 +7,7 @@ import About from './about';
 import Contact from './contact';
 import Home from './home';
 import Products from './products';
+import ProductDetails from './products/product_details';
 
 const App = () => (
     <div className="app">
@@ -14,6 +15,7 @@ const App = () => (
         <main className="page-shell">
             <Switch>
                 <Route path="/" exact component={Home} />
+                <Route path="/products/:product_id" component={ProductDetails} />
                 <Route path="/products" exact component={Products} />
                 <Route path="/about" component={About} />
                 <Route path="/contact" component={Contact} />
