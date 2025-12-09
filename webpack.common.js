@@ -1,4 +1,5 @@
 const { resolve } = require('path');
+const SimpleHtmlPlugin = require('./build/simple-html-plugin');
 
 module.exports = {
     entry: [
@@ -10,15 +11,9 @@ module.exports = {
         filename: '[name].[contenthash].js',
         path: resolve(__dirname, 'dist'),
         publicPath: '/',
-<<<<<<< HEAD
-        hashFunction: 'sha256'
-=======
-        hashFunction: 'xxhash64',
-        clean: true
     },
     resolve: {
         extensions: ['.js', '.jsx']
->>>>>>> 02fff9e5e4f4887cf4492e23c51863e75689be74
     },
     optimization: {
         splitChunks: {
@@ -34,6 +29,12 @@ module.exports = {
         }
     },
     context: resolve(__dirname, 'src'),
+    plugins: [
+        new SimpleHtmlPlugin({
+            template: resolve(__dirname, 'src', 'index.html'),
+            filename: 'index.html'
+        })
+    ],
     module: {
         rules: [
             {
@@ -50,17 +51,25 @@ module.exports = {
             },
             {
                 test: /\.(gif|png|jpe?g|svg)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'assets/images/[hash][ext][query]'
-                }
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'assets/images/[hash].[ext]'
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'assets/fonts/[hash][ext][query]'
-                }
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'assets/fonts/[hash].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     }
