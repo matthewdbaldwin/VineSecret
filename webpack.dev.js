@@ -1,5 +1,5 @@
 const { resolve } = require('path');
-const { merge } = require('webpack-merge');
+const merge = require('webpack-merge');
 const common = require('./webpack.common');
 const PORT = process.env.PORT || 3000;
 
