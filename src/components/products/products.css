@@ -252,6 +252,7 @@
 }
 
 .product-details-page {
+<<<<<<< HEAD
     background: linear-gradient(180deg, #0b0812 0%, #130d1c 16%, #f9f6f0 16%);
     padding: 2.5rem 6vw 4rem;
     display: flex;
@@ -293,6 +294,12 @@
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 1rem;
+=======
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+>>>>>>> main
 }
 
 .details-card {
@@ -306,7 +313,10 @@
 .image-card {
     display: grid;
     place-items: center;
+<<<<<<< HEAD
     height: 100%;
+=======
+>>>>>>> main
 }
 
 .image-card img {
@@ -317,10 +327,22 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
+<<<<<<< HEAD
 .info-card h2,
 .info-card h3 {
     margin: 0.25rem 0;
     font-weight: 800;
+=======
+.info-card h2 {
+    margin: 0.25rem 0;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+}
+
+.lead {
+    color: #4a3b55;
+    font-weight: 600;
+>>>>>>> main
 }
 
 .description {
@@ -377,6 +399,7 @@
     margin-top: 1rem;
 }
 
+<<<<<<< HEAD
 .note-list {
     margin: 0.75rem 0 0;
     padding-left: 1.2rem;
@@ -426,6 +449,19 @@
 
     .product-details-hero,
     .product-details-layout {
+=======
+.loading-state {
+    background: #ffffff;
+    border: 1px dashed #c8bfb2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    color: #4b3d58;
+}
+
+@media (max-width: 900px) {
+    .product-details-page {
+>>>>>>> main
         grid-template-columns: 1fr;
     }
 
