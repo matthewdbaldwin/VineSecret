@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 560" role="img" aria-label="Paso Robles GSM bottle illustration">
+  <defs>
+    <linearGradient id="gsm" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#c47a5a" />
+      <stop offset="100%" stop-color="#8d3b2f" />
+    </linearGradient>
+  </defs>
+  <rect x="78" y="20" width="44" height="110" rx="12" fill="#3b1b2d" opacity="0.9" />
+  <rect x="58" y="120" width="84" height="370" rx="26" fill="url(#gsm)" stroke="#8d3b2f" />
+  <rect x="58" y="230" width="84" height="120" rx="12" fill="#fff5f0" stroke="#8d3b2f" />
+  <text x="100" y="270" text-anchor="middle" font-family="'Georgia', serif" font-size="16" fill="#2f1a3c">Paso</text>
+  <text x="100" y="295" text-anchor="middle" font-family="'Georgia', serif" font-size="14" fill="#2f1a3c">Robles</text>
+  <text x="100" y="320" text-anchor="middle" font-family="'Georgia', serif" font-size="16" fill="#7c2f68">GSM Blend</text>
+</svg>

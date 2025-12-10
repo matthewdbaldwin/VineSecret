@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 560" role="img" aria-label="Russian River Pinot Noir bottle illustration">
+  <defs>
+    <linearGradient id="pinot" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#5a1f3e" />
+      <stop offset="100%" stop-color="#2f1a3c" />
+    </linearGradient>
+  </defs>
+  <rect x="78" y="20" width="44" height="110" rx="12" fill="#111" opacity="0.9" />
+  <rect x="58" y="120" width="84" height="370" rx="26" fill="url(#pinot)" stroke="#3d1d35" />
+  <rect x="58" y="230" width="84" height="120" rx="12" fill="#fdf5f7" stroke="#3d1d35" />
+  <text x="100" y="270" text-anchor="middle" font-family="'Georgia', serif" font-size="16" fill="#2f1a3c">Russian</text>
+  <text x="100" y="295" text-anchor="middle" font-family="'Georgia', serif" font-size="14" fill="#2f1a3c">River</text>
+  <text x="100" y="320" text-anchor="middle" font-family="'Georgia', serif" font-size="16" fill="#7c2f68">Pinot Noir</text>
+</svg>

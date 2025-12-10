@@ -2,8 +2,21 @@ import types from './types';
 import axios from 'axios';
 import { findProductById, products as fallbackProducts } from '../data/products';
 
-export const getAllProducts = () => async dispatch => {
+export const getAllProducts = () => async (dispatch) => {
     try {
+<<<<<<< HEAD
+        const response = await axios.get(`/api/products`);
+        const products = response.data?.products?.length ? response.data.products : fallbackProducts;
+        dispatch({
+            type: types.GET_ALL_PRODUCTS,
+            products,
+        });
+    } catch (err) {
+        dispatch({
+            type: types.GET_ALL_PRODUCTS,
+            products: fallbackProducts,
+        });
+=======
        const response = await axios.get(`/api/products`);
        const products = response.data?.products?.length ? response.data.products : fallbackProducts;
        dispatch({
@@ -16,11 +29,29 @@ export const getAllProducts = () => async dispatch => {
           type: types.GET_ALL_PRODUCTS,
           products: fallbackProducts,
        });
+>>>>>>> main
     }
- };
+};
 
-export const getProductDetails = productId => async dispatch => {
+export const getProductDetails = (productId) => async (dispatch) => {
     try {
+<<<<<<< HEAD
+        const resp = await axios.get(`/api/products/${productId}`);
+        const productFromApi = resp.data && Object.keys(resp.data).length ? resp.data : null;
+        const product = productFromApi || findProductById(productId);
+
+        dispatch({
+            type: types.GET_PRODUCT_DETAILS,
+            product,
+        });
+    } catch (err) {
+        const product = findProductById(productId);
+
+        dispatch({
+            type: types.GET_PRODUCT_DETAILS,
+            product,
+        });
+=======
        const resp = await axios.get(`/api/products/${productId}`);
        const product = resp.data && Object.keys(resp.data).length ? resp.data : findProductById(productId) || fallbackProducts[0];
        dispatch({
@@ -33,8 +64,9 @@ export const getProductDetails = productId => async dispatch => {
           type: types.GET_PRODUCT_DETAILS,
           products: product,
        });
+>>>>>>> main
     }
- };
+};
 
  
 
