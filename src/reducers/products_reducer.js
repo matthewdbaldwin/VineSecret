@@ -2,7 +2,7 @@ import types from '../actions/types';
 
 const DEFAULT_STATE = {
     list: [],
-    details: null
+    details: null,
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -15,7 +15,7 @@ export default (state = DEFAULT_STATE, action) => {
        case types.GET_PRODUCT_DETAILS:
           return {
              ...state,
-             details: action.products,
+             details: action.product ?? false,
           };
        case types.CLEAR_PRODUCT_DETAILS:
           return {
