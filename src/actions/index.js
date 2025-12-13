@@ -137,6 +137,7 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
         dispatch({
             type: types.ADD_ITEM_TO_CART,
             cartTotal: resp.data.total,
+            cart: localCart,
         });
 
         updateLocalCart();
