@@ -76,6 +76,25 @@
     color: #ffffff;
 }
 
+.cart-link .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.cart-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: #f5d18d;
+    color: #2b1a36;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
 .nav-cta .link {
     background: #f5d18d;
     color: #2b1a36;
