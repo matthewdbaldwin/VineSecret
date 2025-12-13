@@ -124,15 +124,14 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
             },
         };
 
-        const resp = await axios.post(
-            `/api/cart/items/${productId}`,
-            {
-                quantity,
-            },
-            axiosConfig,
-        );
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            currentItems.push({ id: productId, quantity });
+        }
 
-        localStorage.setItem('sc-cart-token', resp.data.cartToken);
+        return syncLocalCartState(currentItems, dispatch);
+    };
 
         dispatch({
             type: types.ADD_ITEM_TO_CART,
@@ -144,19 +143,36 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
     } catch (error) {
         updateLocalCart();
     }
+
+    dispatch({
+        type: types.ADD_ITEM_TO_CART,
+        cartTotal: localCart.total,
+        cart: localCart,
+    });
+};
+
+const loadLocalCart = (dispatch) => {
+    const items = readLocalCart();
+    return syncLocalCartState(items, dispatch);
+};
+
+const getCartConfig = () => {
+    const cartToken = localStorage.getItem('sc-cart-token');
+    return {
+        headers: {
+            'x-cart-token': cartToken,
+        },
+    };
 };
 
 export const getActiveCart = () => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+    if (cartApiUnavailable) {
+        loadLocalCart(dispatch);
+        return;
+    }
 
-        const resp = await axios.get(`/api/cart`, axiosConfig);
-        // console.log('Get active cart server response:', resp);
+    try {
+        const resp = await axios.get(`/api/cart`, getCartConfig());
         dispatch({
             type: types.GET_ACTIVE_CART,
             cart: resp.data,
@@ -168,15 +184,14 @@ export const getActiveCart = () => async (dispatch) => {
 };
 
 export const getCartTotals = () => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+    if (cartApiUnavailable) {
+        const { total } = loadLocalCart(dispatch);
+        dispatch({ type: types.GET_CART_TOTALS, total });
+        return;
+    }
 
-        const resp = await axios.get(`/api/cart/totals`, axiosConfig);
+    try {
+        const resp = await axios.get(`/api/cart/totals`, getCartConfig());
 
         dispatch({
             type: types.GET_CART_TOTALS,
