@@ -67,7 +67,10 @@ const syncLocalCartState = (items, dispatch) => {
 export const getAllProducts = () => async (dispatch) => {
     try {
         const response = await axios.get(`/api/products`);
-        const products = response.data?.products?.length ? response.data.products : fallbackProducts;
+        const products =
+            response && response.data && response.data.products && response.data.products.length
+                ? response.data.products
+                : fallbackProducts;
 
         dispatch({
             type: types.GET_ALL_PRODUCTS,
