@@ -72,15 +72,12 @@ export const getAllProducts = () => async (dispatch) => {
                 ? response.data.products
                 : fallbackProducts;
 
-        dispatch({
-            type: types.GET_ALL_PRODUCTS,
-            products,
-        });
-    } catch (err) {
-        dispatch({
-            type: types.GET_ALL_PRODUCTS,
-            products: fallbackProducts,
-        });
+const readLocalCart = () => {
+    try {
+        const stored = localStorage.getItem(LOCAL_CART_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        return [];
     }
 };
 
@@ -91,18 +88,36 @@ export const getProductDetails = (productId) => async (dispatch) => {
         const fallbackProduct = findProductById(productId);
         const product = productFromApi ? { ...fallbackProduct, ...productFromApi } : fallbackProduct;
 
-        dispatch({
-            type: types.GET_PRODUCT_DETAILS,
-            product,
-        });
-    } catch (err) {
-        const product = findProductById(productId);
+const deriveCartFromLocal = (items) => {
+    const enrichedItems = items
+        .map((item) => {
+            const product = findProductById(item.id);
+            if (!product) return null;
 
-        dispatch({
-            type: types.GET_PRODUCT_DETAILS,
-            product,
-        });
-    }
+            return {
+                ...product,
+                quantity: item.quantity,
+                lineTotal: item.quantity * product.cost,
+            };
+        })
+        .filter(Boolean);
+
+    const subtotal = enrichedItems.reduce((total, item) => total + item.lineTotal, 0);
+    const bottleCount = enrichedItems.reduce((total, item) => total + item.quantity, 0);
+    const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+    const tax = Math.round(subtotal * 0.085);
+    const grandTotal = subtotal + shipping + tax;
+
+    return {
+        cartId: 'local-cart',
+        items: enrichedItems,
+        total: {
+            subtotal,
+            shipping,
+            tax,
+            grandTotal,
+        },
+    };
 };
 
 export const addItemToCart = (productId, quantity) => async (dispatch) => {
@@ -246,39 +261,174 @@ export const createGuestOrder = (guest) => async (dispatch) => {
             },
         };
 
-        const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+        const localCart = updateLocalCart();
 
-        localStorage.removeItem('sc-cart-token');
+        if (!cartApiUnavailable) {
+            try {
+                const cartToken = localStorage.getItem('sc-cart-token');
+                const axiosConfig = {
+                    headers: {
+                        'x-cart-token': cartToken,
+                    },
+                };
+
+                const resp = await axios.post(
+                    `/api/cart/items/${productId}`,
+                    {
+                        quantity,
+                    },
+                    axiosConfig
+                );
+
+                localStorage.setItem('sc-cart-token', resp.data.cartToken);
+
+                dispatch({
+                    type: types.ADD_ITEM_TO_CART,
+                    cartTotal: resp.data.total,
+                    cart: localCart,
+                });
+
+                return;
+            } catch (error) {
+                if (error && error.response && error.response.status === 404) {
+                    cartApiUnavailable = true;
+                }
+            }
+        }
 
         dispatch({
-            type: types.CREATE_GUEST_ORDER,
-            order: {
-                id: res.data.id,
-                message: res.data.message,
-            },
+            type: types.ADD_ITEM_TO_CART,
+            cartTotal: localCart.total,
+            cart: localCart,
         });
+    };
+}
 
-        return {
-            email: guest.email,
-            order_Id: res.data.id,
-        };
-    } catch (err) {
-        console.log('Error from Guest checkout', err);
-    }
-};
+function loadLocalCart(dispatch) {
+    const items = readLocalCart();
+    return syncLocalCartState(items, dispatch);
+}
 
-export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
-    try {
-        const res = await axios.get(`/api/orders/guest/${orderId}?email=${email}`);
+function getCartConfig() {
+    const cartToken = localStorage.getItem('sc-cart-token');
 
-        dispatch({
-            type: types.GET_GUEST_ORDER_DETAILS,
-            details: res.data,
-        });
-        console.log('OrderDetail actions.js get:', res.data);
-    } catch (err) {
-        console.log('Error with guest details:', err);
-    }
-};
+    return {
+        headers: {
+            'x-cart-token': cartToken,
+        },
+    };
+}
+
+export function getActiveCart() {
+    return async function dispatchActiveCart(dispatch) {
+        if (cartApiUnavailable) {
+            loadLocalCart(dispatch);
+            return;
+        }
+
+        try {
+            const resp = await axios.get(`/api/cart`, getCartConfig());
+            dispatch({
+                type: types.GET_ACTIVE_CART,
+                cart: resp.data,
+            });
+        } catch (err) {
+            if (err && err.response && err.response.status === 404) {
+                cartApiUnavailable = true;
+            }
+            loadLocalCart(dispatch);
+        }
+    };
+}
+
+export function getCartTotals() {
+    return async function dispatchCartTotals(dispatch) {
+        if (cartApiUnavailable) {
+            const { total } = loadLocalCart(dispatch);
+            dispatch({ type: types.GET_CART_TOTALS, total });
+            return;
+        }
+
+        try {
+            const resp = await axios.get(`/api/cart/totals`, getCartConfig());
+
+            dispatch({
+                type: types.GET_CART_TOTALS,
+                total: resp.data,
+            });
+        } catch (err) {
+            if (err && err.response && err.response.status === 404) {
+                cartApiUnavailable = true;
+            }
+            const { total } = loadLocalCart(dispatch);
+
+            dispatch({
+                type: types.GET_CART_TOTALS,
+                total,
+            });
+        }
+    };
+}
+
+export function updateLocalCartItem(productId, quantity) {
+    return function dispatchUpdateLocal(dispatch) {
+        const currentItems = readLocalCart();
+        const filteredItems = currentItems.filter((item) => item.id !== productId);
+
+        if (quantity > 0) {
+            filteredItems.push({ id: productId, quantity });
+        }
+
+        syncLocalCartState(filteredItems, dispatch);
+    };
+}
+
+export function createGuestOrder(guest) {
+    return async function dispatchCreateGuest(dispatch) {
+        try {
+            const cartToken = localStorage.getItem('sc-cart-token');
+            const axiosConfig = {
+                headers: {
+                    'x-cart-token': cartToken,
+                },
+            };
+
+            const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+
+            localStorage.removeItem('sc-cart-token');
+
+            dispatch({
+                type: types.CREATE_GUEST_ORDER,
+                order: {
+                    id: res.data.id,
+                    message: res.data.message,
+                },
+            });
+
+            return {
+                email: guest.email,
+                order_Id: res.data.id,
+            };
+        } catch (err) {
+            console.log('Error from Guest checkout', err);
+        }
+    };
+}
+
+export function getGuestOrderDetails(email, orderId) {
+    return async function dispatchGuestDetails(dispatch) {
+        try {
+            const res = await axios.get(`/api/orders/guest/${orderId}?email=${email}`);
+
+            dispatch({
+                type: types.GET_GUEST_ORDER_DETAILS,
+                details: res.data,
+            });
+            console.log('OrderDetail actions.js get:', res.data);
+        } catch (err) {
+            console.log('Error with guest details:', err);
+        }
+    };
+}
 
 export const clearProductDetails = () => ({ type: types.CLEAR_PRODUCT_DETAILS });
