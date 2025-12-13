@@ -3,7 +3,6 @@ import types from './types';
 import { findProductById, products as fallbackProducts } from '../data/products';
 
 const LOCAL_CART_KEY = 'sc-local-cart';
-let cartApiUnavailable = false;
 
 const readLocalCart = () => {
     try {
@@ -63,8 +62,6 @@ const syncLocalCartState = (items, dispatch) => {
         type: types.GET_CART_TOTALS,
         total: cart.total,
     });
-
-    return cart;
 };
 
 export const getAllProducts = () => async (dispatch) => {
@@ -90,7 +87,7 @@ export const getAllProducts = () => async (dispatch) => {
 export const getProductDetails = (productId) => async (dispatch) => {
     try {
         const resp = await axios.get(`/api/products/${productId}`);
-        const productFromApi = resp && resp.data && Object.keys(resp.data).length ? resp.data : null;
+        const productFromApi = resp.data && Object.keys(resp.data).length ? resp.data : null;
         const fallbackProduct = findProductById(productId);
         const product = productFromApi ? { ...fallbackProduct, ...productFromApi } : fallbackProduct;
 
@@ -119,42 +116,35 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
             currentItems.push({ id: productId, quantity });
         }
 
+        syncLocalCartState(currentItems, dispatch);
+    };
+
+    try {
+        const cartToken = localStorage.getItem('sc-cart-token');
+        const axiosConfig = {
+            headers: {
+                'x-cart-token': cartToken,
+            },
+        };
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            currentItems.push({ id: productId, quantity });
+        }
+
         return syncLocalCartState(currentItems, dispatch);
     };
 
-    const localCart = updateLocalCart();
+        dispatch({
+            type: types.ADD_ITEM_TO_CART,
+            cartTotal: resp.data.total,
+            cart: localCart,
+        });
 
-    if (!cartApiUnavailable) {
-        try {
-            const cartToken = localStorage.getItem('sc-cart-token');
-            const axiosConfig = {
-                headers: {
-                    'x-cart-token': cartToken,
-                },
-            };
-
-            const resp = await axios.post(
-                `/api/cart/items/${productId}`,
-                {
-                    quantity,
-                },
-                axiosConfig
-            );
-
-            localStorage.setItem('sc-cart-token', resp.data.cartToken);
-
-            dispatch({
-                type: types.ADD_ITEM_TO_CART,
-                cartTotal: resp.data.total,
-                cart: localCart,
-            });
-
-            return;
-        } catch (error) {
-            if (error && error.response && error.response.status === 404) {
-                cartApiUnavailable = true;
-            }
-        }
+        updateLocalCart();
+    } catch (error) {
+        updateLocalCart();
     }
 
     dispatch({
@@ -191,10 +181,8 @@ export const getActiveCart = () => async (dispatch) => {
             cart: resp.data,
         });
     } catch (err) {
-        if (err && err.response && err.response.status === 404) {
-            cartApiUnavailable = true;
-        }
-        loadLocalCart(dispatch);
+        const items = readLocalCart();
+        syncLocalCartState(items, dispatch);
     }
 };
 
@@ -213,10 +201,8 @@ export const getCartTotals = () => async (dispatch) => {
             total: resp.data,
         });
     } catch (err) {
-        if (err && err.response && err.response.status === 404) {
-            cartApiUnavailable = true;
-        }
-        const { total } = loadLocalCart(dispatch);
+        const items = readLocalCart();
+        const { total } = deriveCartFromLocal(items);
 
         dispatch({
             type: types.GET_CART_TOTALS,
