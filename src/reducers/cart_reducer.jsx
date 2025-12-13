@@ -11,12 +11,7 @@ export default (state = DEFAULT_STATE, action) => {
     switch(action.type){
         case types.ADD_ITEM_TO_CART:
             // console.log('Cart Reducer Action:', action);
-            return {
-                ...state,
-                cartId: action.cart?.cartId || state.cartId,
-                items: action.cart?.items || state.items,
-                total: action.cartTotal ?? action.cart?.total ?? state.total,
-            };
+            return { ...state, total: action.cartTotal ?? state.total };
         case types.GET_ACTIVE_CART:
             // console.log('Cart Reducer Action:', action);
             return {
