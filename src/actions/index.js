@@ -62,8 +62,6 @@ const syncLocalCartState = (items, dispatch) => {
         type: types.GET_CART_TOTALS,
         total: cart.total,
     });
-
-    return cart;
 };
 
 export const getAllProducts = () => async (dispatch) => {
@@ -115,10 +113,8 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
             currentItems.push({ id: productId, quantity });
         }
 
-        return syncLocalCartState(currentItems, dispatch);
+        syncLocalCartState(currentItems, dispatch);
     };
-
-    const localCart = updateLocalCart();
 
     try {
         const cartToken = localStorage.getItem('sc-cart-token');
@@ -143,12 +139,10 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
             cartTotal: resp.data.total,
             cart: localCart,
         });
+
+        updateLocalCart();
     } catch (error) {
-        dispatch({
-            type: types.ADD_ITEM_TO_CART,
-            cartTotal: localCart.total,
-            cart: localCart,
-        });
+        updateLocalCart();
     }
 };
 
