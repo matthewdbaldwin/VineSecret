@@ -168,6 +168,21 @@ const getCartConfig = () => {
     };
 };
 
+const loadLocalCart = (dispatch) => {
+    const items = readLocalCart();
+    return syncLocalCartState(items, dispatch);
+};
+
+function getCartConfig() {
+    const cartToken = localStorage.getItem('sc-cart-token');
+
+    return {
+        headers: {
+            'x-cart-token': cartToken,
+        },
+    };
+}
+
 export const getActiveCart = () => async (dispatch) => {
     if (cartApiUnavailable) {
         loadLocalCart(dispatch);
