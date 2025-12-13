@@ -2,7 +2,7 @@ import types from '../actions/types';
 
 const DEFAULT_STATE = {
     cartId: null,
-    items: null,
+    items: [],
     total: null,
     details: null,
 };
@@ -11,12 +11,20 @@ export default (state = DEFAULT_STATE, action) => {
     switch(action.type){
         case types.ADD_ITEM_TO_CART:
             // console.log('Cart Reducer Action:', action);
-            return { ...state, total: action.cartTotal 
+            return {
+                ...state,
+                cartId: action.cart?.cartId || state.cartId,
+                items: action.cart?.items || state.items,
+                total: action.cartTotal ?? action.cart?.total ?? state.total,
             };
         case types.GET_ACTIVE_CART:
             // console.log('Cart Reducer Action:', action);
-            return { ...state, cartId: action.cart.cartId, items: action.cart.items, total: action.cart.total 
-            };          
+            return {
+                ...state,
+                cartId: action.cart?.cartId || state.cartId,
+                items: action.cart?.items || [],
+                total: action.cart?.total || state.total,
+            };
         case types.GET_CART_TOTALS:
             // console.log('Cart Reducer - Get Cart Totals Action:', action);
             return { ...state, total: action.total };
