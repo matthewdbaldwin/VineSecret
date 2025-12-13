@@ -1,6 +1,8 @@
-import axios from 'axios';
-import types from './types';
-import { findProductById, products as fallbackProducts } from '../data/products';
+const axios = require('axios');
+const types = require('./types').default;
+const productData = require('../data/products');
+const findProductById = productData.findProductById;
+const fallbackProducts = productData.products;
 
 const LOCAL_CART_KEY = 'sc-local-cart';
 
