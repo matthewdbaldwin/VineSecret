@@ -2,6 +2,68 @@ import axios from 'axios';
 import types from './types';
 import { findProductById, products as fallbackProducts } from '../data/products';
 
+const LOCAL_CART_KEY = 'sc-local-cart';
+
+const readLocalCart = () => {
+    try {
+        const stored = localStorage.getItem(LOCAL_CART_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        return [];
+    }
+};
+
+const persistLocalCart = (items) => {
+    localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
+};
+
+const deriveCartFromLocal = (items) => {
+    const enrichedItems = items
+        .map((item) => {
+            const product = findProductById(item.id);
+            if (!product) return null;
+
+            return {
+                ...product,
+                quantity: item.quantity,
+                lineTotal: item.quantity * product.cost,
+            };
+        })
+        .filter(Boolean);
+
+    const subtotal = enrichedItems.reduce((total, item) => total + item.lineTotal, 0);
+    const bottleCount = enrichedItems.reduce((total, item) => total + item.quantity, 0);
+    const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+    const tax = Math.round(subtotal * 0.085);
+    const grandTotal = subtotal + shipping + tax;
+
+    return {
+        cartId: 'local-cart',
+        items: enrichedItems,
+        total: {
+            subtotal,
+            shipping,
+            tax,
+            grandTotal,
+        },
+    };
+};
+
+const syncLocalCartState = (items, dispatch) => {
+    persistLocalCart(items);
+    const cart = deriveCartFromLocal(items);
+
+    dispatch({
+        type: types.GET_ACTIVE_CART,
+        cart,
+    });
+
+    dispatch({
+        type: types.GET_CART_TOTALS,
+        total: cart.total,
+    });
+};
+
 export const getAllProducts = () => async (dispatch) => {
     try {
         const response = await axios.get(`/api/products`);
@@ -23,7 +85,8 @@ export const getProductDetails = (productId) => async (dispatch) => {
     try {
         const resp = await axios.get(`/api/products/${productId}`);
         const productFromApi = resp.data && Object.keys(resp.data).length ? resp.data : null;
-        const product = productFromApi || findProductById(productId);
+        const fallbackProduct = findProductById(productId);
+        const product = productFromApi ? { ...fallbackProduct, ...productFromApi } : fallbackProduct;
 
         dispatch({
             type: types.GET_PRODUCT_DETAILS,
@@ -40,6 +103,19 @@ export const getProductDetails = (productId) => async (dispatch) => {
 };
 
 export const addItemToCart = (productId, quantity) => async (dispatch) => {
+    const updateLocalCart = () => {
+        const currentItems = readLocalCart();
+        const existingItem = currentItems.find((item) => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            currentItems.push({ id: productId, quantity });
+        }
+
+        syncLocalCartState(currentItems, dispatch);
+    };
+
     try {
         const cartToken = localStorage.getItem('sc-cart-token');
         const axiosConfig = {
@@ -62,8 +138,10 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
             type: types.ADD_ITEM_TO_CART,
             cartTotal: resp.data.total,
         });
+
+        updateLocalCart();
     } catch (error) {
-        // console.log('Add Item To Cart Error:', error.message);
+        updateLocalCart();
     }
 };
 
@@ -83,7 +161,8 @@ export const getActiveCart = () => async (dispatch) => {
             cart: resp.data,
         });
     } catch (err) {
-        // console.log('Get active cart error:', err);
+        const items = readLocalCart();
+        syncLocalCartState(items, dispatch);
     }
 };
 
@@ -103,8 +182,25 @@ export const getCartTotals = () => async (dispatch) => {
             total: resp.data,
         });
     } catch (err) {
-        // console.log('Error getting cart totals:', err);
+        const items = readLocalCart();
+        const { total } = deriveCartFromLocal(items);
+
+        dispatch({
+            type: types.GET_CART_TOTALS,
+            total,
+        });
     }
+};
+
+export const updateLocalCartItem = (productId, quantity) => (dispatch) => {
+    const currentItems = readLocalCart();
+    const filteredItems = currentItems.filter((item) => item.id !== productId);
+
+    if (quantity > 0) {
+        filteredItems.push({ id: productId, quantity });
+    }
+
+    syncLocalCartState(filteredItems, dispatch);
 };
 
 export const createGuestOrder = (guest) => async (dispatch) => {
