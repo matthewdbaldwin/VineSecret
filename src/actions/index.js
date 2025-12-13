@@ -2,153 +2,299 @@ import axios from 'axios';
 import types from './types';
 import { findProductById, products as fallbackProducts } from '../data/products';
 
-export const getAllProducts = () => async (dispatch) => {
-    try {
-        const response = await axios.get(`/api/products`);
-        const products = response.data?.products?.length ? response.data.products : fallbackProducts;
+const LOCAL_CART_KEY = 'sc-local-cart';
+let cartApiUnavailable = false;
 
-        dispatch({
-            type: types.GET_ALL_PRODUCTS,
-            products,
-        });
-    } catch (err) {
-        dispatch({
-            type: types.GET_ALL_PRODUCTS,
-            products: fallbackProducts,
-        });
+const readLocalCart = () => {
+    try {
+        const stored = localStorage.getItem(LOCAL_CART_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        return [];
     }
 };
 
-export const getProductDetails = (productId) => async (dispatch) => {
-    try {
-        const resp = await axios.get(`/api/products/${productId}`);
-        const productFromApi = resp.data && Object.keys(resp.data).length ? resp.data : null;
-        const product = productFromApi || findProductById(productId);
-
-        dispatch({
-            type: types.GET_PRODUCT_DETAILS,
-            product,
-        });
-    } catch (err) {
-        const product = findProductById(productId);
-
-        dispatch({
-            type: types.GET_PRODUCT_DETAILS,
-            product,
-        });
-    }
+const persistLocalCart = (items) => {
+    localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
 };
 
-export const addItemToCart = (productId, quantity) => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
+const deriveCartFromLocal = (items) => {
+    const enrichedItems = items
+        .map((item) => {
+            const product = findProductById(item.id);
+            if (!product) return null;
+
+            return {
+                ...product,
+                quantity: item.quantity,
+                lineTotal: item.quantity * product.cost,
+            };
+        })
+        .filter(Boolean);
+
+    const subtotal = enrichedItems.reduce((total, item) => total + item.lineTotal, 0);
+    const bottleCount = enrichedItems.reduce((total, item) => total + item.quantity, 0);
+    const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+    const tax = Math.round(subtotal * 0.085);
+    const grandTotal = subtotal + shipping + tax;
+
+    return {
+        cartId: 'local-cart',
+        items: enrichedItems,
+        total: {
+            subtotal,
+            shipping,
+            tax,
+            grandTotal,
+        },
+    };
+};
+
+const syncLocalCartState = (items, dispatch) => {
+    persistLocalCart(items);
+    const cart = deriveCartFromLocal(items);
+
+    dispatch({
+        type: types.GET_ACTIVE_CART,
+        cart,
+    });
+
+    dispatch({
+        type: types.GET_CART_TOTALS,
+        total: cart.total,
+    });
+
+    return cart;
+};
+
+export function getAllProducts() {
+    return async function dispatchProducts(dispatch) {
+        try {
+            const response = await axios.get(`/api/products`);
+            const products =
+                response && response.data && response.data.products && response.data.products.length
+                    ? response.data.products
+                    : fallbackProducts;
+
+            dispatch({
+                type: types.GET_ALL_PRODUCTS,
+                products,
+            });
+        } catch (err) {
+            dispatch({
+                type: types.GET_ALL_PRODUCTS,
+                products: fallbackProducts,
+            });
+        }
+    };
+}
+
+export function getProductDetails(productId) {
+    return async function dispatchProductDetails(dispatch) {
+        try {
+            const resp = await axios.get(`/api/products/${productId}`);
+            const productFromApi = resp && resp.data && Object.keys(resp.data).length ? resp.data : null;
+            const fallbackProduct = findProductById(productId);
+            const product = productFromApi ? { ...fallbackProduct, ...productFromApi } : fallbackProduct;
+
+            dispatch({
+                type: types.GET_PRODUCT_DETAILS,
+                product,
+            });
+        } catch (err) {
+            const product = findProductById(productId);
+
+            dispatch({
+                type: types.GET_PRODUCT_DETAILS,
+                product,
+            });
+        }
+    };
+}
+
+export function addItemToCart(productId, quantity) {
+    return async function dispatchAddItem(dispatch) {
+        const updateLocalCart = () => {
+            const currentItems = readLocalCart();
+            const existingItem = currentItems.find((item) => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                currentItems.push({ id: productId, quantity });
+            }
+
+            return syncLocalCartState(currentItems, dispatch);
         };
 
-        const resp = await axios.post(
-            `/api/cart/items/${productId}`,
-            {
-                quantity,
-            },
-            axiosConfig,
-        );
+        const localCart = updateLocalCart();
 
-        localStorage.setItem('sc-cart-token', resp.data.cartToken);
+        if (!cartApiUnavailable) {
+            try {
+                const cartToken = localStorage.getItem('sc-cart-token');
+                const axiosConfig = {
+                    headers: {
+                        'x-cart-token': cartToken,
+                    },
+                };
+
+                const resp = await axios.post(
+                    `/api/cart/items/${productId}`,
+                    {
+                        quantity,
+                    },
+                    axiosConfig
+                );
+
+                localStorage.setItem('sc-cart-token', resp.data.cartToken);
+
+                dispatch({
+                    type: types.ADD_ITEM_TO_CART,
+                    cartTotal: resp.data.total,
+                    cart: localCart,
+                });
+
+                return;
+            } catch (error) {
+                if (error && error.response && error.response.status === 404) {
+                    cartApiUnavailable = true;
+                }
+            }
+        }
 
         dispatch({
             type: types.ADD_ITEM_TO_CART,
-            cartTotal: resp.data.total,
+            cartTotal: localCart.total,
+            cart: localCart,
         });
-    } catch (error) {
-        // console.log('Add Item To Cart Error:', error.message);
-    }
-};
+    };
+}
 
-export const getActiveCart = () => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+function loadLocalCart(dispatch) {
+    const items = readLocalCart();
+    return syncLocalCartState(items, dispatch);
+}
 
-        const resp = await axios.get(`/api/cart`, axiosConfig);
-        // console.log('Get active cart server response:', resp);
-        dispatch({
-            type: types.GET_ACTIVE_CART,
-            cart: resp.data,
-        });
-    } catch (err) {
-        // console.log('Get active cart error:', err);
-    }
-};
+function getCartConfig() {
+    const cartToken = localStorage.getItem('sc-cart-token');
 
-export const getCartTotals = () => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+    return {
+        headers: {
+            'x-cart-token': cartToken,
+        },
+    };
+}
 
-        const resp = await axios.get(`/api/cart/totals`, axiosConfig);
+export function getActiveCart() {
+    return async function dispatchActiveCart(dispatch) {
+        if (cartApiUnavailable) {
+            loadLocalCart(dispatch);
+            return;
+        }
 
-        dispatch({
-            type: types.GET_CART_TOTALS,
-            total: resp.data,
-        });
-    } catch (err) {
-        // console.log('Error getting cart totals:', err);
-    }
-};
+        try {
+            const resp = await axios.get(`/api/cart`, getCartConfig());
+            dispatch({
+                type: types.GET_ACTIVE_CART,
+                cart: resp.data,
+            });
+        } catch (err) {
+            if (err && err.response && err.response.status === 404) {
+                cartApiUnavailable = true;
+            }
+            loadLocalCart(dispatch);
+        }
+    };
+}
 
-export const createGuestOrder = (guest) => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+export function getCartTotals() {
+    return async function dispatchCartTotals(dispatch) {
+        if (cartApiUnavailable) {
+            const { total } = loadLocalCart(dispatch);
+            dispatch({ type: types.GET_CART_TOTALS, total });
+            return;
+        }
 
-        const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+        try {
+            const resp = await axios.get(`/api/cart/totals`, getCartConfig());
 
-        localStorage.removeItem('sc-cart-token');
+            dispatch({
+                type: types.GET_CART_TOTALS,
+                total: resp.data,
+            });
+        } catch (err) {
+            if (err && err.response && err.response.status === 404) {
+                cartApiUnavailable = true;
+            }
+            const { total } = loadLocalCart(dispatch);
 
-        dispatch({
-            type: types.CREATE_GUEST_ORDER,
-            order: {
-                id: res.data.id,
-                message: res.data.message,
-            },
-        });
+            dispatch({
+                type: types.GET_CART_TOTALS,
+                total,
+            });
+        }
+    };
+}
 
-        return {
-            email: guest.email,
-            order_Id: res.data.id,
-        };
-    } catch (err) {
-        console.log('Error from Guest checkout', err);
-    }
-};
+export function updateLocalCartItem(productId, quantity) {
+    return function dispatchUpdateLocal(dispatch) {
+        const currentItems = readLocalCart();
+        const filteredItems = currentItems.filter((item) => item.id !== productId);
 
-export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
-    try {
-        const res = await axios.get(`/api/orders/guest/${orderId}?email=${email}`);
+        if (quantity > 0) {
+            filteredItems.push({ id: productId, quantity });
+        }
 
-        dispatch({
-            type: types.GET_GUEST_ORDER_DETAILS,
-            details: res.data,
-        });
-        console.log('OrderDetail actions.js get:', res.data);
-    } catch (err) {
-        console.log('Error with guest details:', err);
-    }
-};
+        syncLocalCartState(filteredItems, dispatch);
+    };
+}
+
+export function createGuestOrder(guest) {
+    return async function dispatchCreateGuest(dispatch) {
+        try {
+            const cartToken = localStorage.getItem('sc-cart-token');
+            const axiosConfig = {
+                headers: {
+                    'x-cart-token': cartToken,
+                },
+            };
+
+            const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+
+            localStorage.removeItem('sc-cart-token');
+
+            dispatch({
+                type: types.CREATE_GUEST_ORDER,
+                order: {
+                    id: res.data.id,
+                    message: res.data.message,
+                },
+            });
+
+            return {
+                email: guest.email,
+                order_Id: res.data.id,
+            };
+        } catch (err) {
+            console.log('Error from Guest checkout', err);
+        }
+    };
+}
+
+export function getGuestOrderDetails(email, orderId) {
+    return async function dispatchGuestDetails(dispatch) {
+        try {
+            const res = await axios.get(`/api/orders/guest/${orderId}?email=${email}`);
+
+            dispatch({
+                type: types.GET_GUEST_ORDER_DETAILS,
+                details: res.data,
+            });
+            console.log('OrderDetail actions.js get:', res.data);
+        } catch (err) {
+            console.log('Error with guest details:', err);
+        }
+    };
+}
 
 export const clearProductDetails = () => ({ type: types.CLEAR_PRODUCT_DETAILS });
