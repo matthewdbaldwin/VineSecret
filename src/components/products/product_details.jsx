@@ -49,10 +49,18 @@ class ProductDetails extends Component {
             );
         }
 
+        const imageSrc = details.image?.url || details.thumbnail?.url;
+
         return (
             <div className="product-details-page">
                 <div className="details-card image-card">
-                    <img src={details.image.url} alt={details.caption || details.name} />
+                    {imageSrc ? (
+                        <img src={imageSrc} alt={details.caption || details.name} />
+                    ) : (
+                        <div className="image-fallback" aria-label="Image unavailable">
+                            <p>Image unavailable</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className="details-card info-card">
