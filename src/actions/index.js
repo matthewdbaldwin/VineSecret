@@ -79,7 +79,7 @@ const readLocalCart = () => {
     } catch (error) {
         return [];
     }
-};
+}
 
 export const getProductDetails = (productId) => async (dispatch) => {
     try {
@@ -431,4 +431,6 @@ export function getGuestOrderDetails(email, orderId) {
     };
 }
 
-export const clearProductDetails = () => ({ type: types.CLEAR_PRODUCT_DETAILS });
+export function clearProductDetails() {
+    return { type: types.CLEAR_PRODUCT_DETAILS };
+}
