@@ -85,7 +85,8 @@ export const getProductDetails = (productId) => async (dispatch) => {
     try {
         const resp = await axios.get(`/api/products/${productId}`);
         const productFromApi = resp.data && Object.keys(resp.data).length ? resp.data : null;
-        const product = productFromApi || findProductById(productId);
+        const fallbackProduct = findProductById(productId);
+        const product = productFromApi ? { ...fallbackProduct, ...productFromApi } : fallbackProduct;
 
         dispatch({
             type: types.GET_PRODUCT_DETAILS,
