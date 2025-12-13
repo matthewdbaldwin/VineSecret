@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './nav.css';
 
@@ -6,6 +7,8 @@ const Nav = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => setMenuOpen(!menuOpen);
     const closeMenu = () => setMenuOpen(false);
+    const cartItems = useSelector((state) => state.cart.items || []);
+    const itemCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
 
     return (
         <nav className={`navbar site-nav ${menuOpen ? 'is-open' : ''}`}>
@@ -38,6 +41,14 @@ const Nav = () => {
                 </li>
                 <li className="nav-item nav-link">
                     <Link className="menuList link" to="/contact" onClick={closeMenu}>Visit</Link>
+                </li>
+                <li className="nav-item nav-link cart-link">
+                    <Link className="menuList link" to="/cart" onClick={closeMenu}>
+                        Cart
+                        <span className="cart-pill" aria-label={`${itemCount} items in cart`}>
+                            {itemCount}
+                        </span>
+                    </Link>
                 </li>
                 <li className="nav-item nav-link nav-cta">
                     <Link className="menuList link" to="/contact" onClick={closeMenu}>Book a tasting</Link>
