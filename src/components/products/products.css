@@ -261,6 +261,20 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
+.image-fallback {
+    width: 100%;
+    max-width: 520px;
+    min-height: 320px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #f5ede2, #efe1d2);
+    color: #3f2b4b;
+    border-radius: 14px;
+    border: 1px dashed #d9cabc;
+    padding: 1.5rem;
+    text-align: center;
+}
+
 .info-card h2,
 .info-card h3 {
     margin: 0.25rem 0;
