@@ -4,7 +4,6 @@ import { findProductById, products as fallbackProducts } from '../data/products'
 
 const LOCAL_CART_KEY = 'sc-local-cart';
 const LOCAL_ORDER_KEY = 'sc-guest-orders';
-const LOCAL_EMAIL_QUEUE_KEY = 'sc-email-queue';
 let cartApiUnavailable = false;
 let emailApiUnavailable = false;
 
@@ -45,66 +44,6 @@ const findLocalGuestOrder = (email, orderId) => {
     return readLocalOrders().find(
         (order) => String(order.id) === String(orderId) && String(order.email || '').toLowerCase() === normalizedEmail,
     );
-};
-
-const readEmailQueue = () => {
-    try {
-        const stored = localStorage.getItem(LOCAL_EMAIL_QUEUE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-        return [];
-    }
-};
-
-const queueEmail = (email) => {
-    const existing = readEmailQueue();
-    const nextQueue = [email, ...existing].slice(0, 50);
-    localStorage.setItem(LOCAL_EMAIL_QUEUE_KEY, JSON.stringify(nextQueue));
-};
-
-const buildGuestEmail = (guest, orderId, cart) => {
-    const lineItems = (cart?.items || [])
-        .map((item) => `${item.quantity} x ${item.name} — ${(item.lineTotal / 100).toFixed(2)}`)
-        .join('\n');
-
-    return {
-        to: guest.email,
-        subject: `Your VineSecret order ${orderId}`,
-        body: [
-            `Hi ${guest.firstName || 'there'},`,
-            '',
-            'Thanks for your order! Here are the details:',
-            `Order ID: ${orderId}`,
-            '',
-            lineItems || 'No items recorded.',
-            '',
-            `Total: $${((cart?.total?.grandTotal ?? 0) / 100).toFixed(2)}`,
-            '',
-            'We are preparing your bottles for temperature-controlled shipping.',
-            '',
-            '— VineSecret Cellar Team',
-        ].join('\n'),
-    };
-};
-
-const sendGuestOrderEmail = async (guest, orderId, cart) => {
-    const emailPayload = buildGuestEmail(guest, orderId, cart);
-
-    if (emailApiUnavailable) {
-        queueEmail(emailPayload);
-        return { sent: false };
-    }
-
-    try {
-        await axios.post('/api/emails/guest-order', emailPayload);
-        return { sent: true };
-    } catch (err) {
-        if (err?.response?.status === 404) {
-            emailApiUnavailable = true;
-        }
-        queueEmail(emailPayload);
-        return { sent: false };
-    }
 };
 
 const deriveCartFromLocal = (items) => {
@@ -354,8 +293,6 @@ export const createGuestOrder = (guest) => async (dispatch) => {
                 },
             });
 
-            await sendGuestOrderEmail(guest, res.data.id, lastKnownCart);
-
             return {
                 email: guest.email,
                 orderId: res.data.id,
@@ -381,7 +318,6 @@ export const createGuestOrder = (guest) => async (dispatch) => {
 
     persistGuestOrder(fallbackOrder);
     clearLocalCart();
-    await sendGuestOrderEmail(guest, fallbackOrder.id, cart);
 
     dispatch({
         type: types.CREATE_GUEST_ORDER,
