@@ -29,12 +29,11 @@ export default (state = DEFAULT_STATE, action) => {
                 };
         case types.CREATE_GUEST_ORDER:
             return {
-                DEFAULT_STATE,
+                ...DEFAULT_STATE,
             };
 
-        
+
         default:
             return state;
     }
 }
-
