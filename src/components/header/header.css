@@ -49,8 +49,17 @@
 .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.28em;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     color: #f5d18d;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.eyebrow-p {
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 1.2rem;
+    color: #2b1a36;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }

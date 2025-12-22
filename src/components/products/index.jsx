@@ -52,7 +52,7 @@ class Products extends Component {
                             </ul>
                         </div>
                         <div className="panel-card highlight">
-                            <p className="eyebrow">Shipping</p>
+                            <p className="eyebrow-p">Shipping</p>
                             <h3>Cold packs to most states.</h3>
                             <p>Complimentary upgrades for club members and all 3+ bottle orders.</p>
                         </div>

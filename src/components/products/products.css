@@ -4,7 +4,7 @@
 
 .products-hero {
     background: linear-gradient(135deg, #0a0811 0%, #201427 55%, #f4f0e9 55%);
-    color: white;
+    color: #2f1c3c;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 2rem;
@@ -16,7 +16,7 @@
 
 .products-hero__copy,
 .products-hero__panel .panel-card {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
     padding: 1.5rem;
@@ -29,7 +29,6 @@
 }
 
 .products-hero__copy p {
-    color: rgba(255, 255, 255, 0.86);
     line-height: 1.7;
 }
 
@@ -71,7 +70,6 @@
 
 .hero-metrics .label {
     display: block;
-    color: rgba(255, 255, 255, 0.8);
 }
 
 .release-details {
