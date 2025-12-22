@@ -5,6 +5,7 @@ import { findProductById, products as fallbackProducts } from '../data/products'
 const LOCAL_CART_KEY = 'sc-local-cart';
 const LOCAL_ORDER_KEY = 'sc-guest-orders';
 let cartApiUnavailable = false;
+let emailApiUnavailable = false;
 
 const readLocalCart = () => {
     try {
