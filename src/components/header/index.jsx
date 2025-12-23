@@ -8,7 +8,6 @@ const Header = () => (
         <div className="header-overlay">
             <Nav />
             <div className="brand-block">
-                <div className="brand-mark" aria-hidden="true" />
                 <div className="brand-copy">
                     <p className="eyebrow">Vinesecret Estate</p>
                     <h1>Unlock limited California wines.</h1>

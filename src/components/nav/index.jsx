@@ -14,10 +14,11 @@ const Nav = () => {
         <nav className={`navbar site-nav ${menuOpen ? 'is-open' : ''}`}>
             <div className="nav-branding">
                 <Link className="brand-name" to="/" onClick={closeMenu}>
-                    VineSecret
+                    <div className="brand-mark" aria-hidden="true" />
+                    <span className="brand-subtitle">Estate Winery</span>
                 </Link>
-                <span className="brand-subtitle">Estate Winery</span>
             </div>
+            
             <button
                 className="nav-toggle"
                 aria-label="Toggle navigation menu"

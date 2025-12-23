@@ -7,7 +7,7 @@
     "start": "vite --host 0.0.0.0 --port 3000",
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node -e \"const fs=require('fs');const path=require('path');const src=path.join('dist','index.html');['404.html','200.html'].forEach(f=>fs.copyFileSync(src,path.join('dist',f)));\"",
+    "postbuild": "node -e \"const fs=require('fs');const path=require('path');const src=path.join('dist','index.html');const dest=path.join('dist','404.html');fs.copyFileSync(src,dest);\"",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "install:noproxy": "env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u npm_config_http_proxy -u npm_config_https_proxy npm install",
     "test": "node -e \"console.log('No automated tests are defined yet.');\""
