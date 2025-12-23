@@ -2,11 +2,11 @@ import React from 'react';
 import './contact.css';
 import { Field, reduxForm } from 'redux-form';
 import CustomInput from './CustomInput';
+import { trackContactMessage } from '../../analytics/tracking';
 
 const Form = (props) => {
     const handleFormSubmit = (formValues) => {
-        // Form submission hook for future integrations
-        // console.log('On Submit Simple Form Values:', formValues);
+        trackContactMessage(formValues);
     };
 
     const { handleSubmit } = props;

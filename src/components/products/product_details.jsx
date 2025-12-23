@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addItemToCart, clearProductDetails, getProductDetails } from "../../actions/";
+import { trackAddToCart, trackProductView } from "../../analytics/tracking";
 import Money from "../general/money";
 import "./products.css";
 
@@ -22,6 +23,12 @@ class ProductDetails extends Component {
         this.props.clearProductDetails();
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.details && this.props.details !== prevProps.details) {
+            trackProductView(this.props.details);
+        }
+    }
+
     incrementQuantity = () => {
         this.setState(({ quantity }) => ({ quantity: quantity + 1 }));
     };
@@ -34,6 +41,9 @@ class ProductDetails extends Component {
         const { details, addItemToCart, history } = this.props;
         const { quantity } = this.state;
 
+        if (details) {
+            trackAddToCart(details, quantity);
+        }
         await addItemToCart(details.id, quantity);
         history.push("/cart");
     };

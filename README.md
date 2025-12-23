@@ -18,6 +18,10 @@
 >    - `npm start`
 > 1. Open a browser and navigate to `http://localhost:3000` — the app should render from `src/main.jsx` into the `#root` div provided by `index.html`.
 
+### Analytics
+
+- Google Analytics 4 is pre-wired with measurement ID `G-DXQG8V0F15` via the gtag embed. To point to your own property, set `VITE_GA_MEASUREMENT_ID` in a `.env` file and rebuild; the runtime will prefer the env value.
+
 ### Build For Deployment
 
 > 1. Build the project for production.
