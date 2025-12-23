@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './home.css';
+import { trackEngagement } from '../../analytics/tracking';
 
 const Home = () => (
     <div className="home">
@@ -12,8 +13,16 @@ const Home = () => (
                     Reserve-only flights, limited club allocations, and winemaker stories you won't find on the shelf.
                 </p>
                 <div className="cta-group">
-                    <Link className="btn primary" to="/products">Shop the release</Link>
-                    <Link className="btn ghost" to="/contact">Plan a tasting</Link>
+                    <Link
+                        className="btn primary"
+                        to="/products"
+                        onClick={() => trackEngagement('home_shop', 'home')}
+                    >
+                        Shop the release
+                    </Link>
+                    <Link className="btn ghost" to="/contact" onClick={() => trackEngagement('home_plan_tasting', 'home')}>
+                        Plan a tasting
+                    </Link>
                 </div>
                 <div className="hero-metrics">
                     <div>
@@ -37,7 +46,9 @@ const Home = () => (
                     <p>
                         Sunrise harvests, native ferments, and patience. Every bottle captures the soil, fog, and hands that raised it.
                     </p>
-                    <Link className="text-link" to="/about">Discover our craft →</Link>
+                    <Link className="text-link" to="/about" onClick={() => trackEngagement('home_story', 'home')}>
+                        Discover our craft →
+                    </Link>
                 </div>
             </div>
         </section>
@@ -64,7 +75,9 @@ const Home = () => (
                 <p>
                     Syrah kissed by coastal fog, Grenache that hums with spice, and a reserve Cabernet destined for the cellar.
                 </p>
-                <Link className="btn primary" to="/products">Browse the collection</Link>
+                <Link className="btn primary" to="/products" onClick={() => trackEngagement('home_browse_collection', 'home')}>
+                    Browse the collection
+                </Link>
             </div>
             <div className="card-grid">
                 <div className="mini-card">
@@ -89,7 +102,9 @@ const Home = () => (
                     Your appointment begins in the vines and ends with a library pour in our barrel room.
                 </p>
             </div>
-            <Link className="btn ghost" to="/contact">Schedule your visit</Link>
+            <Link className="btn ghost" to="/contact" onClick={() => trackEngagement('home_schedule_visit', 'home')}>
+                Schedule your visit
+            </Link>
         </section>
     </div>
 );

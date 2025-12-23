@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getActiveCart, updateLocalCartItem } from '../../actions';
+import { trackBeginCheckout, trackCartUpdate, trackCartView } from '../../analytics/tracking';
 import Money from '../general/money';
 import './cart.css';
 
@@ -13,11 +14,29 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const items = cart?.items || [];
     const totals = cart?.total;
 
-    const handleIncrement = (id, currentQuantity) => updateItem(id, currentQuantity + 1);
-    const handleDecrement = (id, currentQuantity) => updateItem(id, Math.max(0, currentQuantity - 1));
-    const handleRemove = (id) => updateItem(id, 0);
+    useEffect(() => {
+        trackCartView({ items, total: totals });
+    }, [items, totals]);
+
+    const handleIncrement = (item) => {
+        const nextQuantity = item.quantity + 1;
+        trackCartUpdate(item, nextQuantity, 'increment');
+        updateItem(item.id, nextQuantity);
+    };
+
+    const handleDecrement = (item) => {
+        const nextQuantity = Math.max(0, item.quantity - 1);
+        trackCartUpdate(item, nextQuantity, 'decrement');
+        updateItem(item.id, nextQuantity);
+    };
+
+    const handleRemove = (item) => {
+        trackCartUpdate(item, 0, 'remove');
+        updateItem(item.id, 0);
+    };
 
     const goToCheckout = () => {
+        trackBeginCheckout({ items, total: totals });
         history.push('/checkout');
     };
 
@@ -67,17 +86,17 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                                             <h3>{item.name}</h3>
                                             <p className="caption">{item.caption}</p>
                                         </div>
-                                        <button className="text-link" type="button" onClick={() => handleRemove(item.id)}>
+                                        <button className="text-link" type="button" onClick={() => handleRemove(item)}>
                                             Remove
                                         </button>
                                     </div>
                                     <div className="cart-card__footer">
                                         <div className="quantity-group" aria-label={`Quantity for ${item.name}`}>
-                                            <button className="btn-quantity" onClick={() => handleDecrement(item.id, item.quantity)}>
+                                            <button className="btn-quantity" onClick={() => handleDecrement(item)}>
                                                 -
                                             </button>
                                             <span className="quantity">{item.quantity}</span>
-                                            <button className="btn-quantity" onClick={() => handleIncrement(item.id, item.quantity)}>
+                                            <button className="btn-quantity" onClick={() => handleIncrement(item)}>
                                                 +
                                             </button>
                                         </div>

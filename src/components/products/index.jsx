@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getAllProducts } from "../../actions";
+import { trackEngagement } from "../../analytics/tracking";
 import ProductItem from "./product_item";
 import "./products.css";
 
@@ -10,6 +11,7 @@ class Products extends Component {
     }
 
     goToDetails = (id) => {
+        trackEngagement('product_card_click', 'products');
         this.props.history.push(`/products/${id}`);
     };
 

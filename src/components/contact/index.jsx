@@ -3,6 +3,7 @@ import Schedule from '../general/schedule';
 import './contact.css';
 import ContactForm from './contact_form';
 import grapes from '../../assets/images/grapes.jpg';
+import { trackEmailClick, trackEngagement } from '../../analytics/tracking';
 
 const Contact = () => (
     <section className="contact">
@@ -18,7 +19,12 @@ const Contact = () => (
                     <div className="contact-details">
                         <div>
                             <span className="label">Email</span>
-                            <a href="mailto:office@vinesecret.com">office@vinesecret.com</a>
+                            <a
+                                href="mailto:office@vinesecret.com"
+                                onClick={() => trackEmailClick('contact_header_email', 'office@vinesecret.com')}
+                            >
+                                office@vinesecret.com
+                            </a>
                         </div>
                         <div>
                             <span className="label">Phone orders</span>
@@ -51,10 +57,18 @@ const Contact = () => (
                         <li>Concierge shipping for on-site selections.</li>
                     </ul>
                     <div className="card-actions">
-                        <a className="btn ghost" href="tel:+17075551234">
+                        <a
+                            className="btn ghost"
+                            href="tel:+17075551234"
+                            onClick={() => trackEngagement('call_cellar', 'contact')}
+                        >
                             Call the cellar
                         </a>
-                        <a className="btn primary" href="mailto:office@vinesecret.com?subject=Tasting%20Request">
+                        <a
+                            className="btn primary"
+                            href="mailto:office@vinesecret.com?subject=Tasting%20Request"
+                            onClick={() => trackEmailClick('contact_visit_email', 'office@vinesecret.com')}
+                        >
                             Email a date
                         </a>
                     </div>

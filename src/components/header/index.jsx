@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './header.css';
 import Nav from '../nav';
+import { trackEngagement } from '../../analytics/tracking';
 
 const Header = () => (
     <header className="site-header">
@@ -16,8 +17,16 @@ const Header = () => (
                         with letting every grape whisper its secret.
                     </p>
                     <div className="header-actions">
-                        <Link className="btn primary" to="/products">Shop new releases</Link>
-                        <Link className="btn ghost" to="/contact">Visit the cellar</Link>
+                        <Link
+                            className="btn primary"
+                            to="/products"
+                            onClick={() => trackEngagement('header_shop', 'hero')}
+                        >
+                            Shop new releases
+                        </Link>
+                        <Link className="btn ghost" to="/contact" onClick={() => trackEngagement('header_visit', 'hero')}>
+                            Visit the cellar
+                        </Link>
                     </div>
                 </div>
             </div>

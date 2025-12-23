@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createGuestOrder, getActiveCart } from '../../actions';
+import { trackBeginCheckout, trackCheckoutStep, trackPurchase } from '../../analytics/tracking';
 import Money from '../general/money';
 import './checkout.css';
 
@@ -27,6 +28,13 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     useEffect(() => {
         loadCart();
     }, [loadCart]);
+
+    useEffect(() => {
+        if (items.length && !confirmation) {
+            trackBeginCheckout({ items, total: totals }, 'checkout_page');
+            trackCheckoutStep('checkout_view', { items, total: totals });
+        }
+    }, [items, totals, confirmation]);
 
     const items = cart?.items || [];
     const totals = cart?.total;
@@ -59,6 +67,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         setErrors(validation);
         if (Object.keys(validation).length) return;
 
+        trackCheckoutStep('checkout_submit', { items, total: totals });
         setSubmitting(true);
         const cartSnapshot = { items, total: totals };
         const response = await submitGuestOrder({
@@ -76,6 +85,12 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         setSubmitting(false);
         setFormValues(EMPTY_FORM);
     };
+
+    useEffect(() => {
+        if (confirmation) {
+            trackPurchase({ ...confirmation, cart: confirmation.cart || { items, total: totals } });
+        }
+    }, [confirmation]);
 
     const renderLineItems = (lineItems) => (
         <div className="line-items">
