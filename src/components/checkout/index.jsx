@@ -25,6 +25,9 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     const [submitting, setSubmitting] = useState(false);
     const [confirmation, setConfirmation] = useState(null);
 
+    const items = cart?.items || [];
+    const totals = cart?.total;
+
     useEffect(() => {
         loadCart();
     }, [loadCart]);
@@ -35,9 +38,6 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
             trackCheckoutStep('checkout_view', { items, total: totals });
         }
     }, [items, totals, confirmation]);
-
-    const items = cart?.items || [];
-    const totals = cart?.total;
 
     const fullName = useMemo(
         () => `${formValues.firstName} ${formValues.lastName}`.trim() || 'Guest',
