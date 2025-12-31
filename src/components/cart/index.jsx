@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getActiveCart, updateLocalCartItem } from '../../actions';
 import { trackBeginCheckout, trackCartUpdate, trackCartView } from '../../analytics/tracking';
+import { findProductById } from '../../data/products';
 import Money from '../general/money';
 import './cart.css';
 
@@ -14,9 +15,55 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const items = cart?.items || [];
     const totals = cart?.total;
 
+    const hydratedItems = useMemo(
+        () =>
+            items.map((item) => {
+                const fallback = findProductById(item.id) || {};
+                const unitCost = item.cost ?? fallback.cost ?? 0;
+                const quantity = item.quantity || 0;
+
+                return {
+                    ...fallback,
+                    ...item,
+                    cost: unitCost,
+                    quantity,
+                    lineTotal: item.lineTotal ?? unitCost * quantity,
+                };
+            }),
+        [items],
+    );
+
+    const displayTotals = useMemo(() => {
+        const subtotal = hydratedItems.reduce(
+            (total, item) => total + (item.lineTotal ?? (item.cost || 0) * (item.quantity || 0)),
+            0,
+        );
+        const bottleCount = hydratedItems.reduce((total, item) => total + (item.quantity || 0), 0);
+        const fallbackShipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+        const fallbackTax = Math.round(subtotal * 0.085);
+        if (!items.length) return null;
+
+        const shipping =
+            typeof totals?.shipping === 'number'
+                ? totals.shipping === 0 && fallbackShipping > 0
+                    ? fallbackShipping
+                    : totals.shipping
+                : fallbackShipping;
+
+        return {
+            subtotal: totals?.subtotal && totals.subtotal > 0 ? totals.subtotal : subtotal,
+            shipping,
+            tax: totals?.tax && totals.tax > 0 ? totals.tax : fallbackTax,
+            grandTotal:
+                totals?.grandTotal && totals.grandTotal > 0
+                    ? totals.grandTotal
+                    : subtotal + shipping + fallbackTax,
+        };
+    }, [items.length, hydratedItems, totals]);
+
     useEffect(() => {
-        trackCartView({ items, total: totals });
-    }, [items, totals]);
+        trackCartView({ items: hydratedItems, total: displayTotals });
+    }, [hydratedItems, displayTotals]);
 
     const handleIncrement = (item) => {
         const nextQuantity = item.quantity + 1;
@@ -36,7 +83,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     };
 
     const goToCheckout = () => {
-        trackBeginCheckout({ items, total: totals });
+        trackBeginCheckout({ items: hydratedItems, total: displayTotals });
         history.push('/checkout');
     };
 
@@ -74,7 +121,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
             ) : (
                 <div className="cart-layout">
                     <section className="cart-items" aria-label="Cart items">
-                        {items.map((item) => (
+                        {hydratedItems.map((item) => (
                             <article key={item.id} className="cart-card">
                                 <div className="cart-card__image">
                                     <img src={item.thumbnail?.url || item.image?.url} alt={item.caption || item.name} />
@@ -100,9 +147,9 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                                                 +
                                             </button>
                                         </div>
-                                        <div className="line-price" aria-label="Line total">
-                                            <Money cost={item.lineTotal} />
-                                        </div>
+                                            <div className="line-price" aria-label="Line total">
+                                                <Money cost={item.lineTotal ?? (item.cost || 0) * (item.quantity || 0)} />
+                                            </div>
                                     </div>
                                 </div>
                             </article>
@@ -113,23 +160,23 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                         <div className="summary-card">
                             <div className="summary-row">
                                 <span>Subtotal</span>
-                                <Money cost={totals?.subtotal} />
+                                <Money cost={displayTotals?.subtotal} />
                             </div>
                             <div className="summary-row">
                                 <div className="summary-label">
                                     <span>Shipping</span>
-                                    {totals?.shipping === 0 && <span className="note">Included with 3+ bottles</span>}
-                                </div>
-                                <Money cost={totals?.shipping} />
+                                {displayTotals?.shipping === 0 && <span className="note">Included with 3+ bottles</span>}
                             </div>
-                            <div className="summary-row">
-                                <span>Estimated tax</span>
-                                <Money cost={totals?.tax} />
-                            </div>
-                            <div className="summary-row total">
-                                <span>Total</span>
-                                <Money cost={totals?.grandTotal} />
-                            </div>
+                            <Money cost={displayTotals?.shipping} />
+                        </div>
+                        <div className="summary-row">
+                            <span>Estimated tax</span>
+                            <Money cost={displayTotals?.tax} />
+                        </div>
+                        <div className="summary-row total">
+                            <span>Total</span>
+                            <Money cost={displayTotals?.grandTotal} />
+                        </div>
                         </div>
                         <div className="summary-actions">
                             <button className="btn primary" type="button" onClick={goToCheckout}>

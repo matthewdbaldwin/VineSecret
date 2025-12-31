@@ -46,36 +46,106 @@ const findLocalGuestOrder = (email, orderId) => {
     );
 };
 
-const deriveCartFromLocal = (items) => {
-    const enrichedItems = items
-        .map((item) => {
-            const product = findProductById(item.id);
-            if (!product) return null;
-
-            return {
-                ...product,
-                quantity: item.quantity,
-                lineTotal: item.quantity * product.cost,
-            };
-        })
-        .filter(Boolean);
-
-    const subtotal = enrichedItems.reduce((total, item) => total + item.lineTotal, 0);
-    const bottleCount = enrichedItems.reduce((total, item) => total + item.quantity, 0);
+const deriveTotals = (items) => {
+    const subtotal = items.reduce((total, item) => total + item.lineTotal, 0);
+    const bottleCount = items.reduce((total, item) => total + item.quantity, 0);
     const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
     const tax = Math.round(subtotal * 0.085);
     const grandTotal = subtotal + shipping + tax;
 
+    return { subtotal, shipping, tax, grandTotal };
+};
+
+const normalizeCart = (cart = {}) => {
+    const items = (cart.items || []).map((item) => {
+        const product = findProductById(item.id) || {};
+        const cost = item.cost ?? product.cost ?? 0;
+        const quantity = item.quantity || 0;
+        const lineTotal = item.lineTotal ?? cost * quantity;
+
+        return {
+            ...product,
+            ...item,
+            cost,
+            quantity,
+            lineTotal,
+        };
+    });
+
+    const derivedTotals = deriveTotals(items);
+    const totals = cart.total || {};
+
+    const shipping =
+        typeof totals.shipping === 'number'
+            ? totals.shipping === 0 && derivedTotals.shipping > 0
+                ? derivedTotals.shipping
+                : totals.shipping
+            : derivedTotals.shipping;
+
+    return {
+        ...cart,
+        items,
+        total: {
+            subtotal: totals.subtotal && totals.subtotal > 0 ? totals.subtotal : derivedTotals.subtotal,
+            shipping,
+            tax: totals.tax && totals.tax > 0 ? totals.tax : derivedTotals.tax,
+            grandTotal:
+                totals.grandTotal && totals.grandTotal > 0
+                    ? totals.grandTotal
+                    : derivedTotals.subtotal + shipping + derivedTotals.tax,
+        },
+    };
+};
+
+const deriveCartFromLocal = (items) => {
+    const enrichedItems = items
+        .map((item) => {
+            const storedProduct = item.product || {};
+            const product = findProductById(item.id) || storedProduct;
+            if (!product && !storedProduct) return null;
+
+            const quantity = item.quantity || 0;
+            const cost = item.cost ?? product?.cost ?? 0;
+
+            return {
+                ...storedProduct,
+                ...product,
+                id: item.id,
+                quantity,
+                cost,
+                lineTotal: item.lineTotal ?? quantity * cost,
+            };
+        })
+        .filter((item) => Boolean(item?.id));
+
+    const totals = deriveTotals(enrichedItems);
+
     return {
         cartId: 'local-cart',
         items: enrichedItems,
-        total: {
-            subtotal,
-            shipping,
-            tax,
-            grandTotal,
-        },
+        total: totals,
     };
+};
+
+const sendOrderConfirmation = async ({ orderId, guest, cart }) => {
+    if (emailApiUnavailable || !guest?.email) return false;
+
+    try {
+        await axios.post('/api/notifications/guest-order', {
+            orderId,
+            email: guest.email,
+            name: `${guest.firstName || ''} ${guest.lastName || ''}`.trim() || 'Guest',
+            cart,
+        });
+
+        return true;
+    } catch (error) {
+        if (error?.response?.status === 404) {
+            emailApiUnavailable = true;
+        }
+
+        return false;
+    }
 };
 
 const syncLocalCartState = (items, dispatch) => {
@@ -143,14 +213,18 @@ export const getProductDetails = (productId) => async (dispatch) => {
     }
 };
 
-export const addItemToCart = (productId, quantity) => async (dispatch) => {
+export const addItemToCart = (productOrId, quantity) => async (dispatch) => {
+    const productId = typeof productOrId === 'object' ? productOrId?.id : productOrId;
+    const productSnapshot = typeof productOrId === 'object' ? productOrId : findProductById(productId);
+
     const currentItems = readLocalCart();
-    const existingItem = currentItems.find((item) => item.id === productId);
+    const existingItem = currentItems.find((item) => String(item.id) === String(productId));
 
     if (existingItem) {
         existingItem.quantity += quantity;
+        existingItem.product = existingItem.product || productSnapshot;
     } else {
-        currentItems.push({ id: productId, quantity });
+        currentItems.push({ id: productId, quantity, product: productSnapshot });
     }
 
     const localCart = syncLocalCartState(currentItems, dispatch);
@@ -169,10 +243,12 @@ export const addItemToCart = (productId, quantity) => async (dispatch) => {
                 localStorage.setItem('sc-cart-token', resp.data.cartToken);
             }
 
+            const enrichedCart = normalizeCart(resp?.data ?? localCart);
+
             dispatch({
                 type: types.ADD_ITEM_TO_CART,
-                cartTotal: resp?.data?.total ?? localCart.total,
-                cart: resp?.data ?? localCart,
+                cartTotal: enrichedCart.total,
+                cart: enrichedCart,
             });
             return;
         } catch (error) {
@@ -197,10 +273,10 @@ export const getActiveCart = () => async (dispatch) => {
 
     try {
         const resp = await axios.get(`/api/cart`, getCartConfig());
-        const cart = resp?.data;
+        const cart = normalizeCart(resp?.data);
 
         if (cart?.items?.length) {
-            const minimalItems = cart.items.map((item) => ({ id: item.id, quantity: item.quantity }));
+            const minimalItems = cart.items.map((item) => ({ id: item.id, quantity: item.quantity, product: item }));
             persistLocalCart(minimalItems);
         }
 
@@ -220,7 +296,7 @@ export const getActiveCart = () => async (dispatch) => {
     }
 };
 
-export const getCartTotals = () => async (dispatch) => {
+export const getCartTotals = () => async (dispatch, getState) => {
     if (cartApiUnavailable) {
         const { total } = loadLocalCart(dispatch);
         dispatch({ type: types.GET_CART_TOTALS, total });
@@ -229,10 +305,12 @@ export const getCartTotals = () => async (dispatch) => {
 
     try {
         const resp = await axios.get(`/api/cart/totals`, getCartConfig());
+        const currentCart = getState().cart;
+        const hydratedCart = normalizeCart({ ...currentCart, total: resp?.data ?? currentCart.total });
 
         dispatch({
             type: types.GET_CART_TOTALS,
-            total: resp?.data,
+            total: hydratedCart.total,
         });
     } catch (err) {
         if (err?.response?.status === 404) {
@@ -249,10 +327,11 @@ export const getCartTotals = () => async (dispatch) => {
 
 export const updateLocalCartItem = (productId, quantity) => (dispatch) => {
     const currentItems = readLocalCart();
-    const filteredItems = currentItems.filter((item) => item.id !== productId);
+    const existingItem = currentItems.find((item) => String(item.id) === String(productId));
+    const filteredItems = currentItems.filter((item) => String(item.id) !== String(productId));
 
     if (quantity > 0) {
-        filteredItems.push({ id: productId, quantity });
+        filteredItems.push({ id: productId, quantity, product: existingItem?.product });
     }
 
     syncLocalCartState(filteredItems, dispatch);
@@ -271,7 +350,7 @@ export const createGuestOrder = (guest) => async (dispatch) => {
             };
 
             const res = await axios.post(`/api/orders/guest`, guest, axiosConfig);
-            lastKnownCart = res?.data?.cart ?? lastKnownCart;
+            lastKnownCart = normalizeCart(res?.data?.cart ?? lastKnownCart);
 
             localStorage.removeItem('sc-cart-token');
             clearLocalCart();
@@ -293,11 +372,14 @@ export const createGuestOrder = (guest) => async (dispatch) => {
                 },
             });
 
+            const emailSent = await sendOrderConfirmation({ orderId: res.data.id, guest, cart: lastKnownCart });
+
             return {
                 email: guest.email,
                 orderId: res.data.id,
                 message: res.data.message,
                 cart: lastKnownCart,
+                emailSent,
             };
         } catch (err) {
             if (err?.response?.status === 404) {
@@ -327,11 +409,14 @@ export const createGuestOrder = (guest) => async (dispatch) => {
         },
     });
 
+    const emailSent = await sendOrderConfirmation({ orderId: fallbackOrder.id, guest, cart });
+
     return {
         email: guest.email,
         orderId: fallbackOrder.id,
         message: fallbackOrder.message,
         cart,
+        emailSent,
     };
 };
 
