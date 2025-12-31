@@ -81,6 +81,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
             message: response?.message || 'Order received. A confirmation email is on the way.',
             cart: response?.cart || cartSnapshot,
             name: fullName,
+            emailSent: response?.emailSent || false,
         });
         setSubmitting(false);
         setFormValues(EMPTY_FORM);
@@ -325,6 +326,11 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         <p className="strong">{confirmation.email}</p>
                                     </div>
                                 </div>
+                                <p className="tiny">
+                                    {confirmation.emailSent
+                                        ? 'We emailed your receipt and tracking details. If you do not see it, please check your spam folder.'
+                                        : 'We saved your receipt locally in case we could not send the email automatically.'}
+                                </p>
                                 <div className="confirmation-actions">
                                     <Link className="btn primary" to="/products">
                                         Continue shopping

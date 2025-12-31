@@ -22,6 +22,10 @@
 
 - Google Analytics 4 is pre-wired with measurement ID `G-DXQG8V0F15` via the gtag embed. To point to your own property, set `VITE_GA_MEASUREMENT_ID` in a `.env` file and rebuild; the runtime will prefer the env value.
 
+### Email receipts and Gmail
+
+- Guest checkout calls `/api/notifications/guest-order` with the buyer's email address. As long as that backend route is wired to a working mail provider (SMTP relay, SendGrid, Resend, etc.), the same payload can deliver to Gmail inboxes. Deliverability to Gmail depends on your mail service being authorized (SPF/DKIM) and not blocking the sender. If the email service is unreachable, the app falls back to saving the receipt locally and surfaces that status in the confirmation screen.
+
 ### Build For Deployment
 
 > 1. Build the project for production.
