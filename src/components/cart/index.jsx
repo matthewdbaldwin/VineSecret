@@ -15,55 +15,24 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const items = cart?.items || [];
     const totals = cart?.total;
 
-    const hydratedItems = useMemo(
-        () =>
-            items.map((item) => {
-                const fallback = findProductById(item.id) || {};
-                const unitCost = item.cost ?? fallback.cost ?? 0;
-                const quantity = item.quantity || 0;
-
-                return {
-                    ...fallback,
-                    ...item,
-                    cost: unitCost,
-                    quantity,
-                    lineTotal: item.lineTotal ?? unitCost * quantity,
-                };
-            }),
-        [items],
-    );
-
-    const displayTotals = useMemo(() => {
-        const subtotal = hydratedItems.reduce(
-            (total, item) => total + (item.lineTotal ?? (item.cost || 0) * (item.quantity || 0)),
+    const derivedTotals = useMemo(() => {
+        const subtotal = items.reduce(
+            (total, item) => total + ((item.lineTotal ?? ((item.cost || 0) * (item.quantity || 0)))),
             0,
         );
-        const bottleCount = hydratedItems.reduce((total, item) => total + (item.quantity || 0), 0);
-        const fallbackShipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
-        const fallbackTax = Math.round(subtotal * 0.085);
-        if (!items.length) return null;
+        const bottleCount = items.reduce((total, item) => total + (item.quantity || 0), 0);
+        const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+        const tax = Math.round(subtotal * 0.085);
+        const grandTotal = subtotal + shipping + tax;
 
-        const shipping =
-            typeof totals?.shipping === 'number'
-                ? totals.shipping === 0 && fallbackShipping > 0
-                    ? fallbackShipping
-                    : totals.shipping
-                : fallbackShipping;
+        return { subtotal, shipping, tax, grandTotal };
+    }, [items]);
 
-        return {
-            subtotal: totals?.subtotal && totals.subtotal > 0 ? totals.subtotal : subtotal,
-            shipping,
-            tax: totals?.tax && totals.tax > 0 ? totals.tax : fallbackTax,
-            grandTotal:
-                totals?.grandTotal && totals.grandTotal > 0
-                    ? totals.grandTotal
-                    : subtotal + shipping + fallbackTax,
-        };
-    }, [items.length, hydratedItems, totals]);
+    const displayTotals = totals ?? derivedTotals;
 
     useEffect(() => {
-        trackCartView({ items: hydratedItems, total: displayTotals });
-    }, [hydratedItems, displayTotals]);
+        trackCartView({ items, total: displayTotals });
+    }, [items, displayTotals]);
 
     const handleIncrement = (item) => {
         const nextQuantity = item.quantity + 1;
@@ -83,7 +52,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     };
 
     const goToCheckout = () => {
-        trackBeginCheckout({ items: hydratedItems, total: displayTotals });
+        trackBeginCheckout({ items, total: displayTotals });
         history.push('/checkout');
     };
 
@@ -121,7 +90,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
             ) : (
                 <div className="cart-layout">
                     <section className="cart-items" aria-label="Cart items">
-                        {hydratedItems.map((item) => (
+                        {pricedItems.map((item) => (
                             <article key={item.id} className="cart-card">
                                 <div className="cart-card__image">
                                     <img src={item.thumbnail?.url || item.image?.url} alt={item.caption || item.name} />
