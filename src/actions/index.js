@@ -78,6 +78,27 @@ const deriveCartFromLocal = (items) => {
     };
 };
 
+const sendOrderConfirmation = async ({ orderId, guest, cart }) => {
+    if (emailApiUnavailable || !guest?.email) return false;
+
+    try {
+        await axios.post('/api/notifications/guest-order', {
+            orderId,
+            email: guest.email,
+            name: `${guest.firstName || ''} ${guest.lastName || ''}`.trim() || 'Guest',
+            cart,
+        });
+
+        return true;
+    } catch (error) {
+        if (error?.response?.status === 404) {
+            emailApiUnavailable = true;
+        }
+
+        return false;
+    }
+};
+
 const syncLocalCartState = (items, dispatch) => {
     persistLocalCart(items);
     const cart = deriveCartFromLocal(items);
@@ -293,11 +314,14 @@ export const createGuestOrder = (guest) => async (dispatch) => {
                 },
             });
 
+            const emailSent = await sendOrderConfirmation({ orderId: res.data.id, guest, cart: lastKnownCart });
+
             return {
                 email: guest.email,
                 orderId: res.data.id,
                 message: res.data.message,
                 cart: lastKnownCart,
+                emailSent,
             };
         } catch (err) {
             if (err?.response?.status === 404) {
@@ -327,11 +351,14 @@ export const createGuestOrder = (guest) => async (dispatch) => {
         },
     });
 
+    const emailSent = await sendOrderConfirmation({ orderId: fallbackOrder.id, guest, cart });
+
     return {
         email: guest.email,
         orderId: fallbackOrder.id,
         message: fallbackOrder.message,
         cart,
+        emailSent,
     };
 };
 
