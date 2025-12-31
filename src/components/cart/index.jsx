@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getActiveCart, updateLocalCartItem } from '../../actions';
 import { trackBeginCheckout, trackCartUpdate, trackCartView } from '../../analytics/tracking';
+import { findProductById } from '../../data/products';
 import Money from '../general/money';
 import './cart.css';
 
@@ -89,7 +90,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
             ) : (
                 <div className="cart-layout">
                     <section className="cart-items" aria-label="Cart items">
-                        {items.map((item) => (
+                        {pricedItems.map((item) => (
                             <article key={item.id} className="cart-card">
                                 <div className="cart-card__image">
                                     <img src={item.thumbnail?.url || item.image?.url} alt={item.caption || item.name} />
