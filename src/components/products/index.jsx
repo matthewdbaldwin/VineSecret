@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getAllProducts } from "../../actions";
-import { trackEngagement } from "../../analytics/tracking";
+import { addItemToCart, getAllProducts } from "../../actions";
+import { trackAddToCart, trackEngagement } from "../../analytics/tracking";
 import ProductItem from "./product_item";
 import "./products.css";
 
@@ -13,6 +13,11 @@ class Products extends Component {
     goToDetails = (id) => {
         trackEngagement('product_card_click', 'products');
         this.props.history.push(`/products/${id}`);
+    };
+
+    handleAddToCart = (product) => {
+        trackAddToCart(product, 1);
+        this.props.addItemToCart(product.id, 1);
     };
 
     render() {
@@ -89,7 +94,12 @@ class Products extends Component {
                 <section className="product-grid" aria-label="Available wines">
                     {hasProducts ? (
                         products.map((product) => (
-                            <ProductItem key={product.id} {...product} goToDetails={() => this.goToDetails(product.id)} />
+                            <ProductItem
+                                key={product.id}
+                                {...product}
+                                goToDetails={() => this.goToDetails(product.id)}
+                                onAddToCart={() => this.handleAddToCart(product)}
+                            />
                         ))
                     ) : (
                         <div className="empty-state">
@@ -109,4 +119,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getAllProducts })(Products);
+export default connect(mapStateToProps, { getAllProducts, addItemToCart })(Products);
