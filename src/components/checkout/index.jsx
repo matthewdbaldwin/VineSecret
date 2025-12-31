@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createGuestOrder, getActiveCart } from '../../actions';
+import { findProductById } from '../../data/products';
 import { trackBeginCheckout, trackCheckoutStep, trackPurchase } from '../../analytics/tracking';
 import Money from '../general/money';
 import './checkout.css';
@@ -28,16 +29,59 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     const items = cart?.items || [];
     const totals = cart?.total;
 
+    const pricedItems = useMemo(
+        () =>
+            items.map((item) => {
+                const fallback = findProductById(item.id) || {};
+                const cost = item.cost ?? fallback.cost ?? 0;
+                const quantity = item.quantity || 0;
+                const lineTotal = item.lineTotal ?? cost * quantity;
+
+                return {
+                    ...fallback,
+                    ...item,
+                    cost,
+                    quantity,
+                    lineTotal,
+                };
+            }),
+        [items],
+    );
+
+    const displayTotals = useMemo(() => {
+        const subtotal = pricedItems.reduce((total, item) => total + item.lineTotal, 0);
+        const bottleCount = pricedItems.reduce((total, item) => total + (item.quantity || 0), 0);
+        const fallbackShipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
+        const fallbackTax = Math.round(subtotal * 0.085);
+
+        const shipping =
+            typeof totals?.shipping === 'number'
+                ? totals.shipping === 0 && fallbackShipping > 0
+                    ? fallbackShipping
+                    : totals.shipping
+                : fallbackShipping;
+
+        return {
+            subtotal: totals?.subtotal && totals.subtotal > 0 ? totals.subtotal : subtotal,
+            shipping,
+            tax: totals?.tax && totals.tax > 0 ? totals.tax : fallbackTax,
+            grandTotal:
+                totals?.grandTotal && totals.grandTotal > 0
+                    ? totals.grandTotal
+                    : subtotal + shipping + fallbackTax,
+        };
+    }, [pricedItems, totals]);
+
     useEffect(() => {
         loadCart();
     }, [loadCart]);
 
     useEffect(() => {
-        if (items.length && !confirmation) {
-            trackBeginCheckout({ items, total: totals }, 'checkout_page');
-            trackCheckoutStep('checkout_view', { items, total: totals });
+        if (pricedItems.length && !confirmation) {
+            trackBeginCheckout({ items: pricedItems, total: displayTotals }, 'checkout_page');
+            trackCheckoutStep('checkout_view', { items: pricedItems, total: displayTotals });
         }
-    }, [items, totals, confirmation]);
+    }, [pricedItems, displayTotals, confirmation]);
 
     const fullName = useMemo(
         () => `${formValues.firstName} ${formValues.lastName}`.trim() || 'Guest',
@@ -67,9 +111,9 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         setErrors(validation);
         if (Object.keys(validation).length) return;
 
-        trackCheckoutStep('checkout_submit', { items, total: totals });
+        trackCheckoutStep('checkout_submit', { items: pricedItems, total: displayTotals });
         setSubmitting(true);
-        const cartSnapshot = { items, total: totals };
+        const cartSnapshot = { items: pricedItems, total: displayTotals };
         const response = await submitGuestOrder({
             ...formValues,
             shippingMethod,
@@ -81,6 +125,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
             message: response?.message || 'Order received. A confirmation email is on the way.',
             cart: response?.cart || cartSnapshot,
             name: fullName,
+            emailSent: response?.emailSent || false,
         });
         setSubmitting(false);
         setFormValues(EMPTY_FORM);
@@ -88,9 +133,9 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
 
     useEffect(() => {
         if (confirmation) {
-            trackPurchase({ ...confirmation, cart: confirmation.cart || { items, total: totals } });
+            trackPurchase({ ...confirmation, cart: confirmation.cart || { items: pricedItems, total: displayTotals } });
         }
-    }, [confirmation]);
+    }, [confirmation, displayTotals, pricedItems]);
 
     const renderLineItems = (lineItems) => (
         <div className="line-items">
@@ -325,6 +370,11 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         <p className="strong">{confirmation.email}</p>
                                     </div>
                                 </div>
+                                <p className="tiny">
+                                    {confirmation.emailSent
+                                        ? 'We emailed your receipt and tracking details. If you do not see it, please check your spam folder.'
+                                        : 'We saved your receipt locally in case we could not send the email automatically.'}
+                                </p>
                                 <div className="confirmation-actions">
                                     <Link className="btn primary" to="/products">
                                         Continue shopping
@@ -346,22 +396,22 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                 </div>
                                 <span className="pill soft">Cold pack shipping</span>
                             </div>
-                            {renderLineItems((confirmation?.cart?.items || items))}
+                            {renderLineItems(confirmation?.cart?.items || pricedItems)}
                             <div className="summary-row">
                                 <span>Subtotal</span>
-                                <Money cost={(confirmation?.cart?.total || totals)?.subtotal} />
+                                <Money cost={(confirmation?.cart?.total || displayTotals)?.subtotal} />
                             </div>
                             <div className="summary-row">
                                 <span>Shipping</span>
-                                <Money cost={(confirmation?.cart?.total || totals)?.shipping} />
+                                <Money cost={(confirmation?.cart?.total || displayTotals)?.shipping} />
                             </div>
                             <div className="summary-row">
                                 <span>Estimated tax</span>
-                                <Money cost={(confirmation?.cart?.total || totals)?.tax} />
+                                <Money cost={(confirmation?.cart?.total || displayTotals)?.tax} />
                             </div>
                             <div className="summary-row total">
                                 <span>Total</span>
-                                <Money cost={(confirmation?.cart?.total || totals)?.grandTotal} />
+                                <Money cost={(confirmation?.cart?.total || displayTotals)?.grandTotal} />
                             </div>
                             {!confirmation && (
                                 <p className="tiny">
