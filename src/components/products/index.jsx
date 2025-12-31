@@ -17,7 +17,7 @@ class Products extends Component {
 
     handleAddToCart = (product) => {
         trackAddToCart(product, 1);
-        this.props.addItemToCart(product, 1);
+        this.props.addItemToCart(product.id, 1);
     };
 
     render() {
