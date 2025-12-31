@@ -100,16 +100,23 @@ const normalizeCart = (cart = {}) => {
 const deriveCartFromLocal = (items) => {
     const enrichedItems = items
         .map((item) => {
-            const product = findProductById(item.id);
-            if (!product) return null;
+            const storedProduct = item.product || {};
+            const product = findProductById(item.id) || storedProduct;
+            if (!product && !storedProduct) return null;
+
+            const quantity = item.quantity || 0;
+            const cost = item.cost ?? product?.cost ?? 0;
 
             return {
+                ...storedProduct,
                 ...product,
-                quantity: item.quantity,
-                lineTotal: item.quantity * product.cost,
+                id: item.id,
+                quantity,
+                cost,
+                lineTotal: item.lineTotal ?? quantity * cost,
             };
         })
-        .filter(Boolean);
+        .filter((item) => Boolean(item?.id));
 
     const totals = deriveTotals(enrichedItems);
 
@@ -206,14 +213,18 @@ export const getProductDetails = (productId) => async (dispatch) => {
     }
 };
 
-export const addItemToCart = (productId, quantity) => async (dispatch) => {
+export const addItemToCart = (productOrId, quantity) => async (dispatch) => {
+    const productId = typeof productOrId === 'object' ? productOrId?.id : productOrId;
+    const productSnapshot = typeof productOrId === 'object' ? productOrId : findProductById(productId);
+
     const currentItems = readLocalCart();
-    const existingItem = currentItems.find((item) => item.id === productId);
+    const existingItem = currentItems.find((item) => String(item.id) === String(productId));
 
     if (existingItem) {
         existingItem.quantity += quantity;
+        existingItem.product = existingItem.product || productSnapshot;
     } else {
-        currentItems.push({ id: productId, quantity });
+        currentItems.push({ id: productId, quantity, product: productSnapshot });
     }
 
     const localCart = syncLocalCartState(currentItems, dispatch);
@@ -265,7 +276,7 @@ export const getActiveCart = () => async (dispatch) => {
         const cart = normalizeCart(resp?.data);
 
         if (cart?.items?.length) {
-            const minimalItems = cart.items.map((item) => ({ id: item.id, quantity: item.quantity }));
+            const minimalItems = cart.items.map((item) => ({ id: item.id, quantity: item.quantity, product: item }));
             persistLocalCart(minimalItems);
         }
 
@@ -316,10 +327,11 @@ export const getCartTotals = () => async (dispatch, getState) => {
 
 export const updateLocalCartItem = (productId, quantity) => (dispatch) => {
     const currentItems = readLocalCart();
-    const filteredItems = currentItems.filter((item) => item.id !== productId);
+    const existingItem = currentItems.find((item) => String(item.id) === String(productId));
+    const filteredItems = currentItems.filter((item) => String(item.id) !== String(productId));
 
     if (quantity > 0) {
-        filteredItems.push({ id: productId, quantity });
+        filteredItems.push({ id: productId, quantity, product: existingItem?.product });
     }
 
     syncLocalCartState(filteredItems, dispatch);
