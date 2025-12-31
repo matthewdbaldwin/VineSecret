@@ -15,24 +15,40 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const items = cart?.items || [];
     const totals = cart?.total;
 
+    const pricedItems = useMemo(
+        () =>
+            items.map((item) => {
+                const fallback = findProductById(item.id) || {};
+                const cost = item.cost ?? fallback.cost ?? 0;
+                const quantity = item.quantity || 0;
+                const lineTotal = item.lineTotal ?? cost * quantity;
+
+                return {
+                    ...fallback,
+                    ...item,
+                    cost,
+                    quantity,
+                    lineTotal,
+                };
+            }),
+        [items],
+    );
+
     const derivedTotals = useMemo(() => {
-        const subtotal = items.reduce(
-            (total, item) => total + ((item.lineTotal ?? ((item.cost || 0) * (item.quantity || 0)))),
-            0,
-        );
-        const bottleCount = items.reduce((total, item) => total + (item.quantity || 0), 0);
+        const subtotal = pricedItems.reduce((total, item) => total + item.lineTotal, 0);
+        const bottleCount = pricedItems.reduce((total, item) => total + (item.quantity || 0), 0);
         const shipping = bottleCount >= 3 || subtotal === 0 ? 0 : 1500;
         const tax = Math.round(subtotal * 0.085);
         const grandTotal = subtotal + shipping + tax;
 
         return { subtotal, shipping, tax, grandTotal };
-    }, [items]);
+    }, [pricedItems]);
 
     const displayTotals = totals ?? derivedTotals;
 
     useEffect(() => {
-        trackCartView({ items, total: displayTotals });
-    }, [items, displayTotals]);
+        trackCartView({ items: pricedItems, total: displayTotals });
+    }, [pricedItems, displayTotals]);
 
     const handleIncrement = (item) => {
         const nextQuantity = item.quantity + 1;
@@ -52,7 +68,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     };
 
     const goToCheckout = () => {
-        trackBeginCheckout({ items, total: displayTotals });
+        trackBeginCheckout({ items: pricedItems, total: displayTotals });
         history.push('/checkout');
     };
 
