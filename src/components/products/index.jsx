@@ -2,12 +2,19 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addItemToCart, getAllProducts } from "../../actions";
 import { trackAddToCart, trackEngagement } from "../../analytics/tracking";
+import CartPopover from "../cart/cart_popover";
 import ProductItem from "./product_item";
 import "./products.css";
 
 class Products extends Component {
+    state = { popover: null };
+
     componentDidMount() {
         this.props.getAllProducts();
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this._popoverTimer);
     }
 
     goToDetails = (id) => {
@@ -18,6 +25,14 @@ class Products extends Component {
     handleAddToCart = (product) => {
         trackAddToCart(product, 1);
         this.props.addItemToCart(product.id, 1);
+        clearTimeout(this._popoverTimer);
+        this.setState({ popover: { ...product, quantity: 1 } });
+        this._popoverTimer = setTimeout(() => this.setState({ popover: null }), 3500);
+    };
+
+    dismissPopover = () => {
+        clearTimeout(this._popoverTimer);
+        this.setState({ popover: null });
     };
 
     render() {
@@ -108,6 +123,10 @@ class Products extends Component {
                         </div>
                     )}
                 </section>
+
+                {this.state.popover && (
+                    <CartPopover item={this.state.popover} onClose={this.dismissPopover} />
+                )}
             </div>
         );
     }

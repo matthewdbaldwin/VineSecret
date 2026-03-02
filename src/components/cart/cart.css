@@ -203,3 +203,118 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ─── Cart Popover ─────────────────────────────────────────── */
+
+.cart-popover {
+    position: fixed;
+    top: 76px;
+    right: 24px;
+    z-index: 1000;
+    background: #ffffff;
+    border: 1px solid #efe5d5;
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
+    min-width: 260px;
+    max-width: 320px;
+    animation: popover-in 0.22s ease;
+}
+
+@keyframes popover-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) translateX(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+}
+
+.cart-popover__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.cart-popover__check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    background: #2b1a36;
+    color: #f5d18d;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.cart-popover__title {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #2b1a36;
+}
+
+.cart-popover__close {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: #9a8c9e;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.cart-popover__close:hover {
+    color: #2b1a36;
+}
+
+.cart-popover__name {
+    margin: 0 0 0.35rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2b1a36;
+}
+
+.cart-popover__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #5a4032;
+    font-size: 0.9rem;
+    margin-bottom: 0.85rem;
+}
+
+.cart-popover__cta {
+    display: block;
+    text-align: center;
+    background: #2b1a36;
+    color: #f5d18d;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.875rem;
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    transition: background 0.15s ease;
+}
+
+.cart-popover__cta:hover {
+    background: #3d2650;
+    color: #ffe9b3;
+}
+
+@media (max-width: 600px) {
+    .cart-popover {
+        right: 12px;
+        left: 12px;
+        max-width: none;
+    }
+}

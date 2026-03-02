@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { addItemToCart, clearProductDetails, getProductDetails } from "../../actions/";
 import { trackAddToCart, trackProductView } from "../../analytics/tracking";
+import CartPopover from "../cart/cart_popover";
 import Money from "../general/money";
 import "./products.css";
 
 class ProductDetails extends Component {
     state = {
         quantity: 1,
+        popover: null,
     };
 
     componentDidMount() {
@@ -21,6 +23,7 @@ class ProductDetails extends Component {
 
     componentWillUnmount() {
         this.props.clearProductDetails();
+        clearTimeout(this._popoverTimer);
     }
 
     componentDidUpdate(prevProps) {
@@ -38,18 +41,27 @@ class ProductDetails extends Component {
     };
 
     handleAddToCart = async () => {
-        const { details, addItemToCart, history } = this.props;
+        const { details, addItemToCart } = this.props;
         const { quantity } = this.state;
 
         if (details) {
             trackAddToCart(details, quantity);
         }
         await addItemToCart(details.id, quantity);
-        history.push("/cart");
+
+        clearTimeout(this._popoverTimer);
+        this.setState({ popover: { ...details, quantity } });
+        this._popoverTimer = setTimeout(() => this.setState({ popover: null }), 3500);
+    };
+
+    dismissPopover = () => {
+        clearTimeout(this._popoverTimer);
+        this.setState({ popover: null });
     };
 
     render() {
         const { details } = this.props;
+        const { popover } = this.state;
 
         if (!details) {
             return (
@@ -107,11 +119,13 @@ class ProductDetails extends Component {
                         <button className="btn primary" onClick={this.handleAddToCart}>
                             Add to cart
                         </button>
-                        <button className="btn ghost" onClick={() => this.props.history.push("/contact")}> 
+                        <button className="btn ghost" onClick={() => this.props.history.push("/contact")}>
                             Visit the cellar
                         </button>
                     </div>
                 </div>
+
+                {popover && <CartPopover item={popover} onClose={this.dismissPopover} />}
             </div>
         );
     }
