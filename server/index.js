@@ -5,6 +5,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 const { Resend } = require('resend');
 const { buildInvoiceEmail } = require('./email/invoice');
 
@@ -89,6 +91,28 @@ app.post('/api/notifications/guest-order', async (req, res) => {
     }
 });
 
+// Return 404 for any /api/* route not matched above.
+// Without this, unimplemented routes fall through to the static file handler
+// which returns the React app HTML with status 200, causing the frontend's
+// cart actions to treat the HTML as a valid API response and empty the cart.
+app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'Not found' });
+});
+
+// Serve the production build when dist/ exists.
+// API routes above take precedence; this catches everything else.
+const distDir = path.join(__dirname, '..', 'dist');
+if (fs.existsSync(distDir)) {
+    app.use(express.static(distDir));
+    // SPA fallback — send index.html for any non-API route so client-side
+    // routing works when the page is refreshed or linked directly.
+    app.use((req, res, next) => {
+        if (req.path.startsWith('/api/')) return next();
+        res.sendFile(path.join(distDir, 'index.html'));
+    });
+}
+
 app.listen(PORT, () => {
-    console.log(`VineSecret API server listening on port ${PORT}`);
+    const mode = fs.existsSync(distDir) ? 'production (serving dist/)' : 'API only';
+    console.log(`VineSecret server listening on port ${PORT} [${mode}]`);
 });
