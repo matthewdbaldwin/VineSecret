@@ -7,24 +7,37 @@ const cors = require('cors');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
-const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 const { buildInvoiceEmail } = require('./email/invoice');
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'orders@vinesecret.com';
 
-// Lazily created so the server starts even if RESEND_API_KEY is not yet set.
-// An error will be logged at send time if the key is missing.
-let _resend = null;
-const getResend = () => {
-    if (!_resend) {
-        if (!process.env.RESEND_API_KEY) {
-            throw new Error('RESEND_API_KEY is not set in your .env file');
+// Lazily created so the server starts even if SMTP credentials are not yet set.
+// An error will be logged at send time if the configuration is missing.
+let _transporter = null;
+const getTransporter = () => {
+    if (!_transporter) {
+        const host = process.env.SMTP_HOST;
+        const user = process.env.SMTP_USER;
+        const pass = process.env.SMTP_PASS;
+
+        if (!host || !user || !pass) {
+            throw new Error('SMTP_HOST, SMTP_USER, and SMTP_PASS must be set in your .env file');
         }
-        _resend = new Resend(process.env.RESEND_API_KEY);
+
+        const port = parseInt(process.env.SMTP_PORT || '587', 10);
+        const secure = process.env.SMTP_SECURE === 'true' || port === 465;
+
+        _transporter = nodemailer.createTransport({
+            host,
+            port,
+            secure,
+            auth: { user, pass },
+        });
     }
-    return _resend;
+    return _transporter;
 };
 
 // In-memory order store for this demo session
@@ -66,7 +79,7 @@ app.get('/api/orders/guest/:orderId', (req, res) => {
 });
 
 // POST /api/notifications/guest-order
-// Build invoice HTML and send via Resend
+// Build invoice HTML and send via SMTP
 app.post('/api/notifications/guest-order', async (req, res) => {
     const { orderId, email, name, cart } = req.body || {};
 
@@ -77,7 +90,7 @@ app.post('/api/notifications/guest-order', async (req, res) => {
     const html = buildInvoiceEmail({ orderId, name, cart });
 
     try {
-        await getResend().emails.send({
+        await getTransporter().sendMail({
             from: EMAIL_FROM,
             to: email,
             subject: `VineSecret Order Confirmation – ${orderId}`,
@@ -86,7 +99,7 @@ app.post('/api/notifications/guest-order', async (req, res) => {
 
         res.json({ success: true });
     } catch (err) {
-        console.error('Resend error:', err?.message || err);
+        console.error('SMTP error:', err?.message || err);
         res.status(500).json({ error: 'Failed to send email', detail: err?.message });
     }
 });
