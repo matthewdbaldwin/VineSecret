@@ -100,7 +100,7 @@ app.post('/api/notifications/guest-order', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         console.error('SMTP error:', err?.message || err);
-        res.status(500).json({ error: 'Failed to send email', detail: err?.message });
+        res.status(500).json({ error: 'Failed to send email' });
     }
 });
 
