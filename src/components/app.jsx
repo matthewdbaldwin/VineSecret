@@ -11,6 +11,7 @@ import ProductDetails from './products/product_details';
 import Cart from './cart';
 import Checkout from './checkout';
 import { initAnalytics, trackPageView } from '../analytics/tracking';
+import BottomNav from './nav/BottomNav';
 
 const AnalyticsListener = () => {
     const location = useLocation();
@@ -43,6 +44,7 @@ const App = () => (
             </Switch>
         </main>
         <Footer />
+        <BottomNav />
     </div>
 );
 

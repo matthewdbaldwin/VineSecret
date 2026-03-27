@@ -434,3 +434,99 @@
         align-items: flex-start;
     }
 }
+
+/* ── Mobile: 2-column product grid ───────────────────────────────────────── */
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.65rem;
+        margin: 0.75rem 0.75rem 1.5rem;
+    }
+
+    .product-card__body h3 {
+        font-size: 1rem;
+    }
+
+    .product-card__footer {
+        gap: 0.4rem;
+    }
+
+    /* Show only primary action on small cards */
+    .product-card__actions .btn.ghost {
+        display: none;
+    }
+
+    .product-card__actions .btn.primary {
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 0.55rem 0.75rem;
+    }
+
+    .caption {
+        font-size: 0.8rem;
+    }
+
+    .price {
+        font-size: 1rem;
+    }
+}
+
+/* ── Sticky product detail CTA bar (mobile only) ─────────────────────────── */
+.product-sticky-cta {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Hide the in-page CTA row and price row — they move to the sticky bar */
+    .info-card .cta-row,
+    .info-card .price-row {
+        display: none;
+    }
+
+    .product-sticky-cta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: var(--bottom-nav-total, 64px);
+        z-index: 100;
+        background: #ffffff;
+        border-top: 1px solid #efe5d5;
+        padding: 0.75rem 1.25rem;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-sticky-cta__price {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-sticky-cta__price .price {
+        font-size: 1.25rem;
+        color: #2f1a3c;
+    }
+
+    .product-sticky-cta__price .tiny {
+        font-size: 0.7rem;
+        color: #6d6375;
+        margin: 0;
+    }
+
+    .product-sticky-cta__controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-sticky-cta .quantity-group {
+        flex-shrink: 0;
+    }
+
+    .product-sticky-cta .btn.primary {
+        white-space: nowrap;
+        padding: 0.6rem 1.1rem;
+    }
+}

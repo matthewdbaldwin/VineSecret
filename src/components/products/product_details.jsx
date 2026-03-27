@@ -125,6 +125,24 @@ class ProductDetails extends Component {
                     </div>
                 </div>
 
+                {/* Sticky bottom CTA — shown only on mobile via CSS */}
+                <div className="product-sticky-cta">
+                    <div className="product-sticky-cta__price">
+                        <span className="price"><Money cost={details.cost} /></span>
+                        <p className="tiny">Incl. taxes</p>
+                    </div>
+                    <div className="product-sticky-cta__controls">
+                        <div className="quantity-group" aria-label="Quantity selector">
+                            <button className="btn-quantity" onClick={this.decrementQuantity}>−</button>
+                            <span className="quantity">{this.state.quantity}</span>
+                            <button className="btn-quantity" onClick={this.incrementQuantity}>+</button>
+                        </div>
+                        <button className="btn primary" onClick={this.handleAddToCart}>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>
+
                 {popover && <CartPopover item={popover} onClose={this.dismissPopover} />}
             </div>
         );

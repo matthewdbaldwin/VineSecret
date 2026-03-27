@@ -19,12 +19,32 @@ const EMPTY_FORM = {
     notes: '',
 };
 
+const STEP_FIELDS = {
+    1: ['firstName', 'lastName', 'email'],
+    2: ['address', 'city', 'region', 'postal'],
+};
+
+const useIsMobileWizard = () => {
+    const [isMobile, setIsMobile] = useState(() =>
+        typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false
+    );
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 768px)');
+        const handler = (e) => setIsMobile(e.matches);
+        mq.addEventListener('change', handler);
+        return () => mq.removeEventListener('change', handler);
+    }, []);
+    return isMobile;
+};
+
 const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loadCart }) => {
     const [formValues, setFormValues] = useState(EMPTY_FORM);
     const [shippingMethod, setShippingMethod] = useState('standard');
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
     const [confirmation, setConfirmation] = useState(null);
+    const [step, setStep] = useState(1);
+    const isMobileWizard = useIsMobileWizard();
 
     const items = cart?.items || [];
     const totals = cart?.total;
@@ -103,6 +123,37 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         if (!formValues.region.trim()) nextErrors.region = 'State/Province is required';
         if (!formValues.postal.trim()) nextErrors.postal = 'Postal code is required';
         return nextErrors;
+    };
+
+    const validateStep = (currentStep) => {
+        const nextErrors = {};
+        if (currentStep === 1) {
+            if (!formValues.firstName.trim()) nextErrors.firstName = 'First name is required';
+            if (!formValues.lastName.trim()) nextErrors.lastName = 'Last name is required';
+            if (!formValues.email.trim()) nextErrors.email = 'Email is required';
+        }
+        if (currentStep === 2) {
+            if (!formValues.address.trim()) nextErrors.address = 'Address is required';
+            if (!formValues.city.trim()) nextErrors.city = 'City is required';
+            if (!formValues.region.trim()) nextErrors.region = 'State/Province is required';
+            if (!formValues.postal.trim()) nextErrors.postal = 'Postal code is required';
+        }
+        return nextErrors;
+    };
+
+    const handleNextStep = () => {
+        const stepErrors = validateStep(step);
+        setErrors(stepErrors);
+        if (!Object.keys(stepErrors).length) {
+            setStep((s) => s + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const handlePrevStep = () => {
+        setErrors({});
+        setStep((s) => s - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubmit = async (event) => {
@@ -202,7 +253,23 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                     <div className="checkout-card">
                         {!confirmation ? (
                             <form className="checkout-form" onSubmit={handleSubmit}>
-                                <h3>Guest details</h3>
+                                {/* Mobile wizard step indicator */}
+                                {isMobileWizard && (
+                                    <div className="wizard-progress" aria-label="Checkout progress">
+                                        {['Contact', 'Shipping', 'Review'].map((label, i) => (
+                                            <div key={label} className={`wizard-step-dot ${step === i + 1 ? 'is-active' : ''} ${step > i + 1 ? 'is-done' : ''}`}>
+                                                <span className="dot" />
+                                                <span className="dot-label">{label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Step 1: Contact */}
+                                {(!isMobileWizard || step === 1) && (
+                                <div className="wizard-panel">
+                                {isMobileWizard && <h3 className="step-title">Contact details</h3>}
+                                {!isMobileWizard && <h3>Guest details</h3>}
                                 <div className="form-grid">
                                     <div className={`input-field ${errors.firstName ? 'has-error' : ''}`}>
                                         <label htmlFor="firstName">First name</label>
@@ -254,9 +321,24 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         />
                                     </div>
                                 </div>
-                                <h4>Shipping</h4>
+                                {/* Mobile wizard: Next button for step 1 */}
+                                {isMobileWizard && (
+                                    <div className="form-actions">
+                                        <button className="btn primary" type="button" onClick={handleNextStep}>
+                                            Continue to shipping
+                                        </button>
+                                    </div>
+                                )}
+                                </div>
+                                )}
+
+                                {/* Step 2: Shipping */}
+                                {(!isMobileWizard || step === 2) && (
+                                <div className="wizard-panel">
+                                {isMobileWizard && <h3 className="step-title">Shipping details</h3>}
+                                {!isMobileWizard && <h4>Shipping</h4>}
                                 <div className="form-grid">
-                                    <div className={`input-field ${errors.address ? 'has-error' : ''}`}>
+                                    <div className={`input-field ${errors.address ? ‘has-error’ : ‘’}`}>
                                         <label htmlFor="address">Address</label>
                                         <input
                                             id="address"
@@ -270,7 +352,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                     </div>
                                 </div>
                                 <div className="form-grid form-grid--thirds">
-                                    <div className={`input-field ${errors.city ? 'has-error' : ''}`}>
+                                    <div className={`input-field ${errors.city ? ‘has-error’ : ‘’}`}>
                                         <label htmlFor="city">City</label>
                                         <input
                                             id="city"
@@ -282,7 +364,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         />
                                         {errors.city && <p className="error">{errors.city}</p>}
                                     </div>
-                                    <div className={`input-field ${errors.region ? 'has-error' : ''}`}>
+                                    <div className={`input-field ${errors.region ? ‘has-error’ : ‘’}`}>
                                         <label htmlFor="region">State/Province</label>
                                         <input
                                             id="region"
@@ -294,7 +376,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         />
                                         {errors.region && <p className="error">{errors.region}</p>}
                                     </div>
-                                    <div className={`input-field ${errors.postal ? 'has-error' : ''}`}>
+                                    <div className={`input-field ${errors.postal ? ‘has-error’ : ‘’}`}>
                                         <label htmlFor="postal">Postal code</label>
                                         <input
                                             id="postal"
@@ -320,28 +402,29 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         />
                                     </div>
                                 </div>
-                                <h4>Shipping method</h4>
+                                {isMobileWizard && <h3 className="step-title">Shipping method</h3>}
+                                {!isMobileWizard && <h4>Shipping method</h4>}
                                 <div className="radio-group">
-                                    <label className={`radio-card ${shippingMethod === 'standard' ? 'is-selected' : ''}`}>
+                                    <label className={`radio-card ${shippingMethod === ‘standard’ ? ‘is-selected’ : ‘’}`}>
                                         <input
                                             type="radio"
                                             name="shippingMethod"
                                             value="standard"
-                                            checked={shippingMethod === 'standard'}
-                                            onChange={() => setShippingMethod('standard')}
+                                            checked={shippingMethod === ‘standard’}
+                                            onChange={() => setShippingMethod(‘standard’)}
                                         />
                                         <div>
                                             <p className="radio-title">Standard temperature-controlled</p>
                                             <p className="caption">Included with 3+ bottles. Arrives in 3–5 business days.</p>
                                         </div>
                                     </label>
-                                    <label className={`radio-card ${shippingMethod === 'express' ? 'is-selected' : ''}`}>
+                                    <label className={`radio-card ${shippingMethod === ‘express’ ? ‘is-selected’ : ‘’}`}>
                                         <input
                                             type="radio"
                                             name="shippingMethod"
                                             value="express"
-                                            checked={shippingMethod === 'express'}
-                                            onChange={() => setShippingMethod('express')}
+                                            checked={shippingMethod === ‘express’}
+                                            onChange={() => setShippingMethod(‘express’)}
                                         />
                                         <div>
                                             <p className="radio-title">Express cold pack</p>
@@ -349,12 +432,58 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         </div>
                                     </label>
                                 </div>
+                                {/* Mobile wizard: Back + Next buttons for step 2 */}
+                                {isMobileWizard && (
+                                    <div className="form-actions wizard-actions">
+                                        <button className="btn ghost" type="button" onClick={handlePrevStep}>
+                                            ← Back
+                                        </button>
+                                        <button className="btn primary" type="button" onClick={handleNextStep}>
+                                            Review order
+                                        </button>
+                                    </div>
+                                )}
+                                </div>
+                                )}
+
+                                {/* Step 3: Review (mobile wizard only) */}
+                                {isMobileWizard && step === 3 && (
+                                <div className="wizard-panel">
+                                    <h3 className="step-title">Review your order</h3>
+                                    <div className="review-section">
+                                        <p className="review-label">Contact</p>
+                                        <p className="review-value">{formValues.firstName} {formValues.lastName}</p>
+                                        <p className="review-value">{formValues.email}</p>
+                                        {formValues.phone && <p className="review-value">{formValues.phone}</p>}
+                                        <button className="review-edit" type="button" onClick={() => { setStep(1); setErrors({}); }}>Edit</button>
+                                    </div>
+                                    <div className="review-section">
+                                        <p className="review-label">Ship to</p>
+                                        <p className="review-value">{formValues.address}</p>
+                                        <p className="review-value">{formValues.city}, {formValues.region} {formValues.postal}</p>
+                                        <p className="review-value">{shippingMethod === ‘express’ ? ‘Express cold pack’ : ‘Standard temperature-controlled’}</p>
+                                        <button className="review-edit" type="button" onClick={() => { setStep(2); setErrors({}); }}>Edit</button>
+                                    </div>
+                                    <div className="form-actions wizard-actions">
+                                        <button className="btn ghost" type="button" onClick={handlePrevStep}>
+                                            ← Back
+                                        </button>
+                                        <button className="btn primary" type="submit" disabled={submitting}>
+                                            {submitting ? ‘Placing order…’ : ‘Place order’}
+                                        </button>
+                                    </div>
+                                </div>
+                                )}
+
+                                {/* Desktop: always-visible submit */}
+                                {!isMobileWizard && (
                                 <div className="form-actions">
                                     <button className="btn primary" type="submit" disabled={submitting}>
-                                        {submitting ? 'Placing order…' : 'Place order as guest'}
+                                        {submitting ? ‘Placing order…’ : ‘Place order as guest’}
                                     </button>
                                     <span className="tiny">No account needed. We’ll never share your email.</span>
                                 </div>
+                                )}
                             </form>
                         ) : (
                             <div className="confirmation">

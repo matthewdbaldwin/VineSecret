@@ -204,6 +204,75 @@
     }
 }
 
+/* ── Sticky cart checkout bar (mobile only) ───────────────────────────────── */
+.cart-sticky-bar {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Hide the in-summary checkout button — it moves to the sticky bar */
+    .summary-actions {
+        display: none;
+    }
+
+    /* Also compact the hero on mobile */
+    .cart-hero {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cart-hero__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cart-hero__actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .cart-sticky-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: var(--bottom-nav-total, 64px);
+        z-index: 100;
+        background: #2b1a36;
+        padding: 0.85rem 1.25rem;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .cart-sticky-bar__total {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cart-sticky-bar__label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(245, 209, 141, 0.7);
+    }
+
+    .cart-sticky-bar__amount {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #f5d18d;
+    }
+
+    .cart-sticky-bar .btn.primary {
+        white-space: nowrap;
+        background: linear-gradient(135deg, #f5d18d, #f0a96b);
+        color: #2b1a36;
+        flex-shrink: 0;
+    }
+}
+
 /* ─── Cart Popover ─────────────────────────────────────────── */
 
 .cart-popover {

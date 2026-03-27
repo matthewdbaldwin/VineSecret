@@ -172,6 +172,21 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                     </aside>
                 </div>
             )}
+
+            {/* Sticky bottom checkout bar — shown only on mobile via CSS */}
+            {!!items.length && (
+                <div className="cart-sticky-bar">
+                    <div className="cart-sticky-bar__total">
+                        <span className="cart-sticky-bar__label">Total</span>
+                        <span className="cart-sticky-bar__amount">
+                            <Money cost={displayTotals?.grandTotal} />
+                        </span>
+                    </div>
+                    <button className="btn primary" type="button" onClick={goToCheckout}>
+                        Checkout as guest
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

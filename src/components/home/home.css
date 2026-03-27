@@ -202,3 +202,38 @@
         flex-direction: column;
     }
 }
+
+/* ── Mobile polish ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .home {
+        padding: 1.25rem 1rem 2rem;
+        gap: 1.25rem;
+    }
+
+    /* Compact hero heading */
+    .hero-card h2 {
+        font-size: clamp(1.4rem, 6vw, 1.9rem);
+        margin-bottom: 0.5rem;
+        line-height: 1.15;
+    }
+
+    .hero-card .lede {
+        font-size: 0.95rem;
+    }
+
+    /* Hide decorative metrics and pillar cards on small screens — keep focus on CTA */
+    .hero-metrics,
+    .pillars-section {
+        display: none;
+    }
+
+    /* Story card — simpler on mobile */
+    .story-card {
+        display: none;
+    }
+
+    /* Section padding tightening */
+    .section-header {
+        padding: 0 0 0.5rem;
+    }
+}

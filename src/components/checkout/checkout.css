@@ -270,3 +270,167 @@
         align-items: flex-start;
     }
 }
+
+/* ── Mobile wizard: progress indicator + step panels ─────────────────────── */
+@media (max-width: 768px) {
+    .checkout {
+        padding: 1.5rem 1rem 2rem;
+    }
+
+    .checkout-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .header-actions .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Progress dots — visible only on mobile wizard */
+.wizard-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    padding-top: 0.25rem;
+}
+
+.wizard-step-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    position: relative;
+}
+
+/* Connector line between dots */
+.wizard-step-dot + .wizard-step-dot::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 9px;
+    width: 48px;
+    height: 2px;
+    background: #e0d5cc;
+    margin-right: -24px;
+    margin-left: -24px;
+}
+
+.wizard-step-dot.is-done + .wizard-step-dot::before,
+.wizard-step-dot.is-active + .wizard-step-dot::before {
+    background: #f5d18d;
+}
+
+.dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #e0d5cc;
+    border: 2px solid #e0d5cc;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    z-index: 1;
+}
+
+.wizard-step-dot.is-active .dot {
+    background: #f5d18d;
+    border-color: #f5d18d;
+    box-shadow: 0 0 0 4px rgba(245, 209, 141, 0.25);
+}
+
+.wizard-step-dot.is-done .dot {
+    background: #7c2f68;
+    border-color: #7c2f68;
+}
+
+.dot-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #9a8c9e;
+    white-space: nowrap;
+}
+
+.wizard-step-dot.is-active .dot-label {
+    color: #2b1a36;
+}
+
+.wizard-step-dot.is-done .dot-label {
+    color: #7c2f68;
+}
+
+/* Mobile wizard layout helpers */
+.wizard-panel {
+    display: contents; /* transparent wrapper — no layout impact on desktop */
+}
+
+.step-title {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #2b1a36;
+}
+
+.wizard-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.wizard-actions .btn.ghost {
+    flex-shrink: 0;
+    padding: 0.6rem 1rem;
+}
+
+.wizard-actions .btn.primary {
+    flex: 1;
+}
+
+/* Review step */
+.review-section {
+    background: #f9f6f0;
+    border: 1px solid #efe5d5;
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.review-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c2f68;
+    margin: 0 0 0.35rem;
+}
+
+.review-value {
+    margin: 0;
+    color: #2b1a36;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.review-edit {
+    position: absolute;
+    top: 0.9rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #7c2f68;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+

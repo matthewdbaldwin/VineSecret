@@ -1,3 +1,10 @@
+/* ── Mobile layout tokens ─────────────────────────────────────────────────── */
+:root {
+    --bottom-nav-height: 64px;
+    --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 .app {
     width: 100%;
     min-height: 100vh;
@@ -28,8 +35,52 @@ body p {
     background: #f9f6f0;
 }
 
+/* ── Touch target enforcement ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    button,
+    .btn,
+    [role="button"],
+    input[type="submit"],
+    input[type="button"] {
+        min-height: 44px;
+    }
+
+    /* Quantity/icon buttons that are intentionally small get a tap area instead */
+    .quantity-btn,
+    .cart-remove,
+    .nav-link,
+    .tab-link {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Push page content above the bottom tab bar */
+    .page-shell {
+        padding-bottom: var(--bottom-nav-total);
+    }
+}
+
+/* ── Typography scale tightening on small screens ─────────────────────────── */
 @media (max-width: 576px) {
     body {
-        font-size: 1.05rem;
+        font-size: 1rem;
+    }
+
+    h1 {
+        font-size: clamp(1.6rem, 7vw, 2.2rem);
+        line-height: 1.15;
+    }
+
+    h2 {
+        font-size: clamp(1.35rem, 6vw, 1.8rem);
+        line-height: 1.2;
+    }
+
+    h3 {
+        font-size: clamp(1.1rem, 5vw, 1.4rem);
+        line-height: 1.25;
     }
 }

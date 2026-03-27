@@ -107,6 +107,7 @@
     color: #211327;
 }
 
+/* ── Tablet: hamburger menu (769px – 900px) ──────────────────────────────── */
 @media (max-width: 900px) {
     .site-nav {
         flex-wrap: wrap;
@@ -150,5 +151,29 @@
 
     .nav-cta .link {
         text-align: center;
+    }
+}
+
+/* ── Mobile: bottom tabs take over — slim logo-only top bar ──────────────── */
+@media (max-width: 768px) {
+    .site-nav {
+        justify-content: center;
+        padding: 0.4rem 1.25rem;
+    }
+
+    /* Hide hamburger and all nav links — bottom bar handles navigation */
+    .nav-toggle,
+    .main-nav {
+        display: none !important;
+    }
+
+    /* Centre the brand mark */
+    .nav-branding {
+        align-items: center;
+    }
+
+    .brand-subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
     }
 }

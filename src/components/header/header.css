@@ -128,3 +128,43 @@
         align-items: flex-start;
     }
 }
+
+/* ── Mobile: compact header ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .header-overlay {
+        padding: 1rem 1rem 1.75rem;
+    }
+
+    .brand-block {
+        gap: 1rem;
+        margin-top: 0.75rem;
+    }
+
+    .brand-mark {
+        width: 80px;
+        height: 80px;
+        border-radius: 18px;
+    }
+
+    .brand-copy h1 {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+        line-height: 1.15;
+        margin-bottom: 0.5rem;
+    }
+
+    .brand-copy .lede {
+        font-size: 0.9rem;
+        line-height: 1.55;
+        margin-bottom: 0.75rem;
+    }
+
+    .header-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .header-actions .btn {
+        font-size: 0.8rem;
+        padding: 0.55rem 0.9rem;
+    }
+}
