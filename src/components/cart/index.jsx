@@ -83,7 +83,7 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                     </p>
                 </div>
                 <div className="cart-hero__actions">
-                    <Link className="btn ghost" to="/products">
+                    <Link className="btn brass" to="/products">
                         Continue browsing wines
                     </Link>
                     <button className="btn primary" type="button" onClick={goToCheckout} disabled={!items.length}>
@@ -108,14 +108,14 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
                     <section className="cart-items" aria-label="Cart items">
                         {pricedItems.map((item) => (
                             <article key={item.id} className="cart-card">
-                                <div className="cart-card__image">
+                                <Link to={`/products/${item.id}`} className="cart-card__image">
                                     <img src={item.thumbnail?.url || item.image?.url} alt={item.caption || item.name} />
-                                </div>
+                                </Link>
                                 <div className="cart-card__body">
                                     <div className="cart-card__header">
                                         <div>
                                             <p className="eyebrow">Estate release</p>
-                                            <h3>{item.name}</h3>
+                                            <h3><Link to={`/products/${item.id}`}>{item.name}</Link></h3>
                                             <p className="caption">{item.caption}</p>
                                         </div>
                                         <button className="text-link" type="button" onClick={() => handleRemove(item)}>

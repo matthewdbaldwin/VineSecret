@@ -37,7 +37,7 @@ const ProductItem = ({ name, caption, cost, thumbnail, goToDetails, onAddToCart 
                         <p className="tiny">Tax-inclusive, ships temp-controlled.</p>
                     </div>
                     <div className="product-card__actions">
-                        <button className="btn ghost" type="button" onClick={handleViewDetails}>
+                        <button className="btn brass" type="button" onClick={handleViewDetails}>
                             View details
                         </button>
                         <button className="btn primary" type="button" onClick={handleAddToCart}>

@@ -119,7 +119,7 @@ class ProductDetails extends Component {
                         <button className="btn primary" onClick={this.handleAddToCart}>
                             Add to cart
                         </button>
-                        <button className="btn ghost" onClick={() => this.props.history.push("/contact")}>
+                        <button className="btn brass" onClick={() => this.props.history.push("/contact")}>
                             Visit the cellar
                         </button>
                     </div>

@@ -1,30 +1,170 @@
-/* ── Mobile layout tokens ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
+    /* Navigation */
     --bottom-nav-height: 64px;
     --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+
+    /* Brand colours — deep plum estate palette */
+    --color-midnight: #09040d;
+    --color-deep:     #14091f;
+    --color-purple:   #1e1028;
+    --color-plum:     #7a2558;
+    --color-gold:     #b8915a;
+    --color-gold-lt:  #cda872;
+    --color-gold-rule: rgba(184, 145, 90, 0.35);
+    --color-cream:    #f4efe6;
+    --color-parchment:#ede6d8;
+    --color-border:   #dfd5c5;
+    --color-text:     #1a0f14;
+    --color-text-soft:#4a3040;
+    --color-text-muted:#7a6878;
+
+    /* Typography */
+    --font-display: 'Cormorant Garamond', 'Georgia', serif;
+    --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+    /* Shape — square-shouldered for luxury editorial feel */
+    --radius-card: 4px;
+    --radius-btn:  3px;
+
+    /* Elevation — very subtle, flat editorial */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+}
+
+/* ── Display typography ───────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.12;
+}
+
+h1, h2 {
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    letter-spacing: -0.015em;
+}
+
+h4, h5, h6 {
+    letter-spacing: -0.01em;
+}
+
+/* ── Global button system ─────────────────────────────────────────────────── */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn.primary {
+    background: var(--color-deep);
+    color: var(--color-gold);
+    border-color: var(--color-deep);
+}
+
+.btn.primary:hover,
+.btn.primary:focus {
+    background: #ffffff;
+    border-color: var(--color-deep);
+    color: var(--color-deep);
+}
+
+/* Brass — gold background, goes white on hover */
+.btn.brass {
+    background: var(--color-gold);
+    color: var(--color-deep);
+    border-color: var(--color-gold);
+}
+
+.btn.brass:hover,
+.btn.brass:focus {
+    background: #ffffff;
+    border-color: var(--color-gold);
+    color: var(--color-deep);
+}
+
+/* Ghost on dark backgrounds (header, hero, dark sections) */
+.btn.ghost {
+    background: transparent;
+    color: rgba(244, 239, 230, 0.88);
+    border-color: rgba(244, 239, 230, 0.4);
+}
+
+.btn.ghost:hover,
+.btn.ghost:focus {
+    background: rgba(244, 239, 230, 0.12);
+    color: #f4efe6;
+    border-color: rgba(244, 239, 230, 0.7);
+}
+
+/* Ghost on light backgrounds */
+.btn.ghost-dark {
+    background: transparent;
+    color: var(--color-plum);
+    border-color: var(--color-plum);
+}
+
+.btn.ghost-dark:hover,
+.btn.ghost-dark:focus {
+    background: rgba(122, 37, 88, 0.06);
+}
+
+/* ── Eyebrow labels ───────────────────────────────────────────────────────── */
+.eyebrow {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-size: 0.67rem;
+    font-weight: 600;
+    color: var(--color-gold);
+    margin-bottom: 0.6rem;
+    display: block;
+}
+
+.eyebrow-p {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-size: 0.67rem;
+    font-weight: 600;
+    color: var(--color-plum);
+    margin-bottom: 0.6rem;
+    display: block;
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 .app {
     width: 100%;
     min-height: 100vh;
-    background: #0b0812;
-    color: #1f1329;
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--color-midnight);
+    color: var(--color-text);
+    font-family: var(--font-body);
 }
 
 a {
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: none;
-}
-
 body {
     font-size: 16px;
-    line-height: 1.6;
-    background: #0b0812;
+    line-height: 1.65;
+    background: var(--color-midnight);
+    font-family: var(--font-body);
 }
 
 body p {
@@ -32,7 +172,14 @@ body p {
 }
 
 .page-shell {
-    background: #f9f6f0;
+    background: var(--color-cream);
+}
+
+/* Thin gold rule utility */
+.gold-rule {
+    border: none;
+    border-top: 1px solid var(--color-gold-rule);
+    margin: 1.5rem 0;
 }
 
 /* ── Touch target enforcement ─────────────────────────────────────────────── */
@@ -45,7 +192,6 @@ body p {
         min-height: 44px;
     }
 
-    /* Quantity/icon buttons that are intentionally small get a tap area instead */
     .quantity-btn,
     .cart-remove,
     .nav-link,
@@ -57,30 +203,25 @@ body p {
         justify-content: center;
     }
 
-    /* Push page content above the bottom tab bar */
     .page-shell {
         padding-bottom: var(--bottom-nav-total);
     }
 }
 
-/* ── Typography scale tightening on small screens ─────────────────────────── */
+/* ── Typography scale on small screens ───────────────────────────────────── */
 @media (max-width: 576px) {
-    body {
-        font-size: 1rem;
-    }
-
     h1 {
-        font-size: clamp(1.6rem, 7vw, 2.2rem);
-        line-height: 1.15;
+        font-size: clamp(2rem, 8vw, 2.8rem);
+        line-height: 1.1;
     }
 
     h2 {
-        font-size: clamp(1.35rem, 6vw, 1.8rem);
-        line-height: 1.2;
+        font-size: clamp(1.6rem, 6vw, 2.2rem);
+        line-height: 1.12;
     }
 
     h3 {
-        font-size: clamp(1.1rem, 5vw, 1.4rem);
-        line-height: 1.25;
+        font-size: clamp(1.3rem, 5vw, 1.7rem);
+        line-height: 1.18;
     }
 }

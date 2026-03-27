@@ -20,7 +20,7 @@ const Home = () => (
                     >
                         Shop the release
                     </Link>
-                    <Link className="btn ghost" to="/contact" onClick={() => trackEngagement('home_plan_tasting', 'home')}>
+                    <Link className="btn brass" to="/contact" onClick={() => trackEngagement('home_plan_tasting', 'home')}>
                         Plan a tasting
                     </Link>
                 </div>

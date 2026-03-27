@@ -203,6 +203,146 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         </div>
     );
 
+    const renderShippingPanel = () => (
+        <div className="wizard-panel">
+            {isMobileWizard && <h3 className="step-title">Shipping details</h3>}
+            {!isMobileWizard && <h4>Shipping</h4>}
+            <div className="form-grid">
+                <div className={errors.address ? 'input-field has-error' : 'input-field'}>
+                    <label htmlFor="address">Address</label>
+                    <input
+                        id="address"
+                        name="address"
+                        type="text"
+                        value={formValues.address}
+                        onChange={handleChange}
+                        autoComplete="street-address"
+                    />
+                    {errors.address && <p className="error">{errors.address}</p>}
+                </div>
+            </div>
+            <div className="form-grid form-grid--thirds">
+                <div className={errors.city ? 'input-field has-error' : 'input-field'}>
+                    <label htmlFor="city">City</label>
+                    <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        value={formValues.city}
+                        onChange={handleChange}
+                        autoComplete="address-level2"
+                    />
+                    {errors.city && <p className="error">{errors.city}</p>}
+                </div>
+                <div className={errors.region ? 'input-field has-error' : 'input-field'}>
+                    <label htmlFor="region">State/Province</label>
+                    <input
+                        id="region"
+                        name="region"
+                        type="text"
+                        value={formValues.region}
+                        onChange={handleChange}
+                        autoComplete="address-level1"
+                    />
+                    {errors.region && <p className="error">{errors.region}</p>}
+                </div>
+                <div className={errors.postal ? 'input-field has-error' : 'input-field'}>
+                    <label htmlFor="postal">Postal code</label>
+                    <input
+                        id="postal"
+                        name="postal"
+                        type="text"
+                        value={formValues.postal}
+                        onChange={handleChange}
+                        autoComplete="postal-code"
+                    />
+                    {errors.postal && <p className="error">{errors.postal}</p>}
+                </div>
+            </div>
+            <div className="form-grid">
+                <div className="input-field">
+                    <label htmlFor="notes">Delivery notes (optional)</label>
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        value={formValues.notes}
+                        onChange={handleChange}
+                        placeholder="Gate codes, preferred delivery times, etc."
+                    />
+                </div>
+            </div>
+            {isMobileWizard && <h3 className="step-title">Shipping method</h3>}
+            {!isMobileWizard && <h4>Shipping method</h4>}
+            <div className="radio-group">
+                <label className={shippingMethod === 'standard' ? 'radio-card is-selected' : 'radio-card'}>
+                    <input
+                        type="radio"
+                        name="shippingMethod"
+                        value="standard"
+                        checked={shippingMethod === 'standard'}
+                        onChange={() => setShippingMethod('standard')}
+                    />
+                    <div>
+                        <p className="radio-title">Standard temperature-controlled</p>
+                        <p className="caption">Included with 3+ bottles. Arrives in 3–5 business days.</p>
+                    </div>
+                </label>
+                <label className={shippingMethod === 'express' ? 'radio-card is-selected' : 'radio-card'}>
+                    <input
+                        type="radio"
+                        name="shippingMethod"
+                        value="express"
+                        checked={shippingMethod === 'express'}
+                        onChange={() => setShippingMethod('express')}
+                    />
+                    <div>
+                        <p className="radio-title">Express cold pack</p>
+                        <p className="caption">Priority handling with insulated packaging.</p>
+                    </div>
+                </label>
+            </div>
+            {isMobileWizard && (
+                <div className="form-actions wizard-actions">
+                    <button className="btn ghost" type="button" onClick={handlePrevStep}>
+                        Back
+                    </button>
+                    <button className="btn primary" type="button" onClick={handleNextStep}>
+                        Review order
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+
+    const renderReviewPanel = () => (
+        <div className="wizard-panel">
+            <h3 className="step-title">Review your order</h3>
+            <div className="review-section">
+                <p className="review-label">Contact</p>
+                <p className="review-value">{formValues.firstName} {formValues.lastName}</p>
+                <p className="review-value">{formValues.email}</p>
+                {formValues.phone && <p className="review-value">{formValues.phone}</p>}
+                <button className="review-edit" type="button" onClick={() => { setStep(1); setErrors({}); }}>Edit</button>
+            </div>
+            <div className="review-section">
+                <p className="review-label">Ship to</p>
+                <p className="review-value">{formValues.address}</p>
+                <p className="review-value">{formValues.city}, {formValues.region} {formValues.postal}</p>
+                <p className="review-value">{shippingMethod === 'express' ? 'Express cold pack' : 'Standard temperature-controlled'}</p>
+                <button className="review-edit" type="button" onClick={() => { setStep(2); setErrors({}); }}>Edit</button>
+            </div>
+            <div className="form-actions wizard-actions">
+                <button className="btn ghost" type="button" onClick={handlePrevStep}>
+                    Back
+                </button>
+                <button className="btn primary" type="submit" disabled={submitting}>
+                    {submitting ? 'Placing order…' : 'Place order'}
+                </button>
+            </div>
+        </div>
+    );
+
     if (!items.length && !confirmation) {
         return (
             <section className="checkout">
@@ -256,12 +396,19 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                 {/* Mobile wizard step indicator */}
                                 {isMobileWizard && (
                                     <div className="wizard-progress" aria-label="Checkout progress">
-                                        {['Contact', 'Shipping', 'Review'].map((label, i) => (
-                                            <div key={label} className={`wizard-step-dot ${step === i + 1 ? 'is-active' : ''} ${step > i + 1 ? 'is-done' : ''}`}>
-                                                <span className="dot" />
-                                                <span className="dot-label">{label}</span>
-                                            </div>
-                                        ))}
+                                        {['Contact', 'Shipping', 'Review'].map((label, i) => {
+                                            const dotClass = [
+                                                'wizard-step-dot',
+                                                step === i + 1 && 'is-active',
+                                                step > i + 1 && 'is-done',
+                                            ].filter(Boolean).join(' ');
+                                            return (
+                                                <div key={label} className={dotClass}>
+                                                    <span className="dot" />
+                                                    <span className="dot-label">{label}</span>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 )}
 
@@ -271,7 +418,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                 {isMobileWizard && <h3 className="step-title">Contact details</h3>}
                                 {!isMobileWizard && <h3>Guest details</h3>}
                                 <div className="form-grid">
-                                    <div className={`input-field ${errors.firstName ? 'has-error' : ''}`}>
+                                    <div className={errors.firstName ? 'input-field has-error' : 'input-field'}>
                                         <label htmlFor="firstName">First name</label>
                                         <input
                                             id="firstName"
@@ -283,7 +430,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                         />
                                         {errors.firstName && <p className="error">{errors.firstName}</p>}
                                     </div>
-                                    <div className={`input-field ${errors.lastName ? 'has-error' : ''}`}>
+                                    <div className={errors.lastName ? 'input-field has-error' : 'input-field'}>
                                         <label htmlFor="lastName">Last name</label>
                                         <input
                                             id="lastName"
@@ -297,7 +444,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                     </div>
                                 </div>
                                 <div className="form-grid">
-                                    <div className={`input-field ${errors.email ? 'has-error' : ''}`}>
+                                    <div className={errors.email ? 'input-field has-error' : 'input-field'}>
                                         <label htmlFor="email">Email</label>
                                         <input
                                             id="email"
@@ -332,154 +479,15 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                 </div>
                                 )}
 
-                                {/* Step 2: Shipping */}
-                                {(!isMobileWizard || step === 2) && (
-                                <div className="wizard-panel">
-                                {isMobileWizard && <h3 className="step-title">Shipping details</h3>}
-                                {!isMobileWizard && <h4>Shipping</h4>}
-                                <div className="form-grid">
-                                    <div className={`input-field ${errors.address ? ‘has-error’ : ‘’}`}>
-                                        <label htmlFor="address">Address</label>
-                                        <input
-                                            id="address"
-                                            name="address"
-                                            type="text"
-                                            value={formValues.address}
-                                            onChange={handleChange}
-                                            autoComplete="street-address"
-                                        />
-                                        {errors.address && <p className="error">{errors.address}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-grid form-grid--thirds">
-                                    <div className={`input-field ${errors.city ? ‘has-error’ : ‘’}`}>
-                                        <label htmlFor="city">City</label>
-                                        <input
-                                            id="city"
-                                            name="city"
-                                            type="text"
-                                            value={formValues.city}
-                                            onChange={handleChange}
-                                            autoComplete="address-level2"
-                                        />
-                                        {errors.city && <p className="error">{errors.city}</p>}
-                                    </div>
-                                    <div className={`input-field ${errors.region ? ‘has-error’ : ‘’}`}>
-                                        <label htmlFor="region">State/Province</label>
-                                        <input
-                                            id="region"
-                                            name="region"
-                                            type="text"
-                                            value={formValues.region}
-                                            onChange={handleChange}
-                                            autoComplete="address-level1"
-                                        />
-                                        {errors.region && <p className="error">{errors.region}</p>}
-                                    </div>
-                                    <div className={`input-field ${errors.postal ? ‘has-error’ : ‘’}`}>
-                                        <label htmlFor="postal">Postal code</label>
-                                        <input
-                                            id="postal"
-                                            name="postal"
-                                            type="text"
-                                            value={formValues.postal}
-                                            onChange={handleChange}
-                                            autoComplete="postal-code"
-                                        />
-                                        {errors.postal && <p className="error">{errors.postal}</p>}
-                                    </div>
-                                </div>
-                                <div className="form-grid">
-                                    <div className="input-field">
-                                        <label htmlFor="notes">Delivery notes (optional)</label>
-                                        <textarea
-                                            id="notes"
-                                            name="notes"
-                                            rows="3"
-                                            value={formValues.notes}
-                                            onChange={handleChange}
-                                            placeholder="Gate codes, preferred delivery times, etc."
-                                        />
-                                    </div>
-                                </div>
-                                {isMobileWizard && <h3 className="step-title">Shipping method</h3>}
-                                {!isMobileWizard && <h4>Shipping method</h4>}
-                                <div className="radio-group">
-                                    <label className={`radio-card ${shippingMethod === ‘standard’ ? ‘is-selected’ : ‘’}`}>
-                                        <input
-                                            type="radio"
-                                            name="shippingMethod"
-                                            value="standard"
-                                            checked={shippingMethod === ‘standard’}
-                                            onChange={() => setShippingMethod(‘standard’)}
-                                        />
-                                        <div>
-                                            <p className="radio-title">Standard temperature-controlled</p>
-                                            <p className="caption">Included with 3+ bottles. Arrives in 3–5 business days.</p>
-                                        </div>
-                                    </label>
-                                    <label className={`radio-card ${shippingMethod === ‘express’ ? ‘is-selected’ : ‘’}`}>
-                                        <input
-                                            type="radio"
-                                            name="shippingMethod"
-                                            value="express"
-                                            checked={shippingMethod === ‘express’}
-                                            onChange={() => setShippingMethod(‘express’)}
-                                        />
-                                        <div>
-                                            <p className="radio-title">Express cold pack</p>
-                                            <p className="caption">Priority handling with insulated packaging.</p>
-                                        </div>
-                                    </label>
-                                </div>
-                                {/* Mobile wizard: Back + Next buttons for step 2 */}
-                                {isMobileWizard && (
-                                    <div className="form-actions wizard-actions">
-                                        <button className="btn ghost" type="button" onClick={handlePrevStep}>
-                                            ← Back
-                                        </button>
-                                        <button className="btn primary" type="button" onClick={handleNextStep}>
-                                            Review order
-                                        </button>
-                                    </div>
-                                )}
-                                </div>
-                                )}
-
-                                {/* Step 3: Review (mobile wizard only) */}
-                                {isMobileWizard && step === 3 && (
-                                <div className="wizard-panel">
-                                    <h3 className="step-title">Review your order</h3>
-                                    <div className="review-section">
-                                        <p className="review-label">Contact</p>
-                                        <p className="review-value">{formValues.firstName} {formValues.lastName}</p>
-                                        <p className="review-value">{formValues.email}</p>
-                                        {formValues.phone && <p className="review-value">{formValues.phone}</p>}
-                                        <button className="review-edit" type="button" onClick={() => { setStep(1); setErrors({}); }}>Edit</button>
-                                    </div>
-                                    <div className="review-section">
-                                        <p className="review-label">Ship to</p>
-                                        <p className="review-value">{formValues.address}</p>
-                                        <p className="review-value">{formValues.city}, {formValues.region} {formValues.postal}</p>
-                                        <p className="review-value">{shippingMethod === ‘express’ ? ‘Express cold pack’ : ‘Standard temperature-controlled’}</p>
-                                        <button className="review-edit" type="button" onClick={() => { setStep(2); setErrors({}); }}>Edit</button>
-                                    </div>
-                                    <div className="form-actions wizard-actions">
-                                        <button className="btn ghost" type="button" onClick={handlePrevStep}>
-                                            ← Back
-                                        </button>
-                                        <button className="btn primary" type="submit" disabled={submitting}>
-                                            {submitting ? ‘Placing order…’ : ‘Place order’}
-                                        </button>
-                                    </div>
-                                </div>
-                                )}
+                                {/* Steps 2 & 3 rendered via functions to avoid esbuild scanner issues with deep JSX nesting */}
+                                {(!isMobileWizard || step === 2) && renderShippingPanel()}
+                                {isMobileWizard && step === 3 && renderReviewPanel()}
 
                                 {/* Desktop: always-visible submit */}
                                 {!isMobileWizard && (
                                 <div className="form-actions">
                                     <button className="btn primary" type="submit" disabled={submitting}>
-                                        {submitting ? ‘Placing order…’ : ‘Place order as guest’}
+                                        {submitting ? 'Placing order\u2026' : 'Place order as guest'}
                                     </button>
                                     <span className="tiny">No account needed. We’ll never share your email.</span>
                                 </div>

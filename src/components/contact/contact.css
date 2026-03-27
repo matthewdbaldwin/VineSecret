@@ -164,16 +164,9 @@ textarea.control {
     flex-wrap: wrap;
 }
 
-.btn.primary {
-    background: linear-gradient(135deg, #f5d18d, #f0a96b);
-    color: #2b1a36;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
 .btn.ghost {
-    border: 1px solid #7c2f68;
-    color: #7c2f68;
-    background: #fefaf5;
+    border-color: #6b2760;
+    color: #6b2760;
 }
 
 .visit-card h3 {

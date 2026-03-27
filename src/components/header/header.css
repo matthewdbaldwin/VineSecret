@@ -1,138 +1,108 @@
+/* ── Site header — full-bleed estate hero ────────────────────────────────── */
 .site-header {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(120deg, rgba(14, 7, 24, 0.88), rgba(74, 36, 87, 0.76)),
-        url('../../assets/images/vineyard.jpg') center/cover no-repeat;
-    color: #f9f6f0;
+    background:
+        linear-gradient(to bottom, rgba(9, 4, 13, 0.86) 0%, rgba(20, 9, 31, 0.78) 60%, rgba(30, 16, 40, 0.65) 100%),
+        url('../../assets/images/vineyard.jpg') center / cover no-repeat;
+    color: #f4efe6;
+}
+
+/* Subtle bottom vignette to blend into page */
+.site-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(9, 4, 13, 0.55));
+    pointer-events: none;
 }
 
 .header-overlay {
     position: relative;
-    padding: 2.5rem 6vw 3.5rem;
-    backdrop-filter: blur(1px);
+    padding: 2.5rem 6vw 4rem;
+    z-index: 1;
 }
 
+/* ── Brand block ─────────────────────────────────────────────────────────── */
 .brand-block {
     display: flex;
-    grid-template-columns: 160px 1fr;
     gap: 2rem;
     align-items: center;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
 }
 
 .brand-mark {
-    width: 160px;
-    height: 160px;
-    border-radius: 26px;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 4px;
     background-image: url('../../assets/images/VineSecretLogo.png');
     background-position: center;
     background-size: contain;
+    background-repeat: no-repeat;
+    /* subtle glow */
+    filter: drop-shadow(0 0 24px rgba(184, 145, 90, 0.2));
+}
+
+.brand-copy {
+    border-left: 1px solid rgba(184, 145, 90, 0.35);
+    padding-left: 2rem;
 }
 
 .brand-copy h1 {
-    font-size: clamp(2.2rem, 3vw, 3rem);
-    font-weight: 800;
-    margin-bottom: 0.75rem;
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin-bottom: 0.5rem;
+    color: #f4efe6;
 }
 
 .brand-copy .lede {
-    max-width: 780px;
-    color: #f3eae2;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
+    max-width: 560px;
+    color: rgba(244, 239, 230, 0.7);
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.01em;
 }
 
-.eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.28em;
-    font-size: 1.2rem;
-    color: #f5d18d;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.eyebrow-p {
-    text-transform: uppercase;
-    letter-spacing: 0.28em;
-    font-size: 1.2rem;
-    color: #2b1a36;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
+/* ── Header actions ──────────────────────────────────────────────────────── */
 .header-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.65rem;
+    align-items: center;
 }
 
-.btn {
-    display: inline-block;
-    padding: 0.65rem 1.1rem;
-    border-radius: 999px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+/* Gold rule divider above actions */
+.header-actions::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 0;
+    /* used as spacer — actual rule is on .brand-copy */
 }
 
-.btn.primary {
-    background: linear-gradient(135deg, #f5d18d, #f0a96b);
-    color: #2b1a36;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+/* ── Slim header — nav-only on inner pages ───────────────────────────────── */
+.site-header--slim {
+    background:
+        linear-gradient(to bottom, rgba(9, 4, 13, 0.98) 0%, rgba(20, 9, 31, 0.95) 100%),
+        url('../../assets/images/vineyard.jpg') center / cover no-repeat;
 }
 
-.btn.ghost {
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    color: #f9f6f0;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.btn:hover,
-.btn:focus {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
-}
-
-@media (max-width: 1024px) {
-    .brand-block {
-        grid-template-columns: 1fr;
-        text-align: left;
-    }
-
-    .brand-mark {
-        width: 120px;
-        height: 120px;
-    }
-}
-
-@media (max-width: 640px) {
-    .header-overlay {
-        padding: 1.5rem 1.25rem 2.5rem;
-    }
-
-    .brand-copy h1 {
-        font-size: 2rem;
-    }
-
-    .brand-copy .lede {
-        font-size: 1rem;
-    }
-
-    .header-actions {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.site-header--slim .header-overlay {
+    padding-bottom: 1rem;
 }
 
 /* ── Mobile: compact header ───────────────────────────────────────────────── */
 @media (max-width: 768px) {
     .header-overlay {
-        padding: 1rem 1rem 1.75rem;
+        padding: 1.25rem 1.25rem 2.5rem;
     }
 
     .brand-block {
@@ -141,30 +111,49 @@
     }
 
     .brand-mark {
-        width: 80px;
-        height: 80px;
-        border-radius: 18px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .brand-copy {
+        padding-left: 1.25rem;
     }
 
     .brand-copy h1 {
-        font-size: clamp(1.5rem, 6vw, 2rem);
-        line-height: 1.15;
-        margin-bottom: 0.5rem;
+        font-size: clamp(1.8rem, 7vw, 2.6rem);
+        line-height: 1.05;
+        margin-bottom: 0.4rem;
     }
 
     .brand-copy .lede {
-        font-size: 0.9rem;
-        line-height: 1.55;
-        margin-bottom: 0.75rem;
+        font-size: 0.88rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
     }
 
     .header-actions {
         flex-direction: row;
         flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .header-actions .btn {
-        font-size: 0.8rem;
-        padding: 0.55rem 0.9rem;
+        font-size: 0.7rem;
+        padding: 0.6rem 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-block {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .brand-copy {
+        border-left: none;
+        border-top: 1px solid rgba(184, 145, 90, 0.3);
+        padding-left: 0;
+        padding-top: 0.75rem;
     }
 }

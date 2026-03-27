@@ -1,0 +1,182 @@
+/* ── Age Gate — Black Stallion-inspired full-screen overlay ──────────────── */
+
+.age-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: agegate-in 0.7s ease both;
+}
+
+.age-gate.is-closing {
+    animation: agegate-out 0.6s ease both;
+}
+
+@keyframes agegate-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes agegate-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+/* Dark background with a very subtle vineyard vignette */
+.age-gate__backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at center, rgba(30, 16, 40, 0.72) 0%, rgba(9, 4, 13, 0.96) 70%),
+        url('../../assets/images/vineyard.jpg') center / cover no-repeat;
+    z-index: 0;
+}
+
+/* Content panel — no card, just space */
+.age-gate__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    animation: agegate-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+@keyframes agegate-rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo mark */
+.age-gate__logo-mark {
+    width: 80px;
+    height: 80px;
+    background-image: url('../../assets/images/VineSecretLogo.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-bottom: 1.75rem;
+    opacity: 0.9;
+}
+
+/* Eyebrow label */
+.age-gate__eyebrow {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.38em;
+    font-size: 0.64rem;
+    font-weight: 600;
+    color: #b8915a;
+    margin: 0 0 0.85rem;
+}
+
+/* Gold horizontal rule */
+.age-gate__rule {
+    border: none;
+    border-top: 1px solid rgba(184, 145, 90, 0.4);
+    width: 48px;
+    margin: 0 auto 1.75rem;
+}
+
+/* Main heading */
+.age-gate__heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: #f4efe6;
+    margin: 0 0 1.25rem;
+}
+
+/* Sub-question */
+.age-gate__sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: rgba(244, 239, 230, 0.65);
+    margin: 0 0 2rem;
+    letter-spacing: 0.02em;
+}
+
+/* Action buttons */
+.age-gate__actions {
+    display: flex;
+    gap: 0.85rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.age-gate__btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+    padding: 0.85rem 2.5rem;
+    min-width: 140px;
+}
+
+.age-gate__btn--yes {
+    background: #b8915a;
+    color: #09040d;
+    border: 1px solid #b8915a;
+}
+
+.age-gate__btn--yes:hover,
+.age-gate__btn--yes:focus {
+    background: #cda872;
+    border-color: #cda872;
+    transform: translateY(-1px);
+}
+
+.age-gate__btn--no {
+    background: transparent;
+    color: rgba(244, 239, 230, 0.6);
+    border: 1px solid rgba(244, 239, 230, 0.25);
+}
+
+.age-gate__btn--no:hover,
+.age-gate__btn--no:focus {
+    color: #f4efe6;
+    border-color: rgba(244, 239, 230, 0.55);
+    transform: translateY(-1px);
+}
+
+/* Legal fine print */
+.age-gate__legal {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: rgba(244, 239, 230, 0.35);
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .age-gate__heading {
+        font-size: 2.2rem;
+    }
+
+    .age-gate__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .age-gate__btn {
+        min-width: unset;
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+}

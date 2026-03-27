@@ -12,6 +12,7 @@ import Cart from './cart';
 import Checkout from './checkout';
 import { initAnalytics, trackPageView } from '../analytics/tracking';
 import BottomNav from './nav/BottomNav';
+import AgeGate from './agegate/AgeGate';
 
 const AnalyticsListener = () => {
     const location = useLocation();
@@ -45,6 +46,7 @@ const App = () => (
         </main>
         <Footer />
         <BottomNav />
+        <AgeGate />
     </div>
 );
 

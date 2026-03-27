@@ -8,11 +8,11 @@ const Footer = () => {
         <footer className="site-footer">
             <div className="footer-grid">
                 <div className="footer-block">
-                    <p className="label">Tasting room</p>
+                    <span className="label">Tasting Room</span>
                     <p>Orange County, CA</p>
                 </div>
                 <div className="footer-block">
-                    <p className="label">Contact</p>
+                    <span className="label">Contact</span>
                     <p>
                         800-264-2099<br />
                         <a href="mailto:order@vinesecret.com" onClick={() => trackEmailClick('footer_email', 'order@vinesecret.com')}>
@@ -21,10 +21,11 @@ const Footer = () => {
                     </p>
                 </div>
                 <div className="footer-block">
-                    <p className="label">Copyright</p>
-                    <p>&copy; {year} VineSecret</p>
+                    <span className="label">Estate</span>
+                    <p>Vine Secret Winery<br />Est. California</p>
                 </div>
             </div>
+            <p className="footer-copy">&copy; {year} VineSecret &mdash; All rights reserved</p>
         </footer>
     );
 };
