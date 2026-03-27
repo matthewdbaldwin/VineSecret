@@ -4,6 +4,8 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
@@ -13,6 +15,16 @@ const { buildInvoiceEmail } = require('./email/invoice');
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'orders@vinesecret.com';
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+
+const orderLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 20,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+});
 
 // Lazily created so the server starts even if SMTP credentials are not yet set.
 // An error will be logged at send time if the configuration is missing.
@@ -43,12 +55,17 @@ const getTransporter = () => {
 // In-memory order store for this demo session
 const orders = new Map();
 
-app.use(cors());
+app.use(helmet());
+app.use(cors({ origin: allowedOrigin }));
 app.use(express.json());
+
+app.get('/api/health', (_req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // POST /api/orders/guest
 // Create a guest order and return an order ID
-app.post('/api/orders/guest', (req, res) => {
+app.post('/api/orders/guest', orderLimiter, (req, res) => {
     const guest = req.body || {};
     const orderId = `VS-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 
@@ -80,7 +97,7 @@ app.get('/api/orders/guest/:orderId', (req, res) => {
 
 // POST /api/notifications/guest-order
 // Build invoice HTML and send via SMTP
-app.post('/api/notifications/guest-order', async (req, res) => {
+app.post('/api/notifications/guest-order', orderLimiter, async (req, res) => {
     const { orderId, email, name, cart } = req.body || {};
 
     if (!email) {
@@ -108,7 +125,7 @@ app.post('/api/notifications/guest-order', async (req, res) => {
 // Without this, unimplemented routes fall through to the static file handler
 // which returns the React app HTML with status 200, causing the frontend's
 // cart actions to treat the HTML as a valid API response and empty the cart.
-app.use('/api', (req, res) => {
+app.use('/api', (_req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
