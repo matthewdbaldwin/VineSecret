@@ -10,7 +10,28 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const { z } = require('zod');
 const { buildInvoiceEmail } = require('./email/invoice');
+
+const guestOrderSchema = z.object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z.email('A valid email is required'),
+    phone: z.string().optional(),
+    address: z.string().min(1, 'Address is required'),
+    city: z.string().min(1, 'City is required'),
+    region: z.string().min(1, 'State/Province is required'),
+    postal: z.string().min(1, 'Postal code is required'),
+    notes: z.string().optional(),
+    shippingMethod: z.enum(['standard', 'express']).default('standard'),
+});
+
+const notificationSchema = z.object({
+    orderId: z.string().min(1, 'orderId is required'),
+    email: z.email('A valid email is required'),
+    name: z.string().optional(),
+    cart: z.record(z.string(), z.unknown()).optional(),
+});
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
@@ -66,7 +87,11 @@ app.get('/api/health', (_req, res) => {
 // POST /api/orders/guest
 // Create a guest order and return an order ID
 app.post('/api/orders/guest', orderLimiter, (req, res) => {
-    const guest = req.body || {};
+    const result = guestOrderSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ error: 'Invalid request', issues: z.flattenError(result.error).fieldErrors });
+    }
+    const guest = result.data;
     const orderId = `VS-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 
     const order = {
@@ -98,11 +123,11 @@ app.get('/api/orders/guest/:orderId', (req, res) => {
 // POST /api/notifications/guest-order
 // Build invoice HTML and send via SMTP
 app.post('/api/notifications/guest-order', orderLimiter, async (req, res) => {
-    const { orderId, email, name, cart } = req.body || {};
-
-    if (!email) {
-        return res.status(400).json({ error: 'email is required' });
+    const result = notificationSchema.safeParse(req.body);
+    if (!result.success) {
+        return res.status(400).json({ error: 'Invalid request', issues: z.flattenError(result.error).fieldErrors });
     }
+    const { orderId, email, name, cart } = result.data;
 
     const html = buildInvoiceEmail({ orderId, name, cart });
 
