@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 import '../assets/css/app.css';
 import Header from './header';
 import Footer from './footer';
@@ -10,6 +10,9 @@ import Products from './products';
 import ProductDetails from './products/product_details';
 import Cart from './cart';
 import Checkout from './checkout';
+import Legal from './legal';
+import WineClub from './club';
+import NotFound from './notfound';
 import { initAnalytics, trackPageView } from '../analytics/tracking';
 import BottomNav from './nav/BottomNav';
 import AgeGate from './agegate/AgeGate';
@@ -30,9 +33,10 @@ const AnalyticsListener = () => {
 
 const App = () => (
     <div className="app">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <AnalyticsListener />
         <Header />
-        <main className="page-shell">
+        <main id="main-content" className="page-shell">
             <Switch>
                 <Route path="/" exact component={Home} />
                 <Route path="/products/:product_id" component={ProductDetails} />
@@ -41,7 +45,9 @@ const App = () => (
                 <Route path="/cart" component={Cart} />
                 <Route path="/about" component={About} />
                 <Route path="/contact" component={Contact} />
-                <Redirect to="/" />
+                <Route path="/legal/:page" component={Legal} />
+                <Route path="/club" component={WineClub} />
+                <Route component={NotFound} />
             </Switch>
         </main>
         <Footer />

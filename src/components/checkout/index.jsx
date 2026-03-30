@@ -1,11 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+// import { loadStripe } from '@stripe/stripe-js';
+// import { Elements } from '@stripe/react-stripe-js';
 import { createGuestOrder, getActiveCart } from '../../actions';
 import { findProductById } from '../../data/products';
 import { trackBeginCheckout, trackCheckoutStep, trackPurchase } from '../../analytics/tracking';
 import Money from '../general/money';
+// import StripePaymentPanel from './StripePaymentPanel';
 import './checkout.css';
+
+// const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+//     ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+//     : null;
 
 const EMPTY_FORM = {
     firstName: '',
@@ -19,10 +26,6 @@ const EMPTY_FORM = {
     notes: '',
 };
 
-const STEP_FIELDS = {
-    1: ['firstName', 'lastName', 'email'],
-    2: ['address', 'city', 'region', 'postal'],
-};
 
 const useIsMobileWizard = () => {
     const [isMobile, setIsMobile] = useState(() =>
@@ -44,6 +47,8 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     const [submitting, setSubmitting] = useState(false);
     const [confirmation, setConfirmation] = useState(null);
     const [step, setStep] = useState(1);
+    // const [clientSecret, setClientSecret] = useState(null);
+    // const [paymentIntentError, setPaymentIntentError] = useState(null);
     const isMobileWizard = useIsMobileWizard();
 
     const items = cart?.items || [];
@@ -141,11 +146,28 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         return nextErrors;
     };
 
+    // const createPaymentIntent = async () => {
+    //     setPaymentIntentError(null);
+    //     try {
+    //         const res = await fetch('/api/payments/create-intent', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ amount: displayTotals.grandTotal }),
+    //         });
+    //         const data = await res.json();
+    //         if (!res.ok) throw new Error(data.error || 'Could not initialize payment');
+    //         setClientSecret(data.clientSecret);
+    //     } catch (err) {
+    //         setPaymentIntentError(err.message || 'Payment setup failed. Please try again.');
+    //     }
+    // };
+
     const handleNextStep = () => {
         const stepErrors = validateStep(step);
         setErrors(stepErrors);
         if (!Object.keys(stepErrors).length) {
-            setStep((s) => s + 1);
+            const nextStep = step + 1;
+            setStep(nextStep);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
@@ -329,7 +351,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                 <p className="review-label">Ship to</p>
                 <p className="review-value">{formValues.address}</p>
                 <p className="review-value">{formValues.city}, {formValues.region} {formValues.postal}</p>
-                <p className="review-value">{shippingMethod === 'express' ? 'Express cold pack' : 'Standard temperature-controlled'}</p>
+                <p className="review-value">{shippingMethod === "express" ? "Express cold pack" : "Standard temperature-controlled"}</p>
                 <button className="review-edit" type="button" onClick={() => { setStep(2); setErrors({}); }}>Edit</button>
             </div>
             <div className="form-actions wizard-actions">
@@ -337,7 +359,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                     Back
                 </button>
                 <button className="btn primary" type="submit" disabled={submitting}>
-                    {submitting ? 'Placing order…' : 'Place order'}
+                    {submitting ? "Placing order\u2026" : "Place order"}
                 </button>
             </div>
         </div>
@@ -369,8 +391,8 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
             <div className="checkout-inner">
                 <header className="checkout-header">
                     <div>
-                        <p className="eyebrow">{confirmation ? 'Order placed' : 'Checkout'}</p>
-                        <h1>{confirmation ? 'Guest order confirmed' : 'Secure your shipment'}</h1>
+                        <p className="eyebrow">{confirmation ? "Order placed" : "Checkout"}</p>
+                        <h1>{confirmation ? "Guest order confirmed" : "Secure your shipment"}</h1>
                         <p className="lede">
                             {confirmation
                                 ? 'We saved a copy of your order locally. Expect a confirmation email shortly.'
@@ -479,17 +501,19 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                                 </div>
                                 )}
 
-                                {/* Steps 2 & 3 rendered via functions to avoid esbuild scanner issues with deep JSX nesting */}
+                                {/* Step 2: Shipping */}
                                 {(!isMobileWizard || step === 2) && renderShippingPanel()}
+
+                                {/* Step 3 (mobile): Review */}
                                 {isMobileWizard && step === 3 && renderReviewPanel()}
 
-                                {/* Desktop: always-visible submit */}
+                                {/* Desktop: plain submit */}
                                 {!isMobileWizard && (
                                 <div className="form-actions">
                                     <button className="btn primary" type="submit" disabled={submitting}>
-                                        {submitting ? 'Placing order\u2026' : 'Place order as guest'}
+                                        {submitting ? "Placing order\u2026" : "Place order as guest"}
                                     </button>
-                                    <span className="tiny">No account needed. We’ll never share your email.</span>
+                                    <span className="tiny">No account needed. We&rsquo;ll never share your email.</span>
                                 </div>
                                 )}
                             </form>
@@ -529,7 +553,7 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
                             <div className="summary-header">
                                 <div>
                                     <p className="eyebrow">Order summary</p>
-                                    <h3>{confirmation ? 'Saved receipt' : 'Current cart'}</h3>
+                                    <h3>{confirmation ? "Saved receipt" : "Current cart"}</h3>
                                 </div>
                                 <span className="pill soft">Cold pack shipping</span>
                             </div>

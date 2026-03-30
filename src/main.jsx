@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import rootReducer from './reducers';
 import App from './components/app';
+import ErrorBoundary from './components/ErrorBoundary';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import thunk from './middleware/thunk';
 
@@ -14,9 +15,11 @@ const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-    <Provider store={store}>
-        <Router>
-            <App />
-        </Router>
-    </Provider>,
+    <ErrorBoundary>
+        <Provider store={store}>
+            <Router>
+                <App />
+            </Router>
+        </Provider>
+    </ErrorBoundary>,
 );

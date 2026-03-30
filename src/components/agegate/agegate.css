@@ -30,7 +30,7 @@
     inset: 0;
     background:
         radial-gradient(ellipse at center, rgba(30, 16, 40, 0.72) 0%, rgba(9, 4, 13, 0.96) 70%),
-        url('../../assets/images/vineyard.jpg') center / cover no-repeat;
+        url('../../assets/images/vineyard.webp') center / cover no-repeat;
     z-index: 0;
 }
 
@@ -57,7 +57,7 @@
 .age-gate__logo-mark {
     width: 80px;
     height: 80px;
-    background-image: url('../../assets/images/VineSecretLogo.png');
+    background-image: url('../../assets/images/VineSecretLogo.webp');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;

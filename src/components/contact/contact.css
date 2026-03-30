@@ -164,10 +164,6 @@ textarea.control {
     flex-wrap: wrap;
 }
 
-.btn.ghost {
-    border-color: #6b2760;
-    color: #6b2760;
-}
 
 .visit-card h3 {
     margin: 0 0 0.35rem;
@@ -211,5 +207,13 @@ textarea.control {
     .contact-form-card,
     .visit-card {
         padding: 1.25rem 1.35rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .img-grapes {
+        max-width: 100%;
     }
 }

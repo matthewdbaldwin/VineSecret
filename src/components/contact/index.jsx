@@ -2,7 +2,7 @@ import React from 'react';
 import Schedule from '../general/schedule';
 import './contact.css';
 import ContactForm from './contact_form';
-import grapes from '../../assets/images/grapes.jpg';
+import grapes from '../../assets/images/grapes.webp';
 import { trackEmailClick, trackEngagement } from '../../analytics/tracking';
 
 const Contact = () => (
@@ -32,7 +32,7 @@ const Contact = () => (
                         </div>
                         <div>
                             <span className="label">Tasting room</span>
-                            <p>by appointment • Sonoma & the Bay</p>
+                            <p>by appointment • Orange County, CA</p>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@ const Contact = () => (
                     </ul>
                     <div className="card-actions">
                         <a
-                            className="btn ghost"
+                            className="btn brass"
                             href="tel:+17075551234"
                             onClick={() => trackEngagement('call_cellar', 'contact')}
                         >

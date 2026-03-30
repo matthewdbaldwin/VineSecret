@@ -15,7 +15,7 @@ const Home = () => (
                 <div className="cta-group">
                     <Link
                         className="btn primary"
-                        to="/products"
+                        to="/contact"
                         onClick={() => trackEngagement('home_shop', 'home')}
                     >
                         Shop the release

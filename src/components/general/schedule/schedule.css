@@ -5,7 +5,7 @@
 .widthday {
     display: inline-block;
     text-align: center;
-    width: 152px;
+    width: min(152px, 45vw);
     height: 35px;
     background-color: #f6ede6;
 }

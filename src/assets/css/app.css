@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Fonts loaded via <link rel="preload"> in index.html — no @import needed */
+
+/* ── Skip to content ──────────────────────────────────────────────────────── */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 9999;
+    background: var(--color-gold, #b8915a);
+    color: #09040d;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0 0 4px 4px;
+    text-decoration: none;
+    transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid #09040d;
+    outline-offset: 2px;
+}
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
@@ -124,6 +146,74 @@ h4, h5, h6 {
     background: rgba(122, 37, 88, 0.06);
 }
 
+/* ── Utility typography ───────────────────────────────────────────────────── */
+.caption {
+    color: var(--color-text-soft, #4a3040);
+    margin: 0;
+    font-size: 0.87rem;
+    font-weight: 300;
+}
+
+.tiny {
+    font-size: 0.72rem;
+    color: var(--color-text-muted, #7a6878);
+    font-weight: 400;
+}
+
+.strong {
+    font-weight: 600;
+    color: var(--color-text, #1a0f14);
+}
+
+.error {
+    color: #b83535;
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* ── Price display ────────────────────────────────────────────────────────── */
+.price {
+    font-family: var(--font-display, 'Cormorant Garamond', serif);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--color-text, #1a0f14);
+    letter-spacing: -0.01em;
+}
+
+/* ── Pill badge ───────────────────────────────────────────────────────────── */
+.pill.soft {
+    background: rgba(122, 37, 88, 0.08);
+    color: var(--color-plum, #7a2558);
+    padding: 0.25rem 0.65rem;
+    border-radius: 2px;
+    font-weight: 600;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ── Quantity stepper ─────────────────────────────────────────────────────── */
+.btn-quantity {
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 2px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text, #1a0f14);
+    cursor: pointer;
+    transition: background 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-quantity:hover {
+    background: var(--color-border, #dfd5c5);
+}
+
 /* ── Eyebrow labels ───────────────────────────────────────────────────────── */
 .eyebrow {
     font-family: var(--font-body);
@@ -206,6 +296,12 @@ body p {
     .page-shell {
         padding-bottom: var(--bottom-nav-total);
     }
+}
+
+/* ── Utility overrides on small screens ──────────────────────────────────── */
+@media (max-width: 600px) {
+    .caption { font-size: 0.78rem; }
+    .price   { font-size: 1.2rem; }
 }
 
 /* ── Typography scale on small screens ───────────────────────────────────── */

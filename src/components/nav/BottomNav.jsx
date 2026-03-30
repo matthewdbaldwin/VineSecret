@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './bottom-nav.css';
@@ -21,6 +21,13 @@ const BottomNav = () => {
         setMoreOpen(false);
     };
 
+    useEffect(() => {
+        if (!moreOpen) return;
+        const handleKey = (e) => { if (e.key === 'Escape') setMoreOpen(false); };
+        document.addEventListener('keydown', handleKey);
+        return () => document.removeEventListener('keydown', handleKey);
+    }, [moreOpen]);
+
     return (
         <>
             {moreOpen && (
@@ -30,6 +37,7 @@ const BottomNav = () => {
                         <nav className="more-sheet-links">
                             <Link to="/about" onClick={() => closeMore('more_about')}>Our story</Link>
                             <Link to="/contact" onClick={() => closeMore('more_visit')}>Visit the cellar</Link>
+                            <Link to="/club" onClick={() => closeMore('more_club')}>Wine club</Link>
                             <Link to="/contact" className="more-sheet-cta" onClick={() => closeMore('more_book')}>
                                 Book a tasting
                             </Link>

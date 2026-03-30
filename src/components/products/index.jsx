@@ -6,8 +6,22 @@ import CartPopover from "../cart/cart_popover";
 import ProductItem from "./product_item";
 import "./products.css";
 
+const TYPE_CATEGORIES = {
+    all:   null,
+    whites: ['Chardonnay', 'Sauvignon Blanc', 'Viognier'],
+    reds:   ['Pinot Noir', 'Cabernet Sauvignon', 'GSM Blend', 'Syrah'],
+    rose:   ['Rosé'],
+};
+
+const SORT_OPTIONS = [
+    { value: 'featured',   label: 'Featured'         },
+    { value: 'price-asc',  label: 'Price: Low to High' },
+    { value: 'price-desc', label: 'Price: High to Low' },
+    { value: 'name-asc',   label: 'Name: A–Z'         },
+];
+
 class Products extends Component {
-    state = { popover: null };
+    state = { popover: null, filterType: 'all', sortBy: 'featured' };
 
     componentDidMount() {
         this.props.getAllProducts();
@@ -35,8 +49,25 @@ class Products extends Component {
         this.setState({ popover: null });
     };
 
+    getVisibleProducts() {
+        const { products } = this.props;
+        if (!products || products.length === 0) return [];
+        const { filterType, sortBy } = this.state;
+
+        const types = TYPE_CATEGORIES[filterType];
+        let filtered = types ? products.filter((p) => types.includes(p.type)) : [...products];
+
+        if (sortBy === 'price-asc')  filtered.sort((a, b) => a.cost - b.cost);
+        if (sortBy === 'price-desc') filtered.sort((a, b) => b.cost - a.cost);
+        if (sortBy === 'name-asc')   filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+        return filtered;
+    }
+
     render() {
         const { products } = this.props;
+        const { filterType, sortBy } = this.state;
+        const visible = this.getVisibleProducts();
         const hasProducts = products && products.length > 0;
 
         return (
@@ -49,7 +80,7 @@ class Products extends Component {
                             Limited lots grown under coastal influence and bottled with intention. Explore tasting notes,
                             aging windows, and vineyard sourcing for every bottle.
                         </p>
-                        <div className="hero-metrics">
+                        <div className="products-metrics">
                             <div>
                                 <span className="metric">12</span>
                                 <span className="label">Small-batch lots</span>
@@ -106,9 +137,40 @@ class Products extends Component {
                     </div>
                 </section>
 
+                {hasProducts && (
+                    <div className="filter-bar" role="group" aria-label="Filter and sort wines">
+                        <div className="filter-pills">
+                            {Object.keys(TYPE_CATEGORIES).map((key) => (
+                                <button
+                                    key={key}
+                                    type="button"
+                                    className={`filter-pill${filterType === key ? ' is-active' : ''}`}
+                                    onClick={() => this.setState({ filterType: key })}
+                                    aria-pressed={filterType === key}
+                                >
+                                    {{ all: 'All', whites: 'Whites', reds: 'Reds', rose: 'Rosé' }[key]}
+                                </button>
+                            ))}
+                        </div>
+                        <label className="filter-sort-label" htmlFor="product-sort">
+                            <span className="sr-only">Sort by</span>
+                            <select
+                                id="product-sort"
+                                className="filter-sort"
+                                value={sortBy}
+                                onChange={(e) => this.setState({ sortBy: e.target.value })}
+                            >
+                                {SORT_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                            </select>
+                        </label>
+                    </div>
+                )}
+
                 <section className="product-grid" aria-label="Available wines">
-                    {hasProducts ? (
-                        products.map((product) => (
+                    {visible.length > 0 ? (
+                        visible.map((product) => (
                             <ProductItem
                                 key={product.id}
                                 {...product}
@@ -116,6 +178,11 @@ class Products extends Component {
                                 onAddToCart={() => this.handleAddToCart(product)}
                             />
                         ))
+                    ) : hasProducts ? (
+                        <div className="empty-state">
+                            <h3>No wines match that filter.</h3>
+                            <p>Try a different category or <button className="text-btn" onClick={() => this.setState({ filterType: 'all' })}>view all wines</button>.</p>
+                        </div>
                     ) : (
                         <div className="empty-state">
                             <h3>Our cellar is restocking.</h3>

@@ -87,7 +87,7 @@ const Form = (props) => {
                     <button className="btn primary" type="submit">
                         Send message
                     </button>
-                    <button className="btn ghost" type="reset">
+                    <button className="btn brass" type="reset">
                         Reset form
                     </button>
                 </div>

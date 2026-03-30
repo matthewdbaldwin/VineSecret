@@ -179,8 +179,10 @@ const getCartConfig = () => ({
 export const getAllProducts = () => async (dispatch) => {
     try {
         const response = await axios.get(`/api/products`);
-        const products =
-            response?.data?.products && response.data.products.length ? response.data.products : fallbackProducts;
+        const apiProducts = response?.data?.products;
+        const products = apiProducts && apiProducts.length
+            ? apiProducts.map((p) => ({ ...findProductById(p.id), ...p }))
+            : fallbackProducts;
 
         dispatch({
             type: types.GET_ALL_PRODUCTS,
@@ -428,7 +430,6 @@ export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
             type: types.GET_GUEST_ORDER_DETAILS,
             details: res.data,
         });
-        console.log('OrderDetail actions.js get:', res.data);
     } catch (err) {
         const localOrder = findLocalGuestOrder(email, orderId);
 
@@ -437,10 +438,7 @@ export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
                 type: types.GET_GUEST_ORDER_DETAILS,
                 details: localOrder,
             });
-            return;
         }
-
-        console.log('Error with guest details:', err);
     }
 };
 

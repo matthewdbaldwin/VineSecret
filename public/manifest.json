@@ -1,0 +1,50 @@
+{
+  "name": "VineSecret",
+  "short_name": "VineSecret",
+  "description": "Small-lot California estate wines — guest checkout, cold-pack delivery, cellar tastings.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#09040d",
+  "theme_color": "#09040d",
+  "categories": ["food", "shopping", "lifestyle"],
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/social/vinesecret-og.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "label": "VineSecret estate wines home"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shop Wines",
+      "short_name": "Wines",
+      "description": "Browse estate wine releases",
+      "url": "/products",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Book a Tasting",
+      "short_name": "Tastings",
+      "description": "Visit the cellar or contact us",
+      "url": "/contact",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
