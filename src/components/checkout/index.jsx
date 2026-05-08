@@ -1,18 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-// import { loadStripe } from '@stripe/stripe-js';
-// import { Elements } from '@stripe/react-stripe-js';
 import { createGuestOrder, getActiveCart } from '../../actions';
 import { findProductById } from '../../data/products';
 import { trackBeginCheckout, trackCheckoutStep, trackPurchase } from '../../analytics/tracking';
 import Money from '../general/money';
-// import StripePaymentPanel from './StripePaymentPanel';
 import './checkout.css';
-
-// const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
-//     ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
-//     : null;
 
 const EMPTY_FORM = {
     firstName: '',
@@ -40,15 +33,16 @@ const useIsMobileWizard = () => {
     return isMobile;
 };
 
-const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loadCart }) => {
+const Checkout = () => {
+    const cart = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
+
     const [formValues, setFormValues] = useState(EMPTY_FORM);
     const [shippingMethod, setShippingMethod] = useState('standard');
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
     const [confirmation, setConfirmation] = useState(null);
     const [step, setStep] = useState(1);
-    // const [clientSecret, setClientSecret] = useState(null);
-    // const [paymentIntentError, setPaymentIntentError] = useState(null);
     const isMobileWizard = useIsMobileWizard();
 
     const items = cart?.items || [];
@@ -98,8 +92,8 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     }, [pricedItems, totals]);
 
     useEffect(() => {
-        loadCart();
-    }, [loadCart]);
+        dispatch(getActiveCart());
+    }, [dispatch]);
 
     useEffect(() => {
         if (pricedItems.length && !confirmation) {
@@ -146,22 +140,6 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         return nextErrors;
     };
 
-    // const createPaymentIntent = async () => {
-    //     setPaymentIntentError(null);
-    //     try {
-    //         const res = await fetch('/api/payments/create-intent', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ amount: displayTotals.grandTotal }),
-    //         });
-    //         const data = await res.json();
-    //         if (!res.ok) throw new Error(data.error || 'Could not initialize payment');
-    //         setClientSecret(data.clientSecret);
-    //     } catch (err) {
-    //         setPaymentIntentError(err.message || 'Payment setup failed. Please try again.');
-    //     }
-    // };
-
     const handleNextStep = () => {
         const stepErrors = validateStep(step);
         setErrors(stepErrors);
@@ -187,10 +165,10 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
         trackCheckoutStep('checkout_submit', { items: pricedItems, total: displayTotals });
         setSubmitting(true);
         const cartSnapshot = { items: pricedItems, total: displayTotals };
-        const response = await submitGuestOrder({
+        const response = await dispatch(createGuestOrder({
             ...formValues,
             shippingMethod,
-        });
+        }));
 
         setConfirmation({
             orderId: response?.orderId || 'pending',
@@ -588,10 +566,4 @@ const Checkout = ({ cart, createGuestOrder: submitGuestOrder, getActiveCart: loa
     );
 };
 
-function mapStateToProps(state) {
-    return {
-        cart: state.cart,
-    };
-}
-
-export default connect(mapStateToProps, { createGuestOrder, getActiveCart })(Checkout);
+export default Checkout;

@@ -32,7 +32,7 @@ const Contact = () => (
                         </div>
                         <div>
                             <span className="label">Tasting room</span>
-                            <p>by appointment • Orange County, CA</p>
+                            <p>by appointment • Sonoma County, CA</p>
                         </div>
                     </div>
                 </div>

@@ -6,10 +6,11 @@ import pasoGsm from "../assets/images/bottles/Paso_Robles_GSM.svg";
 import santaCruzSyrah from "../assets/images/bottles/Santa_Cruz_Mountains_Syrah.svg";
 import andersonRose from "../assets/images/bottles/Anderson_Valley_Rose.svg";
 import sierraViognier from "../assets/images/bottles/Sierra_Foothills_Viognier.svg";
+import dryCreekZinfandel from "../assets/images/bottles/Dry_Creek_Zinfandel.svg";
 
 export const products = [
     {
-        id: "sonoma-coast-chardonnay-2021",
+        id: "sonoma-coast-chardonnay-2023",
         name: "Sonoma Coast Chardonnay",
         type: "Chardonnay",
         caption: "Meyer lemon, sea spray, and almond blossom from fog-laden slopes.",
@@ -20,7 +21,7 @@ export const products = [
         image: { url: sonomaChardonnay },
     },
     {
-        id: "russian-river-pinot-2020",
+        id: "russian-river-pinot-2022",
         name: "Russian River Pinot Noir",
         type: "Pinot Noir",
         caption: "Silken red fruit layered with rose petals and baking spice.",
@@ -31,7 +32,7 @@ export const products = [
         image: { url: russianRiverPinot },
     },
     {
-        id: "atlas-peak-cabernet-2019",
+        id: "atlas-peak-cabernet-2021",
         name: "Atlas Peak Cabernet Sauvignon",
         type: "Cabernet Sauvignon",
         caption: "Blackberry, graphite, and tobacco from rocky benchland blocks.",
@@ -42,7 +43,7 @@ export const products = [
         image: { url: atlasCabernet },
     },
     {
-        id: "mendocino-sauvignon-2022",
+        id: "mendocino-sauvignon-2024",
         name: "Mendocino Sauvignon Blanc",
         type: "Sauvignon Blanc",
         caption: "White peach, lime leaf, and wet slate with electric lift.",
@@ -53,7 +54,7 @@ export const products = [
         image: { url: mendocinoSauvBlanc },
     },
     {
-        id: "paso-robles-gsm-2021",
+        id: "paso-robles-gsm-2023",
         name: "Paso Robles GSM",
         type: "GSM Blend",
         caption: "Crushed berries, lavender, and cracked pepper in a sun-warmed blend.",
@@ -64,7 +65,7 @@ export const products = [
         image: { url: pasoGsm },
     },
     {
-        id: "santa-cruz-syrah-2021",
+        id: "santa-cruz-syrah-2023",
         name: "Santa Cruz Mountains Syrah",
         type: "Syrah",
         caption: "Blueberry, black olive, and white pepper from windswept ridgelines.",
@@ -75,7 +76,7 @@ export const products = [
         image: { url: santaCruzSyrah },
     },
     {
-        id: "anderson-valley-rose-2022",
+        id: "anderson-valley-rose-2024",
         name: "Anderson Valley Rosé",
         type: "Rosé",
         caption: "Wild strawberry, rhubarb, and sea breeze in a pale salmon hue.",
@@ -86,7 +87,7 @@ export const products = [
         image: { url: andersonRose },
     },
     {
-        id: "sierra-foothills-viognier-2022",
+        id: "sierra-foothills-viognier-2024",
         name: "Sierra Foothills Viognier",
         type: "Viognier",
         caption: "Apricot, honeysuckle, and ginger with a lifted mineral finish.",
@@ -95,6 +96,17 @@ export const products = [
         cost: 4500,
         thumbnail: { url: sierraViognier },
         image: { url: sierraViognier },
+    },
+    {
+        id: "dry-creek-zinfandel-2023",
+        name: "Dry Creek Zinfandel",
+        type: "Zinfandel",
+        caption: "Brambleberry, black tea, and white pepper from old-vine head-trained blocks.",
+        description:
+            "Wine type: Zinfandel. Grapes from 60-year-old head-trained vines cropped low for concentration. Native ferment in open-top oak before 14 months in neutral French puncheons. Boysenberry preserves, leather, and crushed peppercorn ride a generous palate framed by chalky tannins and a savory finish.",
+        cost: 5800,
+        thumbnail: { url: dryCreekZinfandel },
+        image: { url: dryCreekZinfandel },
     },
 ];
 

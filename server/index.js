@@ -10,7 +10,6 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const { Resend } = require('resend');
-// const Stripe = require('stripe');
 const { z } = require('zod');
 const { buildInvoiceEmail } = require('./email/invoice');
 const { products } = require('./data/products');
@@ -55,12 +54,6 @@ const getResend = () => {
     return new Resend(apiKey);
 };
 
-// const getStripe = () => {
-//     const key = process.env.STRIPE_SECRET_KEY;
-//     if (!key) throw new Error('STRIPE_SECRET_KEY must be set in your .env file');
-//     return new Stripe(key);
-// };
-
 // In-memory order store for this demo session
 const orders = new Map();
 
@@ -72,7 +65,7 @@ const OG_IMAGE  = `${SITE_URL}/social/vinesecret-og.jpg`;
 
 const PAGE_META = {
     '/': {
-        title:       'VineSecret — Estate Wines from Orange County, CA',
+        title:       'VineSecret — Estate Wines from Sonoma County, CA',
         description: 'Small-lot California wines from five estate vineyards. Guest checkout, cold-pack delivery, and cellar tastings by appointment.',
     },
     '/products': {
@@ -81,7 +74,7 @@ const PAGE_META = {
     },
     '/about': {
         title:       'Our Story — VineSecret Estate Winery',
-        description: 'Five estate vineyards in Orange County farmed by hand. We ferment in small lots, taste every barrel, and blend blind until it\'s right.',
+        description: 'Five estate vineyards in Sonoma County farmed by hand. We ferment in small lots, taste every barrel, and blend blind until it\'s right.',
     },
     '/contact': {
         title:       'Visit & Tastings — VineSecret',
@@ -125,28 +118,20 @@ app.use(helmet({
             defaultSrc:      ["'self'"],
             scriptSrc: [
                 "'self'",
-                // 'https://js.stripe.com',
-                // 'https://m.stripe.network',
                 'https://www.googletagmanager.com',
                 'https://www.google-analytics.com',
                 'https://ssl.google-analytics.com',
-                // Stripe-injected inline script hashes (required for Stripe.js to initialise)
-                // "'sha256-7PZaH7TzFg4JdT5xJguN7Och6VcMcP1LW4N3fQ936Fs='",
-                // "'sha256-MqH8JJslY2fF2bGYY1rZlpCNrRCnWKRzrrDefixUJTI='",
-                // "'sha256-ZswfTY7H35rbv8WC7NXBoiC7WNu86vSzCDChNWwZZDM='",
             ],
             styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
             fontSrc:         ["'self'", 'https://fonts.gstatic.com'],
-            imgSrc:          ["'self'", 'data:', 'blob:', /* 'https://*.stripe.com', */ 'https://www.google-analytics.com', 'https://www.googletagmanager.com'],
+            imgSrc:          ["'self'", 'data:', 'blob:', 'https://www.google-analytics.com', 'https://www.googletagmanager.com'],
             connectSrc: [
                 "'self'",
-                // 'https://api.stripe.com',
                 'https://www.google-analytics.com',
                 'https://analytics.google.com',
                 'https://region1.google-analytics.com',
                 'https://region1.analytics.google.com',
             ],
-            // frameSrc:     ['https://js.stripe.com', 'https://hooks.stripe.com', 'https://m.stripe.network'],
             frameAncestors:  ["'none'"],
             objectSrc:       ["'none'"],
             baseUri:         ["'self'"],
@@ -257,30 +242,6 @@ app.post('/api/club/signup', orderLimiter, (req, res) => {
     res.json({ id, message: 'Application received. We will be in touch within one business day.' });
 });
 
-// POST /api/payments/create-intent — Stripe integration (commented out)
-// const paymentIntentSchema = z.object({
-//     amount: z.number().int().min(50, 'Amount must be at least 50 cents'),
-// });
-//
-// app.post('/api/payments/create-intent', orderLimiter, async (req, res) => {
-//     const result = paymentIntentSchema.safeParse(req.body);
-//     if (!result.success) {
-//         return res.status(400).json({ error: 'Invalid request', issues: z.flattenError(result.error).fieldErrors });
-//     }
-//     try {
-//         const intent = await getStripe().paymentIntents.create({
-//             amount: result.data.amount,
-//             currency: 'usd',
-//             automatic_payment_methods: { enabled: true },
-//             metadata: { source: 'vinesecret-checkout' },
-//         });
-//         res.json({ clientSecret: intent.client_secret });
-//     } catch (err) {
-//         console.error('Stripe error:', err?.message || err);
-//         res.status(500).json({ error: 'Could not initialize payment' });
-//     }
-// });
-
 // Return 404 for any /api/* route not matched above.
 // Without this, unimplemented routes fall through to the static file handler
 // which returns the React app HTML with status 200, causing the frontend's
@@ -310,9 +271,10 @@ if (fs.existsSync(distDir)) {
                 const id = req.path.slice('/products/'.length);
                 const product = products.find((p) => p.id === id);
                 if (product) {
+                    const lead = (product.caption || product.name).replace(/\.+$/, '');
                     meta = {
                         title:       `${product.name} — VineSecret`,
-                        description: `${product.caption || product.name}. Limited estate release. Tax-inclusive with cold-pack shipping.`,
+                        description: `${lead}. Limited estate release. Tax-inclusive with cold-pack shipping.`,
                     };
                 }
             }

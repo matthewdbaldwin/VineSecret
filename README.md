@@ -1,13 +1,13 @@
 # VineSecret
 
-A demo e-commerce site for a fictional Orange County estate winery. Built with React, Redux, and an Express API backend. Features guest checkout, order confirmation emails via Resend, a mobile-first responsive design, and an age gate.
+A demo e-commerce site for a fictional Sonoma County estate winery. Built with React, Redux, and an Express API backend. Features guest checkout, order confirmation emails via Resend, a mobile-first responsive design, and an age gate.
 
 ---
 
 ## Tech Stack
 
 **Frontend**
-- React 18 + Redux + React Router v5
+- React 19 + Redux Toolkit + React Router v7
 - Vite (dev server & build)
 - Plain CSS with design tokens (no CSS framework)
 

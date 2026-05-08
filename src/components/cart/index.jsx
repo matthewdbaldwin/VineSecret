@@ -1,16 +1,20 @@
 import React, { useEffect, useMemo } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { getActiveCart, updateLocalCartItem } from '../../actions';
 import { trackBeginCheckout, trackCartUpdate, trackCartView } from '../../analytics/tracking';
 import { findProductById } from '../../data/products';
 import Money from '../general/money';
 import './cart.css';
 
-const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, history }) => {
+const Cart = () => {
+    const cart = useSelector((state) => state.cart);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     useEffect(() => {
-        loadCart();
-    }, [loadCart]);
+        dispatch(getActiveCart());
+    }, [dispatch]);
 
     const items = cart?.items || [];
     const totals = cart?.total;
@@ -53,23 +57,23 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     const handleIncrement = (item) => {
         const nextQuantity = item.quantity + 1;
         trackCartUpdate(item, nextQuantity, 'increment');
-        updateItem(item.id, nextQuantity);
+        dispatch(updateLocalCartItem(item.id, nextQuantity));
     };
 
     const handleDecrement = (item) => {
         const nextQuantity = Math.max(0, item.quantity - 1);
         trackCartUpdate(item, nextQuantity, 'decrement');
-        updateItem(item.id, nextQuantity);
+        dispatch(updateLocalCartItem(item.id, nextQuantity));
     };
 
     const handleRemove = (item) => {
         trackCartUpdate(item, 0, 'remove');
-        updateItem(item.id, 0);
+        dispatch(updateLocalCartItem(item.id, 0));
     };
 
     const goToCheckout = () => {
         trackBeginCheckout({ items: pricedItems, total: displayTotals });
-        history.push('/checkout');
+        navigate('/checkout');
     };
 
     return (
@@ -191,10 +195,4 @@ const Cart = ({ cart, getActiveCart: loadCart, updateLocalCartItem: updateItem, 
     );
 };
 
-function mapStateToProps(state) {
-    return {
-        cart: state.cart,
-    };
-}
-
-export default connect(mapStateToProps, { getActiveCart, updateLocalCartItem })(Cart);
+export default Cart;

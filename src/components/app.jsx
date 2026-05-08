@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import '../assets/css/app.css';
 import Header from './header';
 import Footer from './footer';
@@ -37,18 +37,18 @@ const App = () => (
         <AnalyticsListener />
         <Header />
         <main id="main-content" className="page-shell">
-            <Switch>
-                <Route path="/" exact component={Home} />
-                <Route path="/products/:product_id" component={ProductDetails} />
-                <Route path="/products" exact component={Products} />
-                <Route path="/checkout" component={Checkout} />
-                <Route path="/cart" component={Cart} />
-                <Route path="/about" component={About} />
-                <Route path="/contact" component={Contact} />
-                <Route path="/legal/:page" component={Legal} />
-                <Route path="/club" component={WineClub} />
-                <Route component={NotFound} />
-            </Switch>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products/:product_id" element={<ProductDetails />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/legal/:page" element={<Legal />} />
+                <Route path="/club" element={<WineClub />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
         </main>
         <Footer />
         <BottomNav />

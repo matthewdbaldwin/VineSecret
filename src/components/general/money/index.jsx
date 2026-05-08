@@ -1,9 +1,8 @@
 import React from "react";
 
-const Money = props => {
-  const { cost } = props;
-  if (cost == null) return `$0`;
-  return <div className="font-weight-bold d-inline"> ${(cost / 100).toFixed(2)} </div>;
+const Money = ({ cost }) => {
+    if (cost == null) return '$0';
+    return <span style={{ fontWeight: 700 }}> ${(cost / 100).toFixed(2)} </span>;
 };
 
 export default Money;

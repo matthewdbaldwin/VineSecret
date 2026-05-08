@@ -27,7 +27,7 @@ const Footer = () => {
             <div className="footer-grid">
                 <div className="footer-block">
                     <span className="label">Tasting Room</span>
-                    <p>Orange County, CA</p>
+                    <p>Sonoma County, CA</p>
                 </div>
                 <div className="footer-block">
                     <span className="label">Contact</span>

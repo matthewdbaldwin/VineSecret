@@ -1,31 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './schedule.css';
 import schedule from './data/schedule.json';
 
-class Schedule extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            scheduleData: schedule.schedule,
-        };
-    }
-
-    render() {
-        const { scheduleData } = this.state;
-        const day = scheduleData.map(v => (
-            <div key={v.pid} className="w-100 m-2 inline">
-                <div className='col-md-6 widthday center'>{v.day} </div>
-                <div className='col-md-6 w-100 widthday float-right center'>{v.open} - {v.close}</div>
+const Schedule = () => (
+    <div className="schedule">
+        {schedule.schedule.map((v) => (
+            <div key={v.pid} className="schedule-row">
+                <div className="schedule-day">{v.day}</div>
+                <div className="schedule-hours">{v.open} - {v.close}</div>
             </div>
-        ));
-        return (
-            <>
-                <div className='row'> {day}
-                </div>
-            </>
-        );
-    }
-}
+        ))}
+    </div>
+);
 
 export default Schedule;

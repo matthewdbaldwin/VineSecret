@@ -7,13 +7,13 @@ const About = () => (
         <div className="about-grid">
             <div className="story">
                 <p className="eyebrow">Our story</p>
-                <h2>Orange County roots. Coastal influence. Cellar patience.</h2>
+                <h2>Sonoma County roots. Coastal influence. Cellar patience.</h2>
                 <p>
                     VineSecret was founded by growers who believed the best bottles start with healthy soils and a relentless respect for place.
                     We farm five estate vineyards by hand, ferment in small lots, and taste every barrel until the blend sings.
                 </p>
                 <p>
-                    Our roots are in Orange County, where marine layers push in from the Pacific and cool the vines through the long back half of summer.
+                    Our roots are in Sonoma County, where Pacific fog pulls inland through the river gap and cools the vines through the long back half of summer.
                     That swing between warm days and cold nights is what keeps our whites taut and gives our reds something to say.
                     We didn't end up here by accident. The land earned it.
                 </p>

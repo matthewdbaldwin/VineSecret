@@ -2,14 +2,12 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers';
 import App from './components/app';
 import ErrorBoundary from './components/ErrorBoundary';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import thunk from './middleware/thunk';
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({ reducer: rootReducer });
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);

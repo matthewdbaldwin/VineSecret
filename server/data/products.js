@@ -2,7 +2,7 @@
 
 const products = [
     {
-        id: 'sonoma-coast-chardonnay-2021',
+        id: 'sonoma-coast-chardonnay-2023',
         name: 'Sonoma Coast Chardonnay',
         type: 'Chardonnay',
         caption: 'Meyer lemon, sea spray, and almond blossom from fog-laden slopes.',
@@ -10,7 +10,7 @@ const products = [
         cost: 5200,
     },
     {
-        id: 'russian-river-pinot-2020',
+        id: 'russian-river-pinot-2022',
         name: 'Russian River Pinot Noir',
         type: 'Pinot Noir',
         caption: 'Silken red fruit layered with rose petals and baking spice.',
@@ -18,7 +18,7 @@ const products = [
         cost: 6800,
     },
     {
-        id: 'atlas-peak-cabernet-2019',
+        id: 'atlas-peak-cabernet-2021',
         name: 'Atlas Peak Cabernet Sauvignon',
         type: 'Cabernet Sauvignon',
         caption: 'Blackberry, graphite, and tobacco from rocky benchland blocks.',
@@ -26,7 +26,7 @@ const products = [
         cost: 9200,
     },
     {
-        id: 'mendocino-sauvignon-2022',
+        id: 'mendocino-sauvignon-2024',
         name: 'Mendocino Sauvignon Blanc',
         type: 'Sauvignon Blanc',
         caption: 'White peach, lime leaf, and wet slate with electric lift.',
@@ -34,7 +34,7 @@ const products = [
         cost: 3800,
     },
     {
-        id: 'paso-robles-gsm-2021',
+        id: 'paso-robles-gsm-2023',
         name: 'Paso Robles GSM',
         type: 'GSM Blend',
         caption: 'Crushed berries, lavender, and cracked pepper in a sun-warmed blend.',
@@ -42,7 +42,7 @@ const products = [
         cost: 5600,
     },
     {
-        id: 'santa-cruz-syrah-2021',
+        id: 'santa-cruz-syrah-2023',
         name: 'Santa Cruz Mountains Syrah',
         type: 'Syrah',
         caption: 'Blueberry, black olive, and white pepper from windswept ridgelines.',
@@ -50,7 +50,7 @@ const products = [
         cost: 6100,
     },
     {
-        id: 'anderson-valley-rose-2022',
+        id: 'anderson-valley-rose-2024',
         name: 'Anderson Valley Rosé',
         type: 'Rosé',
         caption: 'Wild strawberry, rhubarb, and sea breeze in a pale salmon hue.',
@@ -58,12 +58,20 @@ const products = [
         cost: 3200,
     },
     {
-        id: 'sierra-foothills-viognier-2022',
+        id: 'sierra-foothills-viognier-2024',
         name: 'Sierra Foothills Viognier',
         type: 'Viognier',
         caption: 'Apricot, honeysuckle, and ginger with a lifted mineral finish.',
         description: 'Wine type: Viognier. Hand-picked at dawn and fermented with partial skin contact. Apricot preserve, lemon blossom, and candied ginger glide across a textured palate balanced by mountain acidity.',
         cost: 4500,
+    },
+    {
+        id: 'dry-creek-zinfandel-2023',
+        name: 'Dry Creek Zinfandel',
+        type: 'Zinfandel',
+        caption: 'Brambleberry, black tea, and white pepper from old-vine head-trained blocks.',
+        description: 'Wine type: Zinfandel. Grapes from 60-year-old head-trained vines cropped low for concentration. Native ferment in open-top oak before 14 months in neutral French puncheons. Boysenberry preserves, leather, and crushed peppercorn ride a generous palate framed by chalky tannins and a savory finish.',
+        cost: 5800,
     },
 ];
 

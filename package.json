@@ -12,7 +12,7 @@
     "serve": "npm run build && node server/index.js",
     "preview": "concurrently \"vite preview --host 0.0.0.0 --port 3000\" \"node server/index.js\"",
     "install:noproxy": "env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY -u npm_config_http_proxy -u npm_config_https_proxy npm install",
-    "lint": "eslint src --ext .js,.jsx",
+    "lint": "eslint src",
     "test": "node -e \"console.log('No automated tests are defined yet.');\""
   },
   "author": "Matthew Baldwin",
@@ -22,36 +22,30 @@
     "url": "git+https://github.com/matthewdbaldwin/VineSecret.git"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8",
-    "@stripe/react-stripe-js": "^6.0.0",
-    "@stripe/stripe-js": "^9.0.0",
-    "axios": "^1.13.5",
-    "bootstrap": "^5.3.3",
+    "@reduxjs/toolkit": "^2.11.2",
+    "axios": "^1.16.0",
     "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.3.1",
+    "express-rate-limit": "^8.5.1",
     "helmet": "^8.1.0",
-    "jquery": "^3.7.1",
-    "react": "^18.3.1",
-    "react-bootstrap": "^2.10.9",
-    "react-dom": "^18.3.1",
-    "react-redux": "^7.2.9",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
-    "reactstrap": "^9.2.2",
-    "redux": "^4.2.1",
-    "redux-form": "^8.3.10",
-    "resend": "^6.9.3",
-    "stripe": "^21.0.1",
-    "zod": "^4.3.6"
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-redux": "^9.2.0",
+    "react-router": "^7.15.0",
+    "react-router-dom": "^7.15.0",
+    "redux": "^5.0.1",
+    "resend": "^6.12.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
+    "@eslint/js": "^9.39.4",
+    "@vitejs/plugin-react": "^5.2.0",
     "concurrently": "^9.2.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.21.0",
-    "vite": "^7.3.2"
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.6.0",
+    "vite": "^8.0.11"
   },
   "bugs": {
     "url": "https://github.com/matthewdbaldwin/VineSecret/issues"
