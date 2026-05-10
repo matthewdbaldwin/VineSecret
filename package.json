@@ -50,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/matthewdbaldwin/VineSecret/issues"
   },
-  "homepage": "https://github.com/matthewdbaldwin/VineSecret#readme"
+  "homepage": "https://github.com/matthewdbaldwin/VineSecret#readme",
+  "engines": {
+    "node": ">=22"
+  }
 }
