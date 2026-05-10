@@ -35,7 +35,9 @@ const notificationSchema = z.object({
 });
 
 const app = express();
-const PORT = process.env.SERVER_PORT || 3001;
+// Railway injects PORT; SERVER_PORT is the local-dev convention; 3001 is the
+// fallback for "node server/index.js" with no env set.
+const PORT = process.env.PORT || process.env.SERVER_PORT || 3001;
 const EMAIL_FROM = process.env.EMAIL_FROM || 'orders@vinesecret.com';
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
