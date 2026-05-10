@@ -336,7 +336,7 @@ const Checkout = () => {
                 <button className="btn ghost" type="button" onClick={handlePrevStep}>
                     Back
                 </button>
-                <button className="btn primary" type="submit" disabled={submitting}>
+                <button className="btn primary" type="submit" disabled={submitting} aria-busy={submitting}>
                     {submitting ? "Placing order\u2026" : "Place order"}
                 </button>
             </div>
@@ -488,7 +488,7 @@ const Checkout = () => {
                                 {/* Desktop: plain submit */}
                                 {!isMobileWizard && (
                                 <div className="form-actions">
-                                    <button className="btn primary" type="submit" disabled={submitting}>
+                                    <button className="btn primary" type="submit" disabled={submitting} aria-busy={submitting}>
                                         {submitting ? "Placing order\u2026" : "Place order as guest"}
                                     </button>
                                     <span className="tiny">No account needed. We&rsquo;ll never share your email.</span>

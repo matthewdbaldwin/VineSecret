@@ -46,10 +46,10 @@ const ProductItem = ({ id, name, type, caption, cost, thumbnail, goToDetails, on
                         <p className="tiny">Tax-inclusive, ships temp-controlled.</p>
                     </div>
                     <div className="product-card__actions">
-                        <button className="btn brass" type="button" onClick={handleViewDetails}>
+                        <button className="btn quiet" type="button" onClick={handleViewDetails}>
                             View details
                         </button>
-                        <button className="btn primary" type="button" onClick={handleAddToCart}>
+                        <button className="btn primary small" type="button" onClick={handleAddToCart}>
                             Add to cart
                         </button>
                     </div>

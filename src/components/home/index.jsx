@@ -25,7 +25,7 @@ const Home = () => (
                         Browse the release
                     </Link>
                     <Link
-                        className="btn ghost-dark"
+                        className="btn secondary"
                         to="/about"
                         onClick={() => trackEngagement('home_story', 'home')}
                     >
@@ -52,11 +52,11 @@ const Home = () => (
                         rose petals, baking spice — a Pinot that whispers at first and lingers an hour later.
                     </p>
                     <Link
-                        className="btn primary"
+                        className="btn quiet"
                         to="/products/russian-river-pinot-2022"
                         onClick={() => trackEngagement('home_pinot', 'home')}
                     >
-                        Read the bottle →
+                        Read the bottle
                     </Link>
                 </div>
                 <figure className="home-spread__plate">
@@ -78,11 +78,11 @@ const Home = () => (
                         Coastal fog gives the acidity, the cellar gives the weight.
                     </p>
                     <Link
-                        className="btn primary"
+                        className="btn quiet"
                         to="/products/sonoma-coast-chardonnay-2023"
                         onClick={() => trackEngagement('home_chardonnay', 'home')}
                     >
-                        Read the bottle →
+                        Read the bottle
                     </Link>
                 </div>
                 <figure className="home-spread__plate">
@@ -104,11 +104,11 @@ const Home = () => (
                         Patient élevage; bigger structure than its scale suggests.
                     </p>
                     <Link
-                        className="btn primary"
+                        className="btn quiet"
                         to="/products/atlas-peak-cabernet-2021"
                         onClick={() => trackEngagement('home_cabernet', 'home')}
                     >
-                        Read the bottle →
+                        Read the bottle
                     </Link>
                 </div>
                 <figure className="home-spread__plate">
@@ -118,7 +118,7 @@ const Home = () => (
             </div>
         </section>
 
-        {/* Spread 5 — Story / Visit */}
+        {/* Spread 5 — Story / Visit (noir close) */}
         <section className="home-spread home-spread--story">
             <div className="home-spread__inner home-spread__inner--narrow">
                 <p className="eyebrow">From the cellar</p>
@@ -132,10 +132,10 @@ const Home = () => (
                     earned their way into the cuvée.
                 </p>
                 <div className="home-spread__cta">
-                    <Link className="btn primary" to="/about" onClick={() => trackEngagement('home_about', 'home')}>
+                    <Link className="btn on-noir primary" to="/about" onClick={() => trackEngagement('home_about', 'home')}>
                         The story
                     </Link>
-                    <Link className="btn ghost-dark" to="/contact" onClick={() => trackEngagement('home_visit', 'home')}>
+                    <Link className="btn on-noir secondary" to="/contact" onClick={() => trackEngagement('home_visit', 'home')}>
                         Schedule a visit
                     </Link>
                 </div>

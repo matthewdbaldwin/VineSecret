@@ -170,8 +170,8 @@ const Form = () => {
                     <button className="btn primary" type="submit">
                         Send message
                     </button>
-                    <button className="btn brass" type="reset">
-                        Reset form
+                    <button className="btn secondary small" type="reset">
+                        Reset
                     </button>
                 </div>
             </form>

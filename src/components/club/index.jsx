@@ -233,7 +233,7 @@ const WineClub = () => {
                                 />
                             </div>
                             <div className="form-actions">
-                                <button className="btn primary" type="submit" disabled={submitting}>
+                                <button className="btn primary" type="submit" disabled={submitting} aria-busy={submitting}>
                                     {submitting ? 'Reserving…' : 'Reserve my spot'}
                                 </button>
                                 <span className="tiny">No payment until your first shipment. Cancel anytime.</span>
