@@ -1,110 +1,145 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './home.css';
 import { trackEngagement } from '../../analytics/tracking';
+import './home.css';
 
 const Home = () => (
     <div className="home">
-        <section className="hero-grid">
-            <div className="hero-card">
-                <p className="eyebrow">New experiences</p>
-                <h2>Estate-grown wines crafted for curious palates.</h2>
-                <p className="lede">
-                    Reserve-only flights, limited club allocations, and winemaker stories you won't find on the shelf.
+        {/* Spread 1 — Estate masthead */}
+        <section className="home-spread home-spread--masthead">
+            <div className="home-spread__inner">
+                <p className="eyebrow">Sonoma County · Estate</p>
+                <h1 className="home-spread__title" aria-label="Vine Secret">
+                    <span className="home-spread__title-row">Vine</span>
+                    <span className="home-spread__title-row home-spread__title-row--italic">Secret</span>
+                </h1>
+                <p className="home-spread__lede">
+                    Small-lot wines from one estate, raised slow and bottled by hand.
                 </p>
-                <div className="cta-group">
+                <div className="home-spread__cta">
                     <Link
                         className="btn primary"
-                        to="/contact"
-                        onClick={() => trackEngagement('home_shop', 'home')}
+                        to="/products"
+                        onClick={() => trackEngagement('home_browse', 'home')}
                     >
-                        Shop the release
+                        Browse the release
                     </Link>
-                    <Link className="btn brass" to="/contact" onClick={() => trackEngagement('home_plan_tasting', 'home')}>
-                        Plan a tasting
+                    <Link
+                        className="btn ghost-dark"
+                        to="/about"
+                        onClick={() => trackEngagement('home_story', 'home')}
+                    >
+                        Read our story
                     </Link>
-                </div>
-                <div className="hero-metrics">
-                    <div>
-                        <span className="metric">24</span>
-                        <span className="label">Barrel lots</span>
-                    </div>
-                    <div>
-                        <span className="metric">5</span>
-                        <span className="label">Estate vineyards</span>
-                    </div>
-                    <div>
-                        <span className="metric">72</span>
-                        <span className="label">Club seats left</span>
-                    </div>
                 </div>
             </div>
-            <div className="story-card">
-                <div className="story-inner">
-                    <p className="eyebrow">Cellar notes</p>
-                    <h3>Listen to the vines whisper.</h3>
-                    <p>
-                        Sunrise harvests, native ferments, and patience. Every bottle captures the soil, fog, and hands that raised it.
+            <div className="home-spread__chrome" aria-hidden="true">
+                <span>Scroll</span>
+                <span>↓</span>
+            </div>
+        </section>
+
+        {/* Spread 2 — Pinot Noir feature */}
+        <section className="home-spread home-spread--pinot" data-varietal="pinot-noir">
+            <div className="home-spread__inner home-spread__inner--split">
+                <div className="home-spread__feature">
+                    <p className="eyebrow">Estate release · Pinot Noir</p>
+                    <h2 className="home-spread__heading">
+                        Silk and Russian River fog.
+                    </h2>
+                    <p className="home-spread__copy">
+                        Cold-soaked, native-fermented, raised in neutral French oak. Raspberry coulis,
+                        rose petals, baking spice — a Pinot that whispers at first and lingers an hour later.
                     </p>
-                    <Link className="text-link" to="/about" onClick={() => trackEngagement('home_story', 'home')}>
-                        Discover our craft →
+                    <Link
+                        className="btn primary"
+                        to="/products/russian-river-pinot-2022"
+                        onClick={() => trackEngagement('home_pinot', 'home')}
+                    >
+                        Read the bottle →
+                    </Link>
+                </div>
+                <figure className="home-spread__plate">
+                    <span className="home-spread__plate-letter">P</span>
+                </figure>
+            </div>
+        </section>
+
+        {/* Spread 3 — Chardonnay feature (palette flip) */}
+        <section className="home-spread home-spread--chardonnay" data-varietal="chardonnay">
+            <div className="home-spread__inner home-spread__inner--split home-spread__inner--reverse">
+                <div className="home-spread__feature">
+                    <p className="eyebrow">Estate release · Chardonnay</p>
+                    <h2 className="home-spread__heading">
+                        Saline backbone, lemon curd finish.
+                    </h2>
+                    <p className="home-spread__copy">
+                        Whole-cluster pressed and held nine months on lees in neutral French oak.
+                        Coastal fog gives the acidity, the cellar gives the weight.
+                    </p>
+                    <Link
+                        className="btn primary"
+                        to="/products/sonoma-coast-chardonnay-2023"
+                        onClick={() => trackEngagement('home_chardonnay', 'home')}
+                    >
+                        Read the bottle →
+                    </Link>
+                </div>
+                <figure className="home-spread__plate">
+                    <span className="home-spread__plate-letter">C</span>
+                </figure>
+            </div>
+        </section>
+
+        {/* Spread 4 — Cabernet feature */}
+        <section className="home-spread home-spread--cabernet" data-varietal="cabernet-sauvignon">
+            <div className="home-spread__inner home-spread__inner--split">
+                <div className="home-spread__feature">
+                    <p className="eyebrow">Library · Cabernet Sauvignon</p>
+                    <h2 className="home-spread__heading">
+                        Atlas Peak, twenty months in barrique.
+                    </h2>
+                    <p className="home-spread__copy">
+                        Cassis, graphite, violets, and tobacco from rocky benchland blocks.
+                        Patient élevage; bigger structure than its scale suggests.
+                    </p>
+                    <Link
+                        className="btn primary"
+                        to="/products/atlas-peak-cabernet-2021"
+                        onClick={() => trackEngagement('home_cabernet', 'home')}
+                    >
+                        Read the bottle →
+                    </Link>
+                </div>
+                <figure className="home-spread__plate">
+                    <span className="home-spread__plate-letter">C</span>
+                    <span className="home-spread__plate-sub">S</span>
+                </figure>
+            </div>
+        </section>
+
+        {/* Spread 5 — Story / Visit */}
+        <section className="home-spread home-spread--story">
+            <div className="home-spread__inner home-spread__inner--narrow">
+                <p className="eyebrow">From the cellar</p>
+                <h2 className="home-spread__heading">
+                    Native ferments, hand racking, no shortcuts.
+                </h2>
+                <p className="home-spread__copy prose">
+                    We farm five blocks across Sonoma County by hand and ferment each lot separately —
+                    sometimes in concrete, sometimes in oak, occasionally in clay. Every barrel gets
+                    tasted; every blend goes in blind. The bottles you receive are the ones that
+                    earned their way into the cuvée.
+                </p>
+                <div className="home-spread__cta">
+                    <Link className="btn primary" to="/about" onClick={() => trackEngagement('home_about', 'home')}>
+                        The story
+                    </Link>
+                    <Link className="btn ghost-dark" to="/contact" onClick={() => trackEngagement('home_visit', 'home')}>
+                        Schedule a visit
                     </Link>
                 </div>
             </div>
-        </section>
-
-        <section className="pillars">
-            <div className="pillar">
-                <h4>Single-vineyard focus</h4>
-                <p>Each cuvée is fermented separately to protect the nuance of every block.</p>
-            </div>
-            <div className="pillar">
-                <h4>Seasonal releases</h4>
-                <p>Curated drops aligned to the growing season with pairings from our culinary team.</p>
-            </div>
-            <div className="pillar">
-                <h4>Intentional hospitality</h4>
-                <p>Private tastings by appointment with the people who farm and blend the wines.</p>
-            </div>
-        </section>
-
-        <section className="collection">
-            <div className="copy">
-                <p className="eyebrow">Latest release</p>
-                <h3>Spring reds, bottled at night.</h3>
-                <p>
-                    Syrah kissed by coastal fog, Grenache that hums with spice, and a reserve Cabernet destined for the cellar.
-                </p>
-                <Link className="btn primary" to="/products" onClick={() => trackEngagement('home_browse_collection', 'home')}>
-                    Browse the collection
-                </Link>
-            </div>
-            <div className="card-grid">
-                <div className="mini-card">
-                    <span className="metric">92</span>
-                    <p>Average barrel selection score from the panel.</p>
-                </div>
-                <div className="mini-card">
-                    <span className="metric">18 mo</span>
-                    <p>French oak elevage to round each vintage.</p>
-                </div>
-                <div className="mini-card">
-                    <span className="metric">Zero</span>
-                    <p>Compromises to the vineyard story.</p>
-                </div>
-            </div>
-        </section>
-
-        <section className="visit">
-            <div>
-                <h3>Visit the cellar</h3>
-                <p>
-                    Your appointment begins in the vines and ends with a library pour in our barrel room.
-                </p>
-            </div>
-            <Link className="btn ghost" to="/contact" onClick={() => trackEngagement('home_schedule_visit', 'home')}>
-                Schedule your visit
-            </Link>
         </section>
     </div>
 );

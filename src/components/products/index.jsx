@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addItemToCart, getAllProducts } from "../../actions";
@@ -41,7 +42,13 @@ const Products = () => {
 
     const goToDetails = (id) => {
         trackEngagement('product_card_click', 'products');
-        navigate(`/products/${id}`);
+        if (typeof document !== 'undefined' && document.startViewTransition) {
+            document.startViewTransition(() => {
+                flushSync(() => navigate(`/products/${id}`));
+            });
+        } else {
+            navigate(`/products/${id}`);
+        }
     };
 
     const handleAddToCart = (product) => {

@@ -1,381 +1,296 @@
-/* ── Home page ───────────────────────────────────────────────────────────── */
+/* ── Vine & Print home spreads ────────────────────────────────────────────── */
+
+/* Animatable custom properties for scroll-driven palette repaint */
+@property --bg-l { syntax: "<percentage>"; inherits: true; initial-value: 94%; }
+@property --bg-c { syntax: "<number>";     inherits: true; initial-value: 0.025; }
+@property --bg-h { syntax: "<number>";     inherits: true; initial-value: 80; }
+
 .home {
+    background: oklch(var(--bg-l) var(--bg-c) var(--bg-h));
+    /* Scroll-driven palette: as the user scrolls the document, the home
+       background interpolates across the varietals. Each spread additionally
+       overrides ink/accent via [data-varietal] for full immersion. */
+    animation: paletteShift linear both;
+    animation-timeline: scroll(root);
+}
+
+@keyframes paletteShift {
+    0%   { --bg-l: 94%; --bg-c: 0.025; --bg-h: 80;  }   /* parchment */
+    25%  { --bg-l: 92%; --bg-c: 0.030; --bg-h: 30;  }   /* pinot blush */
+    50%  { --bg-l: 95%; --bg-c: 0.040; --bg-h: 95;  }   /* chardonnay straw */
+    75%  { --bg-l: 91%; --bg-c: 0.020; --bg-h: 350; }   /* cabernet ash */
+    100% { --bg-l: 22%; --bg-c: 0.04;  --bg-h: 320; }   /* noir close */
+}
+
+/* Each spread is full-viewport. dvh so iOS Safari URL bar collapse
+   doesn't crop the masthead. */
+.home-spread {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(2rem, 6vw, 6rem) clamp(1.25rem, 5vw, 5rem);
+    display: flex;
+    align-items: center;
+    position: relative;
+    container-type: inline-size;
+}
+
+.home-spread__inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 0;
-    padding: 2.5rem 6vw 5rem;
-    /* Dark-to-cream transition continuing from header */
-    background: linear-gradient(180deg, #09040d 0%, #14091f 8%, var(--color-cream, #f4efe6) 8%);
+    gap: 1.5rem;
 }
 
-/* ── Hero grid ───────────────────────────────────────────────────────────── */
-.hero-grid {
-    display: grid;
-    gap: 0;
-    grid-template-columns: 2fr 1fr;
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: var(--radius-card, 4px);
-    overflow: hidden;
-    margin-bottom: 1.5rem;
+.home-spread__inner--narrow {
+    max-width: 740px;
 }
 
-.hero-card {
-    padding: 2.5rem;
-    background: #ffffff;
-    border-right: 1px solid var(--color-border, #dfd5c5);
-    box-shadow: none;
-    border-radius: 0;
+.home-spread__inner--split {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
 }
 
-.hero-card h2 {
-    font-size: clamp(2.2rem, 3.2vw, 3.4rem);
-    font-weight: 400;
-    margin: 0 0 1rem;
-    color: var(--color-text, #1a0f14);
-    letter-spacing: -0.03em;
-    line-height: 1.08;
+.home-spread__inner--reverse {
+    flex-direction: row-reverse;
 }
 
-.hero-card .lede {
-    color: var(--color-text-soft, #4a3040);
-    font-size: 1rem;
+@container (max-width: 760px) {
+    .home-spread__inner--split,
+    .home-spread__inner--reverse {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}
+
+/* ── Spread 1: Estate masthead ─────────────────────────────────────────── */
+.home-spread--masthead .home-spread__inner {
+    align-items: flex-start;
+}
+
+.home-spread__title {
+    margin: 0.5rem 0 1.25rem;
+    font-family: var(--font-display);
+    font-size: var(--step-6);
+    font-weight: 350;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-wrap: balance;
+    /* Scroll-driven typography: the title weight-shifts and softens as it
+       enters the viewport. Pure CSS, no JS, no IntersectionObserver. */
+    animation: titleBloom linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 50%;
+}
+
+.home-spread__title-row {
+    display: block;
+    font-variation-settings: 'opsz' 144, 'SOFT' 60, 'WONK' 0;
+}
+
+.home-spread__title-row--italic {
+    font-style: italic;
+    font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 1;
+    margin-left: 0.5em;
+    color: var(--accent);
+}
+
+@keyframes titleBloom {
+    from {
+        font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 0, 'wght' 300;
+        letter-spacing: -0.015em;
+        translate: 0 16px;
+        opacity: 0.4;
+    }
+    to {
+        font-variation-settings: 'opsz' 144, 'SOFT' 60, 'WONK' 0, 'wght' 500;
+        letter-spacing: -0.04em;
+        translate: 0 0;
+        opacity: 1;
+    }
+}
+
+.home-spread__lede {
+    font-family: var(--font-stand);
+    font-size: var(--step-1);
     font-weight: 300;
-    line-height: 1.75;
-    max-width: 520px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    text-wrap: balance;
+    margin: 0 0 0.75rem;
 }
 
-.cta-group {
+.home-spread__cta {
     display: flex;
-    gap: 0.65rem;
-    margin: 1.5rem 0 0.75rem;
-}
-
-/* Metrics strip */
-.hero-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    margin-top: 1.5rem;
-    border-top: 1px solid var(--color-border, #dfd5c5);
-    padding-top: 1.25rem;
-}
-
-.hero-metrics > div {
-    padding: 0 1rem 0 0;
-}
-
-.hero-metrics > div + div {
-    border-left: 1px solid var(--color-border, #dfd5c5);
-    padding-left: 1rem;
-}
-
-.hero-metrics .metric {
-    font-family: var(--font-display, 'Cormorant Garamond', serif);
-    font-size: 2.8rem;
-    font-weight: 300;
-    color: var(--color-plum, #7a2558);
-    display: block;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-}
-
-.hero-metrics .label {
-    display: block;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: var(--color-text-soft, #4a3040);
-    font-weight: 600;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 0.5rem;
 }
 
-/* Story card (dark estate panel) */
-.story-card {
-    background: var(--color-deep, #14091f);
-    color: #f4efe6;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    position: relative;
-    overflow: hidden;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-.story-card::before {
-    content: '';
+.home-spread__chrome {
     position: absolute;
-    inset: 0;
-    background: url('../../assets/images/vineyard.webp') center / cover no-repeat;
-    opacity: 0.15;
-}
-
-.story-inner {
-    position: relative;
-    padding: 2rem 1.75rem;
+    bottom: clamp(1rem, 4vw, 3rem);
+    right: clamp(1.25rem, 5vw, 5rem);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-}
-
-.story-card h3 {
-    font-weight: 300;
-    font-size: 1.7rem;
-    letter-spacing: -0.02em;
-    color: #f4efe6;
-    line-height: 1.2;
-}
-
-.story-card p {
-    color: rgba(244, 239, 230, 0.65);
-    font-size: 0.9rem;
-    font-weight: 300;
-    line-height: 1.65;
-}
-
-.story-card .text-link {
-    color: var(--color-gold, #b8915a);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    text-decoration: none;
-    display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    transition: color 0.18s ease;
+    font-family: var(--font-stand);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ink-soft);
+    opacity: 0.7;
+    animation: chromeBob 2.4s ease-in-out infinite;
 }
 
-.story-card .text-link:hover {
-    color: #ffffff;
+@keyframes chromeBob {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 4px; }
 }
 
-/* ── Pillars row ─────────────────────────────────────────────────────────── */
-.pillars {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0;
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: var(--radius-card, 4px);
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-}
-
-.pillar {
-    padding: 1.5rem 1.75rem;
-    background: #ffffff;
-    border-right: 1px solid var(--color-border, #dfd5c5);
-    box-shadow: none;
-    border-radius: 0;
-}
-
-.pillar:last-child {
-    border-right: none;
-}
-
-.pillar h4 {
-    font-weight: 500;
-    font-size: 1.05rem;
-    margin-bottom: 0.35rem;
-    color: var(--color-text, #1a0f14);
-}
-
-.pillar p {
-    font-size: 0.88rem;
-    color: var(--color-text-soft, #4a3040);
-    line-height: 1.65;
-    margin: 0;
-    font-weight: 300;
-}
-
-/* ── Collection band ─────────────────────────────────────────────────────── */
-.collection {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 0;
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: var(--radius-card, 4px);
-    overflow: hidden;
-    background: #ffffff;
-    margin-bottom: 1.5rem;
-    box-shadow: none;
-}
-
-.collection .copy {
-    padding: 2.5rem 2rem;
-    border-right: 1px solid var(--color-border, #dfd5c5);
+/* ── Feature spreads (Pinot, Chardonnay, Cabernet) ─────────────────────── */
+.home-spread__feature {
+    flex: 1 1 50%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 1.25rem;
+    max-width: 50ch;
 }
 
-.collection .copy h3 {
-    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+.home-spread__heading {
+    font-size: var(--step-5);
     font-weight: 400;
-    margin-bottom: 0.65rem;
-    letter-spacing: -0.025em;
-    color: var(--color-text, #1a0f14);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    margin: 0;
+    text-wrap: balance;
+    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+    color: var(--ink);
+    animation: featureBloom linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
 }
 
-.collection .copy p {
-    color: var(--color-text-soft, #4a3040);
-    font-weight: 300;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
-    font-size: 0.95rem;
+@keyframes featureBloom {
+    from {
+        font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 0, 'wght' 300;
+        translate: 0 24px;
+        opacity: 0;
+    }
+    to {
+        font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1, 'wght' 500;
+        translate: 0 0;
+        opacity: 1;
+    }
 }
 
-.card-grid {
-    display: grid;
-    gap: 0;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    background: var(--color-border, #dfd5c5);
+.home-spread__copy {
+    font-family: var(--font-body);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--ink);
+    text-wrap: pretty;
+    max-width: 48ch;
+    margin: 0;
+    font-weight: 350;
 }
 
-.mini-card {
-    padding: 1.25rem 1.5rem;
-    text-align: left;
-    background: var(--color-cream, #f4efe6);
-    box-shadow: none;
-    border-radius: 0;
-    border: none;
-}
-
-.mini-card .metric {
-    display: block;
-    font-family: var(--font-display, 'Cormorant Garamond', serif);
-    font-size: 2rem;
-    font-weight: 300;
-    color: var(--color-text, #1a0f14);
-    letter-spacing: -0.025em;
-    line-height: 1;
-}
-
-.mini-card p,
-.mini-card .label {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--color-text-soft, #4a3040);
-    margin-top: 0.35rem;
-    font-weight: 300;
-    line-height: 1.5;
-}
-
-/* ── Visit band ──────────────────────────────────────────────────────────── */
-.visit {
-    padding: 2.5rem 2.5rem;
+/* Plate: oversized varietal initial as poster element */
+.home-spread__plate {
+    flex: 1 1 50%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    border: 1px solid transparent;
-    border-radius: var(--radius-card, 4px);
-    background: var(--color-deep, #14091f);
-    color: #f4efe6;
-    box-shadow: none;
-    margin-bottom: 0;
-}
-
-.visit h3 {
-    margin: 0 0 0.3rem;
-    font-weight: 400;
-    font-size: 1.8rem;
-    color: #f4efe6;
-    letter-spacing: -0.025em;
-}
-
-.visit p {
+    justify-content: center;
     margin: 0;
-    color: rgba(244, 239, 230, 0.6);
+    aspect-ratio: 1 / 1;
+    position: relative;
+}
+
+.home-spread__plate::before {
+    content: "";
+    position: absolute;
+    inset: 10%;
+    background: color-mix(in oklch, var(--accent) 28%, transparent);
+    filter: blur(80px);
+    border-radius: 50%;
+    z-index: 0;
+    animation: plateGlow linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 50%;
+}
+
+@keyframes plateGlow {
+    from { opacity: 0; scale: 0.6; }
+    to   { opacity: 1; scale: 1; }
+}
+
+.home-spread__plate-letter,
+.home-spread__plate-sub {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
     font-weight: 300;
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 0.85;
+    font-size: clamp(12rem, 32vw, 28rem);
+    font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+    letter-spacing: -0.05em;
+    user-select: none;
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 960px) {
-    .home {
-        padding: 2rem 5vw 4rem;
-        background: linear-gradient(180deg, #09040d 0%, #14091f 6%, var(--color-cream, #f4efe6) 6%);
-    }
-
-    .hero-grid,
-    .collection {
-        grid-template-columns: 1fr;
-    }
-
-    .hero-card {
-        border-right: none;
-        border-bottom: 1px solid var(--color-border, #dfd5c5);
-    }
-
-    .collection .copy {
-        border-right: none;
-        border-bottom: 1px solid var(--color-border, #dfd5c5);
-    }
-
-    .visit {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.25rem;
-    }
+.home-spread__plate-sub {
+    font-size: clamp(8rem, 22vw, 18rem);
+    margin-left: -0.15em;
+    align-self: flex-end;
 }
 
-@media (max-width: 640px) {
-    .hero-card {
-        padding: 1.5rem;
-    }
-
-    .hero-metrics .metric {
-        font-size: 2rem;
-    }
-
-    .cta-group {
-        flex-direction: column;
-    }
-
-    .pillars {
-        grid-template-columns: 1fr;
-    }
-
-    .pillar {
-        border-right: none;
-        border-bottom: 1px solid var(--color-border, #dfd5c5);
-    }
-
-    .pillar:last-child {
-        border-bottom: none;
-    }
+/* ── Story spread (noir close) ─────────────────────────────────────────── */
+.home-spread--story {
+    background: var(--noir);
+    color: var(--noir-ink);
 }
 
-/* ── Mobile polish ───────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-    .home {
-        padding: 1.25rem 1rem 3rem;
-        gap: 1.25rem;
-        background: linear-gradient(180deg, #09040d 0%, #14091f 5%, var(--color-cream, #f4efe6) 5%);
-    }
+.home-spread--story .home-spread__heading {
+    color: var(--noir-ink);
+}
 
-    .hero-card h2 {
-        font-size: clamp(1.8rem, 7vw, 2.4rem);
-        line-height: 1.1;
-    }
+.home-spread--story .home-spread__copy {
+    color: color-mix(in oklch, var(--noir-ink) 85%, transparent);
+}
 
-    .hero-metrics,
-    .pillars-section {
-        display: none;
-    }
+.home-spread--story .eyebrow {
+    color: var(--accent);
+}
 
-    .story-card {
-        display: none;
-    }
+.home-spread--story .btn.primary {
+    background: var(--accent);
+    color: var(--noir-ink);
+    border-color: var(--accent);
+}
 
-    .visit {
-        padding: 1.5rem;
-    }
+.home-spread--story .btn.ghost-dark {
+    color: var(--noir-ink);
+    border-color: color-mix(in oklch, var(--noir-ink) 40%, transparent);
+}
 
-    .section-header {
-        padding: 0 0 0.5rem;
+.home-spread--story .btn.ghost-dark:hover,
+.home-spread--story .btn.ghost-dark:focus-visible {
+    background: color-mix(in oklch, var(--noir-ink) 10%, transparent);
+}
+
+/* ── Reduced motion: disable scroll-driven and view-driven animations ──── */
+@media (prefers-reduced-motion: reduce) {
+    .home,
+    .home-spread__title,
+    .home-spread__heading,
+    .home-spread__plate::before,
+    .home-spread__chrome {
+        animation: none !important;
     }
 }

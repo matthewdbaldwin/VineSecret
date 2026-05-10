@@ -1,4 +1,4 @@
-/* Fonts loaded via <link rel="preload"> in index.html — no @import needed */
+/* Fonts loaded via <link> in index.html — Fraunces + Bricolage Grotesque + Inter Tight (all OFL) */
 
 /* ── Skip to content ──────────────────────────────────────────────────────── */
 .skip-link {
@@ -6,8 +6,8 @@
     top: -100%;
     left: 1rem;
     z-index: 9999;
-    background: var(--color-gold, #b8915a);
-    color: #09040d;
+    background: var(--accent);
+    color: var(--paper);
     font-weight: 600;
     font-size: 0.85rem;
     padding: 0.6rem 1.2rem;
@@ -18,221 +18,296 @@
 
 .skip-link:focus {
     top: 0;
-    outline: 2px solid #09040d;
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
+}
+
+/* ── Animatable custom properties (for scroll-driven animations) ───────────── */
+@property --palette-mix {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
 }
 
 /* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
+    color-scheme: light dark;
+
     /* Navigation */
     --bottom-nav-height: 64px;
     --bottom-nav-total: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
 
-    /* Brand colours — deep plum estate palette */
-    --color-midnight: #09040d;
-    --color-deep:     #14091f;
-    --color-purple:   #1e1028;
-    --color-plum:     #7a2558;
-    --color-gold:     #b8915a;
-    --color-gold-lt:  #cda872;
-    --color-gold-rule: rgba(184, 145, 90, 0.35);
-    --color-cream:    #f4efe6;
-    --color-parchment:#ede6d8;
-    --color-border:   #dfd5c5;
-    --color-text:     #1a0f14;
-    --color-text-soft:#4a3040;
-    --color-text-muted:#7a6878;
+    /* ── Vine & Print shared neutrals (oklch) ─────────────────────────────── */
+    --paper:   oklch(94% 0.025 80);                                  /* warm parchment */
+    --paper-2: oklch(96% 0.018 80);                                  /* lighter ground */
+    --ink:     oklch(18% 0.04 30);                                   /* umber-black */
+    --ink-soft: oklch(35% 0.04 30);
+    --ink-mute: oklch(50% 0.025 30);
+    --accent:  oklch(40% 0.14 20);                                   /* default oxblood (Pinot) */
 
-    /* Typography */
-    --font-display: 'Cormorant Garamond', 'Georgia', serif;
-    --font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+    /* Derived via color-mix — one accent token, infinite tints */
+    --rule:    color-mix(in oklch, var(--ink) 18%, transparent);
+    --rule-soft: color-mix(in oklch, var(--ink) 8%, transparent);
+    --surface: color-mix(in oklch, var(--ink) 4%, var(--paper));
+    --surface-2: color-mix(in oklch, var(--ink) 8%, var(--paper));
 
-    /* Shape — square-shouldered for luxury editorial feel */
+    /* Dark surfaces — used for footer, age gate, cart drawer */
+    --noir:    oklch(18% 0.04 320);
+    --noir-2:  oklch(24% 0.05 320);
+    --noir-ink: oklch(94% 0.025 80);
+
+    /* ── Legacy aliases (existing component CSS keeps working) ─────────────── */
+    --color-midnight: var(--noir);
+    --color-deep:     var(--noir-2);
+    --color-purple:   var(--noir-2);
+    --color-plum:     var(--accent);
+    --color-gold:     var(--accent);
+    --color-gold-lt:  color-mix(in oklch, var(--accent) 70%, var(--paper));
+    --color-gold-rule: var(--rule);
+    --color-cream:    var(--paper);
+    --color-parchment: var(--paper-2);
+    --color-border:   color-mix(in oklch, var(--ink) 14%, var(--paper));
+    --color-text:     var(--ink);
+    --color-text-soft: var(--ink-soft);
+    --color-text-muted: var(--ink-mute);
+
+    /* Typography — Vine & Print stack, all OFL */
+    --font-display: 'Fraunces', 'Cormorant Garamond', 'Georgia', serif;
+    --font-stand:   'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+    --font-body:    'Inter Tight', 'Inter', system-ui, sans-serif;
+
+    /* Type scale — perfect fourth (1.333) */
+    --step--2: clamp(0.69rem, 0.66rem + 0.13vw, 0.75rem);
+    --step--1: clamp(0.83rem, 0.78rem + 0.22vw, 0.94rem);
+    --step-0:  clamp(1rem,    0.94rem + 0.31vw, 1.13rem);
+    --step-1:  clamp(1.33rem, 1.21rem + 0.59vw, 1.5rem);
+    --step-2:  clamp(1.78rem, 1.56rem + 1.07vw, 2rem);
+    --step-3:  clamp(2.37rem, 2rem + 1.84vw,    2.66rem);
+    --step-4:  clamp(3.16rem, 2.55rem + 3.07vw, 3.55rem);
+    --step-5:  clamp(4.21rem, 3.21rem + 5vw,    6.31rem);
+    --step-6:  clamp(5.61rem, 4rem + 8vw,       9rem);
+
+    /* Shape — square-shouldered for editorial feel */
     --radius-card: 4px;
     --radius-btn:  3px;
 
-    /* Elevation — very subtle, flat editorial */
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 2px 12px rgba(0,0,0,0.08);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+    /* Elevation */
+    --shadow-sm: 0 1px 3px color-mix(in oklch, var(--ink) 6%, transparent);
+    --shadow-md: 0 2px 12px color-mix(in oklch, var(--ink) 8%, transparent);
+    --shadow-lg: 0 8px 32px color-mix(in oklch, var(--ink) 10%, transparent);
+}
+
+/* Reduced motion — short-circuit all scroll-driven animations */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 /* ── Display typography ───────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.12;
+    font-weight: 500;
+    line-height: 1.08;
+    text-wrap: balance;
+    font-variation-settings: 'opsz' 144, 'SOFT' 50;
 }
 
 h1, h2 {
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
 }
 
 h3 {
-    letter-spacing: -0.015em;
+    letter-spacing: -0.012em;
 }
 
 h4, h5, h6 {
-    letter-spacing: -0.01em;
+    letter-spacing: -0.008em;
+}
+
+h1 { font-size: var(--step-5); }
+h2 { font-size: var(--step-4); }
+h3 { font-size: var(--step-3); }
+h4 { font-size: var(--step-2); }
+h5 { font-size: var(--step-1); }
+h6 { font-size: var(--step-0); }
+
+/* Body prose gets text-wrap: pretty (Chromium/Safari, degrades cleanly) */
+p, li, blockquote {
+    text-wrap: pretty;
 }
 
 /* ── Global button system ─────────────────────────────────────────────────── */
 .btn {
-    display: inline-block;
-    padding: 0.75rem 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.75rem;
     border-radius: var(--radius-btn);
-    font-family: var(--font-body);
+    font-family: var(--font-stand);
     font-size: 0.74rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     border: 1px solid transparent;
     cursor: pointer;
     transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease;
     text-decoration: none;
     white-space: nowrap;
+    min-height: 44px;
 }
 
 .btn.primary {
-    background: var(--color-deep);
-    color: var(--color-gold);
-    border-color: var(--color-deep);
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
 }
 
 .btn.primary:hover,
-.btn.primary:focus {
-    background: #ffffff;
-    border-color: var(--color-deep);
-    color: var(--color-deep);
+.btn.primary:focus-visible {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
 }
 
-/* Brass — gold background, goes white on hover */
 .btn.brass {
-    background: var(--color-gold);
-    color: var(--color-deep);
-    border-color: var(--color-gold);
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
 }
 
 .btn.brass:hover,
-.btn.brass:focus {
-    background: #ffffff;
-    border-color: var(--color-gold);
-    color: var(--color-deep);
+.btn.brass:focus-visible {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
 }
 
-/* Ghost on dark backgrounds (header, hero, dark sections) */
 .btn.ghost {
     background: transparent;
-    color: rgba(244, 239, 230, 0.88);
-    border-color: rgba(244, 239, 230, 0.4);
+    color: color-mix(in oklch, var(--noir-ink) 88%, transparent);
+    border-color: color-mix(in oklch, var(--noir-ink) 40%, transparent);
 }
 
 .btn.ghost:hover,
-.btn.ghost:focus {
-    background: rgba(244, 239, 230, 0.12);
-    color: #f4efe6;
-    border-color: rgba(244, 239, 230, 0.7);
+.btn.ghost:focus-visible {
+    background: color-mix(in oklch, var(--noir-ink) 12%, transparent);
+    color: var(--noir-ink);
+    border-color: color-mix(in oklch, var(--noir-ink) 70%, transparent);
 }
 
-/* Ghost on light backgrounds */
 .btn.ghost-dark {
     background: transparent;
-    color: var(--color-plum);
-    border-color: var(--color-plum);
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .btn.ghost-dark:hover,
-.btn.ghost-dark:focus {
-    background: rgba(122, 37, 88, 0.06);
+.btn.ghost-dark:focus-visible {
+    background: color-mix(in oklch, var(--accent) 8%, transparent);
+}
+
+/* Universal focus-visible ring */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
 /* ── Utility typography ───────────────────────────────────────────────────── */
 .caption {
-    color: var(--color-text-soft, #4a3040);
+    color: var(--ink-soft);
     margin: 0;
-    font-size: 0.87rem;
+    font-size: var(--step--1);
     font-weight: 300;
+    text-wrap: pretty;
 }
 
 .tiny {
-    font-size: 0.72rem;
-    color: var(--color-text-muted, #7a6878);
+    font-size: var(--step--2);
+    color: var(--ink-soft);
     font-weight: 400;
 }
 
 .strong {
     font-weight: 600;
-    color: var(--color-text, #1a0f14);
+    color: var(--ink);
 }
 
 .error {
-    color: #b83535;
+    color: oklch(50% 0.18 25);
     margin: 0;
-    font-size: 0.8rem;
+    font-size: var(--step--1);
     font-weight: 500;
 }
 
 /* ── Price display ────────────────────────────────────────────────────────── */
 .price {
-    font-family: var(--font-display, 'Cormorant Garamond', serif);
+    font-family: var(--font-display);
     font-weight: 400;
-    font-size: 1.4rem;
-    color: var(--color-text, #1a0f14);
+    font-size: var(--step-1);
+    color: var(--ink);
     letter-spacing: -0.01em;
+    font-variation-settings: 'opsz' 144;
 }
 
 /* ── Pill badge ───────────────────────────────────────────────────────────── */
+.pill,
 .pill.soft {
-    background: rgba(122, 37, 88, 0.08);
-    color: var(--color-plum, #7a2558);
-    padding: 0.25rem 0.65rem;
+    background: color-mix(in oklch, var(--accent) 10%, transparent);
+    color: var(--accent);
+    padding: 0.3rem 0.7rem;
     border-radius: 2px;
+    font-family: var(--font-stand);
     font-weight: 600;
-    font-size: 0.68rem;
+    font-size: var(--step--2);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
+    display: inline-flex;
+    align-items: center;
 }
 
-/* ── Quantity stepper ─────────────────────────────────────────────────────── */
+/* ── Quantity stepper — fixes audit blocker B1 (44px tap target) ──────────── */
 .btn-quantity {
     background: transparent;
-    border: none;
-    width: 40px;
-    height: 40px;
+    border: 1px solid var(--rule);
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 2px;
     font-weight: 600;
     font-size: 1rem;
-    color: var(--color-text, #1a0f14);
+    color: var(--ink);
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
 .btn-quantity:hover {
-    background: var(--color-border, #dfd5c5);
+    background: var(--surface);
+    border-color: var(--ink);
+}
+
+.btn-quantity:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* ── Eyebrow labels ───────────────────────────────────────────────────────── */
-.eyebrow {
-    font-family: var(--font-body);
-    text-transform: uppercase;
-    letter-spacing: 0.35em;
-    font-size: 0.67rem;
-    font-weight: 600;
-    color: var(--color-gold);
-    margin-bottom: 0.6rem;
-    display: block;
-}
-
+.eyebrow,
 .eyebrow-p {
-    font-family: var(--font-body);
+    font-family: var(--font-stand);
     text-transform: uppercase;
     letter-spacing: 0.35em;
-    font-size: 0.67rem;
+    font-size: var(--step--2);
     font-weight: 600;
-    color: var(--color-plum);
+    color: var(--accent);
     margin-bottom: 0.6rem;
     display: block;
 }
@@ -241,20 +316,29 @@ h4, h5, h6 {
 .app {
     width: 100%;
     min-height: 100vh;
-    background: var(--color-midnight);
-    color: var(--color-text);
+    min-height: 100dvh;
+    background: var(--paper);
+    color: var(--ink);
     font-family: var(--font-body);
 }
 
 a {
     text-decoration: none;
+    color: var(--accent);
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: var(--ink);
 }
 
 body {
-    font-size: 16px;
-    line-height: 1.65;
-    background: var(--color-midnight);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    background: var(--paper);
+    color: var(--ink);
     font-family: var(--font-body);
+    font-feature-settings: 'ss01', 'cv11';
 }
 
 body p {
@@ -262,17 +346,54 @@ body p {
 }
 
 .page-shell {
-    background: var(--color-cream);
+    background: var(--paper);
 }
 
-/* Thin gold rule utility */
+/* Thin rule utility */
 .gold-rule {
     border: none;
-    border-top: 1px solid var(--color-gold-rule);
+    border-top: 1px solid var(--rule);
     margin: 1.5rem 0;
 }
 
-/* ── Touch target enforcement ─────────────────────────────────────────────── */
+/* ── Editorial prose container ────────────────────────────────────────────── */
+.prose {
+    max-width: 65ch;
+    font-size: var(--step-0);
+    line-height: 1.7;
+}
+
+.prose p + p {
+    margin-top: 1em;
+    text-indent: 1.5em;
+}
+
+.prose p:first-of-type::first-line {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+}
+
+/* ── View transitions ─────────────────────────────────────────────────────── */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Shared bottle elements — morph between product card and product detail.
+   The viewTransitionName is set inline as `bottle-${productId}`. We tune
+   ALL named view-transition groups for cinematic feel; the only named
+   pairs in the app are bottle images and (later) the product card body. */
+::view-transition-group(*) {
+    animation-duration: 540ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+
+/* ── Touch target enforcement (kept; complements .btn / .btn-quantity) ────── */
 @media (max-width: 768px) {
     button,
     .btn,
@@ -300,24 +421,5 @@ body p {
 
 /* ── Utility overrides on small screens ──────────────────────────────────── */
 @media (max-width: 600px) {
-    .caption { font-size: 0.78rem; }
-    .price   { font-size: 1.2rem; }
-}
-
-/* ── Typography scale on small screens ───────────────────────────────────── */
-@media (max-width: 576px) {
-    h1 {
-        font-size: clamp(2rem, 8vw, 2.8rem);
-        line-height: 1.1;
-    }
-
-    h2 {
-        font-size: clamp(1.6rem, 6vw, 2.2rem);
-        line-height: 1.12;
-    }
-
-    h3 {
-        font-size: clamp(1.3rem, 5vw, 1.7rem);
-        line-height: 1.18;
-    }
+    .caption { font-size: var(--step--1); }
 }

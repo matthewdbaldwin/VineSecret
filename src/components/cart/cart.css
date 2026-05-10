@@ -274,25 +274,35 @@
     font-size: 0.9rem;
 }
 
-/* ── Cart popover ────────────────────────────────────────────────────────── */
-.cart-popover {
-    position: fixed;
-    top: 76px;
-    right: 24px;
-    z-index: 1000;
-    background: #ffffff;
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: var(--radius-card, 4px);
+/* ── Cart popover — native <div popover> in the top layer ───────────────── */
+.cart-popover[popover] {
+    /* Reset native popover defaults so position: fixed works */
+    inset: unset;
+    margin: 0;
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    color: var(--ink);
+    border-radius: var(--radius-card);
     padding: 1rem 1.25rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-lg);
     min-width: 260px;
     max-width: 320px;
-    animation: popover-in 0.2s ease;
 }
 
-@keyframes popover-in {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
+.cart-popover[popover]:popover-open {
+    position: fixed;
+    top: calc(76px + env(safe-area-inset-top, 0px));
+    right: clamp(12px, 3vw, 24px);
+    opacity: 1;
+    translate: 0 0;
+    transition: opacity 0.22s ease, translate 0.22s ease;
+}
+
+@starting-style {
+    .cart-popover[popover]:popover-open {
+        opacity: 0;
+        translate: 0 -8px;
+    }
 }
 
 .cart-popover__header {
@@ -330,16 +340,27 @@
 .cart-popover__close {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     line-height: 1;
-    color: var(--color-text-muted, #7a6878);
+    color: var(--ink-soft);
     cursor: pointer;
     padding: 0;
-    transition: color 0.15s ease;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: -0.6rem -0.6rem -0.6rem 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    transition: color 0.15s ease, background 0.15s ease;
 }
 
-.cart-popover__close:hover {
-    color: var(--color-text, #1a0f14);
+.cart-popover__close:hover,
+.cart-popover__close:focus-visible {
+    color: var(--ink);
+    background: color-mix(in oklch, var(--ink) 6%, transparent);
 }
 
 .cart-popover__name {

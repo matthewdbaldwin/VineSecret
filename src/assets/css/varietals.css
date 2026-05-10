@@ -1,0 +1,84 @@
+/* Per-varietal palette overrides — applied via [data-varietal] attribute.
+   The whole subtree re-skins: background, ink, accent, derived rules/surfaces. */
+
+[data-varietal="pinot-noir"] {
+    --paper:  oklch(92% 0.030 30);
+    --paper-2: oklch(95% 0.022 30);
+    --ink:    oklch(20% 0.05 25);
+    --accent: oklch(40% 0.14 20);
+}
+
+[data-varietal="chardonnay"] {
+    --paper:  oklch(95% 0.040 95);
+    --paper-2: oklch(97% 0.025 95);
+    --ink:    oklch(22% 0.04 90);
+    --accent: oklch(58% 0.13 80);
+}
+
+[data-varietal="cabernet-sauvignon"] {
+    --paper:  oklch(91% 0.020 350);
+    --paper-2: oklch(94% 0.014 350);
+    --ink:    oklch(15% 0.04 350);
+    --accent: oklch(28% 0.10 350);
+}
+
+[data-varietal="sauvignon-blanc"] {
+    --paper:  oklch(94% 0.030 130);
+    --paper-2: oklch(96% 0.020 130);
+    --ink:    oklch(20% 0.04 140);
+    --accent: oklch(48% 0.13 145);
+}
+
+[data-varietal="gsm-blend"] {
+    --paper:  oklch(90% 0.025 50);
+    --paper-2: oklch(94% 0.018 50);
+    --ink:    oklch(18% 0.05 30);
+    --accent: oklch(45% 0.13 35);
+}
+
+[data-varietal="syrah"] {
+    --paper:  oklch(89% 0.025 290);
+    --paper-2: oklch(93% 0.018 290);
+    --ink:    oklch(15% 0.05 320);
+    --accent: oklch(30% 0.11 320);
+}
+
+[data-varietal="rose"],
+[data-varietal="rosé"] {
+    --paper:  oklch(95% 0.025 15);
+    --paper-2: oklch(97% 0.018 15);
+    --ink:    oklch(22% 0.04 5);
+    --accent: oklch(52% 0.15 15);
+}
+
+[data-varietal="viognier"] {
+    --paper:  oklch(95% 0.035 80);
+    --paper-2: oklch(97% 0.025 80);
+    --ink:    oklch(22% 0.04 75);
+    --accent: oklch(60% 0.14 70);
+}
+
+[data-varietal="zinfandel"] {
+    --paper:  oklch(90% 0.025 25);
+    --paper-2: oklch(94% 0.018 25);
+    --ink:    oklch(15% 0.04 25);
+    --accent: oklch(35% 0.13 25);
+}
+
+/* When a varietal palette is active, propagate the legacy aliases too */
+[data-varietal] {
+    --rule:    color-mix(in oklch, var(--ink) 18%, transparent);
+    --rule-soft: color-mix(in oklch, var(--ink) 8%, transparent);
+    --surface: color-mix(in oklch, var(--ink) 4%, var(--paper));
+    --surface-2: color-mix(in oklch, var(--ink) 8%, var(--paper));
+
+    --color-plum:  var(--accent);
+    --color-gold:  var(--accent);
+    --color-cream: var(--paper);
+    --color-text:  var(--ink);
+    --color-text-soft: var(--ink-soft);
+
+    background: var(--paper);
+    color: var(--ink);
+    transition: background 0.4s ease, color 0.4s ease;
+}

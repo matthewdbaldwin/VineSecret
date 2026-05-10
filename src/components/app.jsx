@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import '../assets/css/app.css';
+import '../assets/css/varietals.css';
 import Header from './header';
 import Footer from './footer';
 import About from './about';

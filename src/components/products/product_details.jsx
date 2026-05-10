@@ -5,6 +5,8 @@ import { addItemToCart, clearProductDetails, getProductDetails } from "../../act
 import { trackAddToCart, trackProductView } from "../../analytics/tracking";
 import CartPopover from "../cart/cart_popover";
 import Money from "../general/money";
+import { varietalSlug, bottleTransitionName } from "../general/varietal";
+import { proseWithGlossary } from "./glossary";
 import "./products.css";
 
 const ProductDetails = () => {
@@ -53,67 +55,116 @@ const ProductDetails = () => {
 
     if (!details) {
         return (
-            <div className="product-details-page loading-state">
+            <div className="vp-detail vp-detail--loading">
                 <p>Loading product details…</p>
             </div>
         );
     }
 
     const imageSrc = details.image?.url || details.thumbnail?.url;
+    const vintageMatch = (details.id || '').match(/-(\d{4})$/);
+    const vintage = vintageMatch ? vintageMatch[1] : null;
+    const { nodes, popovers } = proseWithGlossary(details.description);
 
     return (
-        <div className="product-details-page">
-            <div className="details-card image-card">
-                {imageSrc ? (
-                    <img src={imageSrc} alt={details.caption || details.name} />
-                ) : (
-                    <div className="image-fallback" aria-label="Image unavailable">
-                        <p>Image unavailable</p>
-                    </div>
-                )}
+        <article
+            className="vp-detail"
+            data-varietal={varietalSlug(details.type)}
+        >
+            <div className="vp-detail__poster">
+                <div className="vp-detail__bottle-frame">
+                    {imageSrc ? (
+                        <img
+                            src={imageSrc}
+                            alt={details.caption || details.name}
+                            className="vp-detail__bottle"
+                            style={{ viewTransitionName: bottleTransitionName(details.id) }}
+                        />
+                    ) : (
+                        <div className="image-fallback" aria-label="Image unavailable">
+                            <p>Image unavailable</p>
+                        </div>
+                    )}
+                </div>
+                <header className="vp-detail__masthead">
+                    <p className="eyebrow">
+                        Estate release {vintage ? `· ${vintage}` : ''}
+                    </p>
+                    <h1 className="vp-detail__title">{details.name}</h1>
+                    <p className="vp-detail__lede">{details.caption}</p>
+                </header>
             </div>
 
-            <div className="details-card info-card">
-                <p className="eyebrow">Estate release</p>
-                <h2>{details.name}</h2>
-                <p className="lead">{details.caption}</p>
-                <p className="description">{details.description}</p>
-
-                <div className="badge-row">
-                    <span className="pill">Neutral French oak</span>
-                    <span className="pill">Native ferment</span>
-                    <span className="pill">Cold pack shipping</span>
+            <section className="vp-detail__body">
+                <div className="prose vp-detail__notes">
+                    <p>
+                        {nodes.map((node) => {
+                            if (typeof node === 'string') return node;
+                            return (
+                                <button
+                                    key={node.key}
+                                    type="button"
+                                    className="glossary-trigger"
+                                    popoverTarget={node.popoverId}
+                                    style={{ anchorName: node.anchorName }}
+                                >
+                                    {node.term}
+                                </button>
+                            );
+                        })}
+                    </p>
                 </div>
 
-                <div className="price-row">
-                    <div>
-                        <span className="price">
-                            <Money cost={details.cost} />
-                        </span>
-                        <p className="tiny">Includes taxes — shipping calculated at checkout.</p>
+                <aside className="vp-detail__aside">
+                    <dl className="vp-detail__specs">
+                        <dt>Vintage</dt>
+                        <dd>{vintage || '—'}</dd>
+                        <dt>Varietal</dt>
+                        <dd>{details.type}</dd>
+                        <dt>Format</dt>
+                        <dd>750 ml</dd>
+                        <dt>Drink window</dt>
+                        <dd>Now through {vintage ? Number(vintage) + 8 : '—'}</dd>
+                    </dl>
+
+                    <div className="vp-detail__buy">
+                        <div className="vp-detail__price">
+                            <span className="price">
+                                <Money cost={details.cost} />
+                            </span>
+                            <p className="tiny">Tax-inclusive · cold-pack shipping</p>
+                        </div>
+                        <div className="quantity-group" aria-label="Quantity selector">
+                            <button className="btn-quantity" onClick={decrementQuantity} aria-label="Decrease quantity">−</button>
+                            <span className="quantity">{quantity}</span>
+                            <button className="btn-quantity" onClick={incrementQuantity} aria-label="Increase quantity">+</button>
+                        </div>
+                        <div className="vp-detail__cta">
+                            <button className="btn primary" onClick={handleAddToCart}>
+                                Add to cart
+                            </button>
+                            <button className="btn ghost-dark" onClick={() => navigate('/contact')}>
+                                Visit the cellar
+                            </button>
+                        </div>
                     </div>
-                    <div className="quantity-group" aria-label="Quantity selector">
-                        <button className="btn-quantity" onClick={decrementQuantity}>
-                            -
-                        </button>
-                        <span className="quantity">{quantity}</span>
-                        <button className="btn-quantity" onClick={incrementQuantity}>
-                            +
-                        </button>
-                    </div>
-                </div>
+                </aside>
+            </section>
 
-                <div className="cta-row">
-                    <button className="btn primary" onClick={handleAddToCart}>
-                        Add to cart
-                    </button>
-                    <button className="btn brass" onClick={() => navigate("/contact")}>
-                        Visit the cellar
-                    </button>
+            {popovers.map(({ popoverId, anchorName, term, definition }) => (
+                <div
+                    key={popoverId}
+                    id={popoverId}
+                    popover="auto"
+                    className="glossary-popover"
+                    style={{ positionAnchor: anchorName }}
+                >
+                    <p className="eyebrow">{term}</p>
+                    <p>{definition}</p>
                 </div>
-            </div>
+            ))}
 
-            {/* Sticky bottom CTA — shown only on mobile via CSS */}
+            {/* Sticky bottom CTA — mobile only via CSS */}
             <div className="product-sticky-cta">
                 <div className="product-sticky-cta__price">
                     <span className="price"><Money cost={details.cost} /></span>
@@ -121,9 +172,9 @@ const ProductDetails = () => {
                 </div>
                 <div className="product-sticky-cta__controls">
                     <div className="quantity-group" aria-label="Quantity selector">
-                        <button className="btn-quantity" onClick={decrementQuantity}>−</button>
+                        <button className="btn-quantity" onClick={decrementQuantity} aria-label="Decrease quantity">−</button>
                         <span className="quantity">{quantity}</span>
-                        <button className="btn-quantity" onClick={incrementQuantity}>+</button>
+                        <button className="btn-quantity" onClick={incrementQuantity} aria-label="Increase quantity">+</button>
                     </div>
                     <button className="btn primary" onClick={handleAddToCart}>
                         Add to cart
@@ -132,7 +183,7 @@ const ProductDetails = () => {
             </div>
 
             {popover && <CartPopover item={popover} onClose={dismissPopover} />}
-        </div>
+        </article>
     );
 };
 

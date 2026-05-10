@@ -1,8 +1,9 @@
 import React from "react";
 import Money from "../general/money";
+import { varietalSlug, bottleTransitionName } from "../general/varietal";
 import "./products.css";
 
-const ProductItem = ({ name, caption, cost, thumbnail, goToDetails, onAddToCart }) => {
+const ProductItem = ({ id, name, type, caption, cost, thumbnail, goToDetails, onAddToCart }) => {
     const handleCardClick = () => {
         goToDetails();
     };
@@ -18,13 +19,21 @@ const ProductItem = ({ name, caption, cost, thumbnail, goToDetails, onAddToCart 
     };
 
     return (
-        <article className="product-card" onClick={handleCardClick}>
+        <article
+            className="product-card"
+            onClick={handleCardClick}
+            data-varietal={varietalSlug(type)}
+        >
             <div className="product-card__header">
                 <span className="eyebrow">Estate release</span>
                 <span className="pill">Limited</span>
             </div>
             <div className="product-card__image">
-                <img src={thumbnail.url} alt={caption || name} />
+                <img
+                    src={thumbnail.url}
+                    alt={caption || name}
+                    style={{ viewTransitionName: bottleTransitionName(id) }}
+                />
             </div>
             <div className="product-card__body">
                 <h3>{name}</h3>
