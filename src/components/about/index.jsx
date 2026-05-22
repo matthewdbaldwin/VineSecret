@@ -4,10 +4,13 @@ import './about.css';
 
 const About = () => (
     <section className="about">
-        <div className="about-grid">
-            <div className="story">
+        <article className="about-article">
+            <header className="about-header">
                 <p className="eyebrow">Our story</p>
                 <h2>Sonoma County roots. Coastal influence. Cellar patience.</h2>
+            </header>
+
+            <div className="about-prose prose">
                 <p>
                     VineSecret was founded by growers who believed the best bottles start with healthy soils and a relentless respect for place.
                     We farm five estate vineyards by hand, ferment in small lots, and taste every barrel until the blend sings.
@@ -17,6 +20,16 @@ const About = () => (
                     That swing between warm days and cold nights is what keeps our whites taut and gives our reds something to say.
                     We didn't end up here by accident. The land earned it.
                 </p>
+            </div>
+
+            <figure className="about-figure">
+                <img src={grapevines} alt="Grapevines on the estate" loading="lazy" />
+                <blockquote className="about-figure__caption">
+                    "We're after the bottle you remember years later and can't quite explain why. The one that fit the night perfectly."
+                </blockquote>
+            </figure>
+
+            <div className="about-prose prose">
                 <p>
                     In the cellar, we work with native yeasts, amphora, and neutral oak because we'd rather coax than correct.
                     If a ferment runs slow, we watch it. If a barrel needs more time, it gets it.
@@ -36,13 +49,8 @@ const About = () => (
                     The one that fit the night perfectly. That's the one we're always trying to make.
                 </p>
             </div>
-            <div className="about-image">
-                <img src={grapevines} alt="Grapevines on the estate" />
-                <blockquote className="about-image__caption">
-                    "We're after the bottle you remember years later and can't quite explain why. The one that fit the night perfectly."
-                </blockquote>
-            </div>
-            <div className="values">
+
+            <section className="about-values" aria-label="Our values">
                 <div className="value-card">
                     <h4>Regenerative farming</h4>
                     <p>Cover crops, minimal till, and owl boxes keep the vineyards in balance without shortcuts.</p>
@@ -59,8 +67,8 @@ const About = () => (
                     <h4>Sustainability</h4>
                     <p>Solar-powered cellars, recycled glass, and water reclamation keep our footprint as light as our pours.</p>
                 </div>
-            </div>
-        </div>
+            </section>
+        </article>
     </section>
 );
 
