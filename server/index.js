@@ -128,6 +128,9 @@ app.use(helmet({
                 'https://www.googletagmanager.com',
                 'https://www.google-analytics.com',
                 'https://ssl.google-analytics.com',
+                // gtag.js injects an inline init script post-load; this is its
+                // sha256. If Google updates that payload, refresh this hash.
+                "'sha256-ZswfTY7H35rbv8WC7NXBoiC7WNu86vSzCDChNWwZZDM='",
             ],
             styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
             fontSrc:         ["'self'", 'https://fonts.gstatic.com'],
