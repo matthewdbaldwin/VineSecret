@@ -128,11 +128,19 @@ const Cart = () => {
                                     </div>
                                     <div className="cart-card__footer">
                                         <div className="quantity-group" aria-label={`Quantity for ${item.name}`}>
-                                            <button className="btn-quantity" onClick={() => handleDecrement(item)}>
-                                                -
+                                            <button
+                                                className="btn-quantity"
+                                                onClick={() => handleDecrement(item)}
+                                                aria-label={`Decrease quantity of ${item.name}`}
+                                            >
+                                                −
                                             </button>
                                             <span className="quantity">{item.quantity}</span>
-                                            <button className="btn-quantity" onClick={() => handleIncrement(item)}>
+                                            <button
+                                                className="btn-quantity"
+                                                onClick={() => handleIncrement(item)}
+                                                aria-label={`Increase quantity of ${item.name}`}
+                                            >
                                                 +
                                             </button>
                                         </div>

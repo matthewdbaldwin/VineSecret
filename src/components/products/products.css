@@ -914,12 +914,14 @@
     margin: 0;
 }
 
-/* Glossary trigger — text styled to look like a hairline-underlined word */
+/* Glossary trigger — text styled to look like a hairline-underlined word.
+   Padding gives touch users a larger tap zone without disturbing the inline
+   prose rhythm (visible underline tracks the text baseline). */
 .glossary-trigger {
     background: none;
     border: none;
-    padding: 0;
-    margin: 0;
+    padding: 0.25em 0.15em;
+    margin: -0.25em -0.15em;
     font: inherit;
     color: var(--accent);
     text-decoration: underline;
@@ -1069,5 +1071,19 @@
 
     .vp-detail__aside {
         position: static;
+    }
+}
+
+/* Tighter cap at phone widths — the editorial-scale title shouldn't eat the
+   entire above-the-fold area; we want a sliver of the prose visible as a
+   scroll invitation. */
+@media (max-width: 600px) {
+    .vp-detail__title {
+        font-size: clamp(2.5rem, 9vw, 3.75rem);
+    }
+
+    .vp-detail__bottle-frame {
+        height: 40dvh;
+        max-height: 360px;
     }
 }

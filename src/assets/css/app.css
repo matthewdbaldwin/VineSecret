@@ -255,8 +255,9 @@ p, li, blockquote {
 .btn.quiet {
     background: transparent;
     border: none;
-    padding: 0.3rem 0;
-    min-height: auto;
+    /* min-height kept at the base 44px so the tap zone meets the WCAG floor;
+       generous vertical padding pads the visible text up to fill the zone. */
+    padding: 0.75rem 0.25rem;
     color: var(--accent);
     text-transform: none;
     letter-spacing: 0;
@@ -332,6 +333,14 @@ p, li, blockquote {
     padding: 0.55rem 1rem;
     min-height: 36px;
     letter-spacing: 0.14em;
+}
+
+/* Restore WCAG-floor tap target at mobile breakpoints — visual stays compact,
+   tap zone grows. */
+@media (max-width: 768px) {
+    .btn.small {
+        min-height: 44px;
+    }
 }
 
 .btn.secondary.small {

@@ -72,6 +72,21 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgba(184, 145, 90, 0.4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    justify-content: center;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .footer-copy {
+        letter-spacing: 0.08em;
+    }
+
+    .footer-copy__sep {
+        display: none;
+    }
 }
 
 /* ── Do Not Sell button ──────────────────────────────────────────────────── */

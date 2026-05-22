@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -113,6 +114,10 @@ function buildBotHtml({ title, description, url }) {
 <meta name="twitter:image" content="${escHtml(OG_IMAGE)}">
 </head><body><a href="${u}">${t}</a></body></html>`;
 }
+
+// Gzip / Brotli response compression for every text-based asset.
+// Must be registered before any route or static handler.
+app.use(compression());
 
 app.use(helmet({
     contentSecurityPolicy: {
@@ -256,7 +261,18 @@ app.use('/api', (_req, res) => {
 // API routes above take precedence; this catches everything else.
 const distDir = path.join(__dirname, '..', 'dist');
 if (fs.existsSync(distDir)) {
-    app.use(express.static(distDir));
+    // Vite emits content-hashed filenames in /assets/, so they can be cached
+    // aggressively. Everything else (index.html, manifest, icons) gets a short
+    // cache so deploys propagate.
+    app.use(express.static(distDir, {
+        setHeaders: (res, filePath) => {
+            if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            } else {
+                res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+            }
+        },
+    }));
     // SPA fallback — send index.html for regular browsers, or an OG-tag page
     // for social crawlers so each route gets its own link preview.
     // Static asset paths (/assets/, /icons/, /social/) that weren't found by

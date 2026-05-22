@@ -3,6 +3,7 @@
     padding: 2.5rem 6vw 4rem;
     background: linear-gradient(180deg, #09040d 0%, #14091f 10%, var(--color-cream, #f4efe6) 10%);
     min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .cart-hero {
@@ -450,7 +451,7 @@
 }
 
 @media (max-width: 600px) {
-    .cart-popover {
+    .cart-popover[popover]:popover-open {
         right: 12px;
         left: 12px;
         max-width: none;
@@ -470,7 +471,7 @@
     .cart-hero {
         flex-direction: column;
         align-items: flex-start;
-        padding: 1.25rem 1.5rem;
+        padding: 1.25rem 1rem;
     }
 
     .cart-hero__actions {
@@ -481,6 +482,9 @@
     .cart-hero__actions .btn {
         width: 100%;
         text-align: center;
+        white-space: normal;
+        word-break: keep-all;
+        padding-inline: 0.75rem;
     }
 
     .cart-sticky-bar {
