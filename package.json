@@ -46,7 +46,7 @@
     "eslint": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.6.0",
-    "vite": "^8.0.11"
+    "vite": "^8.0.16"
   },
   "bugs": {
     "url": "https://github.com/matthewdbaldwin/VineSecret/issues"
