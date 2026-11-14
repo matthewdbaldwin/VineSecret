@@ -11,7 +11,7 @@ const readLocalCart = () => {
     try {
         const stored = localStorage.getItem(LOCAL_CART_KEY);
         return stored ? JSON.parse(stored) : [];
-    } catch (error) {
+    } catch {
         return [];
     }
 };
@@ -28,7 +28,7 @@ const readLocalOrders = () => {
     try {
         const stored = localStorage.getItem(LOCAL_ORDER_KEY);
         return stored ? JSON.parse(stored) : [];
-    } catch (error) {
+    } catch {
         return [];
     }
 };
@@ -188,7 +188,7 @@ export const getAllProducts = () => async (dispatch) => {
             type: types.GET_ALL_PRODUCTS,
             products,
         });
-    } catch (error) {
+    } catch {
         dispatch({
             type: types.GET_ALL_PRODUCTS,
             products: fallbackProducts,
@@ -207,7 +207,7 @@ export const getProductDetails = (productId) => async (dispatch) => {
             type: types.GET_PRODUCT_DETAILS,
             product,
         });
-    } catch (error) {
+    } catch {
         dispatch({
             type: types.GET_PRODUCT_DETAILS,
             product: findProductById(productId),
@@ -430,7 +430,7 @@ export const getGuestOrderDetails = (email, orderId) => async (dispatch) => {
             type: types.GET_GUEST_ORDER_DETAILS,
             details: res.data,
         });
-    } catch (err) {
+    } catch {
         const localOrder = findLocalGuestOrder(email, orderId);
 
         if (localOrder) {
