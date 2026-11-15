@@ -142,7 +142,7 @@ npm install --no-save sharp && node scripts/generate-icons.js
 - **Wine club signup** — POSTs to `/api/club/signup` (rate-limited, no accounts)
 - **PWA** — manifest, generated icons, and speculation-rules prerendering of product pages
 - **Legal pages** — Terms of Use and Privacy Policy at `/legal/terms` and `/legal/privacy`
-- **Product catalogue** — 8 estate wines with tasting notes, pricing, and bottle artwork
+- **Product catalogue** — 9 estate wines with tasting notes, pricing, and bottle artwork
 
 ---
 
