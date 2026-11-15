@@ -154,7 +154,7 @@ Build the frontend and serve everything from Express:
 npm run serve
 ```
 
-Express serves the built `dist/` folder as static files and falls back to `index.html` for client-side routing (`postbuild` also copies it to `404.html` for static hosts). Set `SERVER_PORT` to `3000` (or `80`/`443`) and `ALLOWED_ORIGIN` to your production domain in `.env`. Port resolution order is `PORT` then `SERVER_PORT` then `3001`, so a host that injects `PORT` wins.
+Express serves the built `dist/` folder as static files and falls back to `index.html` for client-side routing, so no host-level rewrite rules are needed. Set `SERVER_PORT` to `3000` (or `80`/`443`) and `ALLOWED_ORIGIN` to your production domain in `.env`. Port resolution order is `PORT` then `SERVER_PORT` then `3001`, so a host that injects `PORT` wins.
 
 ### Railway
 
