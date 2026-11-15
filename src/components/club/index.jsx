@@ -89,7 +89,7 @@ const WineClub = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, tier: selectedTier }),
             });
-        } catch (_) {
+        } catch {
             // demo: show success regardless
         }
 

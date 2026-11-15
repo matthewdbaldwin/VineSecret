@@ -23,7 +23,7 @@ A demo e-commerce site for a fictional Sonoma County estate winery. Built with R
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+ (`package.json` requires `>=22`; `.nvmrc` pins 22 — Vite 8 needs it)
 
 ### Installation
 
@@ -53,6 +53,8 @@ cp .env.example .env
 | `EMAIL_FROM` | Sender address (must be verified in Resend) |
 | `SERVER_PORT` | Express server port (default: `3001`) |
 | `ALLOWED_ORIGIN` | CORS origin (default: `http://localhost:3000`) |
+| `SITE_URL` | Absolute base URL used in bot-facing pages and Open Graph tags (default: `https://vinesecret.com`) |
+| `VITE_GA_MEASUREMENT_ID` | Optional Google Analytics 4 measurement ID; falls back to the demo ID below |
 
 ### Running Locally
 
@@ -84,22 +86,26 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 src/
-├── actions/          # Redux actions
+├── actions/          # Redux thunks + action types (localStorage cart, API calls)
 ├── analytics/        # Google Analytics tracking
-├── assets/           # Images, global CSS
+├── assets/           # Images and global CSS
 │   └── css/app.css   # Design tokens, global utilities
 ├── components/
 │   ├── about/
 │   ├── agegate/
 │   ├── cart/
 │   ├── checkout/
+│   ├── club/         # Wine-club signup
 │   ├── contact/
 │   ├── footer/
+│   ├── general/      # Money, schedule, varietal helpers, view-transition links
 │   ├── header/
 │   ├── home/
 │   ├── legal/        # Terms of Use, Privacy Policy
-│   ├── nav/
+│   ├── nav/          # Desktop nav + mobile bottom tab bar
+│   ├── notfound/
 │   └── products/
+├── hooks/            # useFocusTrap
 ├── data/products.js  # Local product catalogue (with images)
 ├── reducers/
 └── main.jsx
@@ -107,7 +113,22 @@ src/
 server/
 ├── data/products.js  # Server-side product data (no images)
 ├── email/invoice.js  # Order confirmation email template
-└── index.js          # Express app
+└── index.js          # Express app: API, static dist/, bot-facing meta pages
+
+public/               # Static files copied verbatim into dist/ by Vite
+├── manifest.json     # PWA manifest
+├── gtag-init.js      # GA init kept out of the CSP-restricted inline HTML
+├── icons/            # PWA icons (generated; commit the PNGs)
+└── social/           # Open Graph image
+
+scripts/generate-icons.js  # Regenerates public/icons from VineSecretLogo.svg
+railway.json               # Railway build/start/healthcheck config
+```
+
+`scripts/generate-icons.js` needs Sharp, which is intentionally not a dependency:
+
+```bash
+npm install --no-save sharp && node scripts/generate-icons.js
 ```
 
 ---
@@ -118,8 +139,10 @@ server/
 - **Order confirmation email** — sent via Resend on successful checkout
 - **Age gate** — sessionStorage-persisted age verification overlay
 - **Mobile-first** — bottom tab navigation, wizard checkout on small screens, sticky product CTAs
+- **Wine club signup** — POSTs to `/api/club/signup` (rate-limited, no accounts)
+- **PWA** — manifest, generated icons, and speculation-rules prerendering of product pages
 - **Legal pages** — Terms of Use and Privacy Policy at `/legal/terms` and `/legal/privacy`
-- **Product catalogue** — 8 estate wines with tasting notes, pricing, and bottle artwork
+- **Product catalogue** — 9 estate wines with tasting notes, pricing, and bottle artwork
 
 ---
 
@@ -131,7 +154,23 @@ Build the frontend and serve everything from Express:
 npm run serve
 ```
 
-Express serves the built `dist/` folder as static files and falls back to `index.html` for client-side routing. Set `SERVER_PORT` to `3000` (or `80`/`443`) and `ALLOWED_ORIGIN` to your production domain in `.env`.
+Express serves the built `dist/` folder as static files and falls back to `index.html` for client-side routing, so no host-level rewrite rules are needed. Set `SERVER_PORT` to `3000` (or `80`/`443`) and `ALLOWED_ORIGIN` to your production domain in `.env`. Port resolution order is `PORT` then `SERVER_PORT` then `3001`, so a host that injects `PORT` wins.
+
+### Railway
+
+`railway.json` drives the deploy: Nixpacks build with `npm run build`, start with `node server/index.js`, and a healthcheck against `/api/health`. No `npm ci` step — Railway installs dependencies itself.
+
+### API surface
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/health` | Healthcheck |
+| `GET /api/products`, `GET /api/products/:id` | Product data (frontend merges in images) |
+| `POST /api/orders/guest`, `GET /api/orders/guest/:id` | Guest orders |
+| `POST /api/notifications/guest-order` | Sends the confirmation email via Resend |
+| `POST /api/club/signup` | Wine-club signup |
+
+Cart endpoints are intentionally absent: the cart lives in browser local storage, and the frontend falls back to the bundled catalogue when the API is unreachable.
 
 ---
 

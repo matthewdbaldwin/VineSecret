@@ -518,38 +518,6 @@
     line-height: 1.55;
 }
 
-/* ── Stripe payment ──────────────────────────────────────────────────────── */
-.stripe-test-banner {
-    background: var(--color-parchment, #ede6d8);
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: 3px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1.25rem;
-}
-
-.stripe-test-banner .eyebrow {
-    color: var(--color-plum, #7a2558);
-    margin-bottom: 0.2rem;
-}
-
-.stripe-test-banner .tiny {
-    color: var(--color-text-soft, #4a3040);
-    margin: 0;
-    line-height: 1.5;
-}
-
-.stripe-element-wrap {
-    border: 1px solid var(--color-border, #dfd5c5);
-    border-radius: 3px;
-    padding: 1rem;
-    background: #ffffff;
-    margin-bottom: 1rem;
-}
-
-.stripe-error {
-    margin-bottom: 0.75rem;
-}
-
 .review-edit {
     position: absolute;
     top: 0.85rem;
